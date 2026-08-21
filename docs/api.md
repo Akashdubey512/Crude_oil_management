@@ -237,3 +237,98 @@ Returns model card for a specific corridor's trained classifier.
 | :--- | :--- |
 | `404` | No model trained for corridor (e.g. RED_SEA) |
 | `503` | Model registry not found |
+
+
+---
+
+## Phase 8 Endpoints — Decision Intelligence
+
+---
+
+### `GET /api/risk/{corridor_id}/history`
+Returns the historical risk probability time-series for a corridor (out-of-time model inference).
+
+**Path Parameters**
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `corridor_id` | string | Yes | One of `HORMUZ`, `BAB_EL_MANDEB`, `SUEZ` |
+
+**Response** (`application/json`) — `RiskHistoryResponse`
+`json
+[
+  { "date": "2024-01-15", "risk_probability": 0.082, "risk_level": "LOW", "disruption_event": 0 },
+  { "date": "2024-03-10", "risk_probability": 0.312, "risk_level": "HIGH", "disruption_event": 1 }
+]
+`
+
+**Error Responses**
+| Code | Reason |
+| :--- | :--- |
+| `404` | No history available for corridor (RED_SEA or missing model) |
+
+---
+
+### `GET /api/risk/comparison`
+Returns a normalized cross-corridor comparison snapshot for all modelled corridors.
+
+**Response** (`application/json`) — `CorridorComparisonResponse`
+`json
+{
+  "items": [
+    {
+      "corridor_id": "HORMUZ",
+      "name": "Strait of Hormuz",
+      "risk_level": "LOW",
+      "probability": 0.0017,
+      "primary_driver": "anomaly_type_drop",
+      "vessel_volume_status": "NORMAL",
+      "geopolitical_status": "NORMAL",
+      "data_freshness_traffic": "2026-08-16"
+    }
+  ],
+  "generated_at": "2026-08-16T12:00:00"
+}
+`
+
+---
+
+### `POST /api/scenarios/simulate`
+Executes a what-if scenario simulation against a corridor's real model using mutated feature inputs.
+
+**Request Body** (`application/json`)
+`json
+{
+  "corridor_id": "HORMUZ",
+  "tanker_transit_multiplier": 0.6,
+  "gpr_multiplier": 2.0,
+  "brent_price_multiplier": 1.2,
+  "brent_volatility_multiplier": 1.5,
+  "infrastructure_disruption": false
+}
+`
+
+**Response** (`application/json`) — `ScenarioSimulationResponse`
+`json
+{
+  "corridor_id": "HORMUZ",
+  "baseline_probability": 0.0017,
+  "baseline_risk_level": "LOW",
+  "simulated_probability": 0.72,
+  "simulated_risk_level": "CRITICAL",
+  "probability_delta": 0.7183,
+  "explanation": "Tanker transit drop triggered anomaly flag...",
+  "recommendation": "Activate SPR reserves...",
+  "feature_mutations": {
+    "tanker_count_7d_ma": { "baseline": 42.0, "simulated": 21.0 }
+  },
+  "model_used": "XGBoost",
+  "uncertainty_note": "Simulation extrapolates beyond training distribution.",
+  "data_limitation": null
+}
+`
+
+**Error Responses**
+| Code | Reason |
+| :--- | :--- |
+| `400` | Simulation not available (RED_SEA / no model) |
+| `422` | Invalid request body parameters |

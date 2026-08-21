@@ -51,11 +51,11 @@ class TestAppStartup:
 # ─── Health ───────────────────────────────────────────────────────────────────
 class TestHealthEndpoint:
     def test_health_returns_200(self):
-        r = client.get("/health")
+        r = client.get("/api/health")
         assert r.status_code == 200
 
     def test_health_schema(self):
-        r = client.get("/health")
+        r = client.get("/api/health")
         body = r.json()
         assert "status" in body
         assert "model_version" in body
@@ -63,7 +63,7 @@ class TestHealthEndpoint:
         assert "environment" in body
 
     def test_health_status_is_healthy(self):
-        r = client.get("/health")
+        r = client.get("/api/health")
         assert r.json()["status"] == "healthy"
 
 
@@ -288,3 +288,4 @@ class TestModelInfoEndpoint:
     def test_model_info_invalid_corridor(self):
         r = client.get("/api/model-info?corridor_id=RED_SEA")
         assert r.status_code == 404
+

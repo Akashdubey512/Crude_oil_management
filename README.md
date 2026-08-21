@@ -94,3 +94,28 @@ npm run dev
 ```
 Open your browser and navigate to: http://localhost:5173
 
+
+---
+
+## Platform Phases — Completion Status
+
+| Phase | Description | Status |
+| :--- | :--- | :--- |
+| Phase 1 | Data ingestion, provenance, and quality auditing | COMPLETE |
+| Phase 2 | Schema validation, staging, preprocessing | COMPLETE |
+| Phase 3 | Feature engineering (GPR, traffic, Brent, refinery) | COMPLETE |
+| Phase 4 | XGBoost / Random Forest / Logistic Regression model training | COMPLETE |
+| Phase 5 | Corridor risk scoring, SHAP explainability | COMPLETE |
+| Phase 6 | React Digital Twin Dashboard (Leaflet map, risk gauge, charts) | COMPLETE |
+| Phase 7 | Production hardening: Brent price API, data-status API, SHAP UI | COMPLETE |
+| Phase 8 | Decision Intelligence: Scenario Simulator, Trend Analyzer, Cross-Comparison | COMPLETE |
+
+**Backend:** 199 tests passing. **Frontend:** 11 tests passing.
+
+## Phase 8 — Decision Intelligence Features
+
+- **Scenario Simulator** (`POST /api/scenarios/simulate`) — Simulate macro shocks using real trained models. Controls: tanker traffic, GPR index, Brent price, Brent volatility, infrastructure disruption.
+- **Historical Trend Analyzer** (`GET /api/risk/{corridor_id}/history`) — Out-of-time model inference time-series for each corridor.
+- **Cross-Corridor Comparison** (`GET /api/risk/comparison`) — Normalized side-by-side comparison of all corridors with risk level, primary driver, vessel flow status, and data freshness.
+
+See full documentation in `docs/phase8-walkthrough.md` and `docs/api.md`.

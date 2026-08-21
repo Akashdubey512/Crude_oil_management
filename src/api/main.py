@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.api.routes import health, corridors, risk, events, prices, data_status, explainability
+from src.api.routes import health, corridors, risk, events, prices, data_status, explainability, scenarios
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
 LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()
@@ -79,10 +79,11 @@ async def generic_exception_handler(request: Request, exc: Exception):
     )
 
 # ─── Routers ──────────────────────────────────────────────────────────────────
-app.include_router(health.router)
+app.include_router(health.router, prefix="/api")
 app.include_router(corridors.router, prefix="/api")
 app.include_router(events.router, prefix="/api")
 app.include_router(risk.router, prefix="/api")
 app.include_router(prices.router, prefix="/api")
 app.include_router(data_status.router, prefix="/api")
 app.include_router(explainability.router, prefix="/api")
+app.include_router(scenarios.router, prefix="/api")

@@ -11,11 +11,16 @@ from src.api.services.risk_service import (
 )
 from src.api.services.traffic_service import get_traffic_observations
 from src.api.services.infrastructure_service import get_infrastructure_nodes
+import datetime
+import pandas as pd
 from src.api.schemas import (
     RiskSnapshotResponse,
     TrafficObservationResponse,
     InfrastructureNodeResponse,
     ModelInfoResponse,
+    RiskHistoryResponse,
+    CorridorComparisonResponse,
+    CorridorComparisonItem,
 )
 
 logger = logging.getLogger(__name__)
@@ -50,6 +55,52 @@ def get_all_risk(date: Optional[str] = Query(None, description="Target date (YYY
     elapsed = round((time.time() - t0) * 1000, 1)
     logger.info(f"GET /api/risk — all corridors — {elapsed}ms")
     return snapshots
+
+
+@router.get("/risk/comparison", response_model=CorridorComparisonResponse, tags=["Risk"])
+def get_corridor_comparison(date: Optional[str] = Query(None, description="Target date (YYYY-MM-DD)")):
+    """
+    Compares active risk status, model parameters, and data freshness across all corridors.
+    """
+    try:
+        snapshots = get_all_risk_snapshots()
+        comparison_items = []
+        for s in snapshots:
+            top_factors = s.get("top_factors", [])
+            primary_driver = top_factors[0] if top_factors else "None"
+            
+            vessel_status = "NORMAL"
+            gpr_status = "NORMAL"
+            
+            if s.get("corridor") == "RED_SEA":
+                vessel_status = "UNKNOWN"
+                gpr_status = "UNKNOWN"
+            else:
+                if any("drop" in f or "decline" in f for f in top_factors):
+                    vessel_status = "DROP"
+                if any("gpr" in f or "events" in f or "conflict" in f for f in top_factors):
+                    gpr_status = "ELEVATED"
+            
+            comparison_items.append(
+                CorridorComparisonItem(
+                    corridor_id=s.get("corridor"),
+                    name=SUPPORTED_CORRIDORS.get(s.get("corridor"), s.get("corridor")),
+                    risk_level=s.get("risk_level", "UNKNOWN"),
+                    probability=s.get("probability"),
+                    risk_score=s.get("risk_score"),
+                    primary_driver=primary_driver,
+                    vessel_volume_status=vessel_status,
+                    geopolitical_status=gpr_status,
+                    data_freshness_traffic=s.get("data_freshness", {}).get("traffic", "UNAVAILABLE"),
+                )
+            )
+        
+        comp_date = date if date else (snapshots[0].get("prediction_date") if snapshots else str(datetime.date.today()))
+        return CorridorComparisonResponse(comparison_date=comp_date, items=comparison_items)
+    except Exception as e:
+        logger.error(f"Failed to generate corridor comparison: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.get("/risk/{corridor_id}", tags=["Risk"])
@@ -167,3 +218,60 @@ def get_model_information(
         return get_model_info(corridor_upper)
     except RuntimeError as e:
         raise HTTPException(status_code=503, detail=str(e))
+
+
+
+
+
+@router.get("/risk/{corridor_id}/history", response_model=List[RiskHistoryResponse], tags=["Risk"])
+def get_corridor_risk_history(
+    corridor_id: str,
+    start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
+):
+    """
+    Returns time-series risk scores and ground-truth disruption indicators for a corridor.
+    """
+    corridor_upper = corridor_id.upper()
+    if corridor_upper not in SUPPORTED_CORRIDORS:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unknown corridor '{corridor_id}'. Supported: {list(SUPPORTED_CORRIDORS.keys())}",
+        )
+    
+    if corridor_upper == "RED_SEA":
+        return []
+
+    from src.risk.corridor_risk import get_historical_risk
+    
+    try:
+        df_hist = get_historical_risk(corridor_upper, start_date or "2023-11-21", end_date or str(datetime.date.today()))
+        if df_hist.empty:
+            return []
+        
+        if not start_date:
+            max_date = df_hist["date"].max()
+            min_date = max_date - pd.Timedelta(days=120)
+            df_hist = df_hist[df_hist["date"] >= min_date]
+
+        results = []
+        for _, row in df_hist.iterrows():
+            is_disrupted = None
+            if "is_disrupted" in row and pd.notna(row["is_disrupted"]):
+                is_disrupted = bool(row["is_disrupted"])
+            
+            results.append(
+                RiskHistoryResponse(
+                    date=row["date"].strftime("%Y-%m-%d"),
+                    corridor_id=corridor_upper,
+                    risk_probability=round(float(row["risk_probability"]), 6),
+                    risk_level=row["risk_level"],
+                    is_disrupted=is_disrupted
+                )
+            )
+        results.sort(key=lambda x: x.date)
+        return results
+    except Exception as e:
+        logger.error(f"Error fetching historical risk for {corridor_upper}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve risk history: {str(e)}")
+

@@ -128,3 +128,54 @@ export interface ExplainabilityResponse {
   global_importance: FeatureImportanceEntry[];
 }
 
+// --- Phase 8 Types ---
+
+export interface RiskHistoryEntry {
+  date: string;
+  corridor_id: string;
+  risk_probability: number;
+  risk_level: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL' | 'UNKNOWN';
+  is_disrupted: boolean | null;
+}
+
+export interface CorridorComparisonItem {
+  corridor_id: string;
+  name: string;
+  risk_level: string;
+  probability: number | null;
+  risk_score: number | null;
+  primary_driver: string | null;
+  vessel_volume_status: string;
+  geopolitical_status: string;
+  data_freshness_traffic: string;
+}
+
+export interface CorridorComparisonResponse {
+  comparison_date: string;
+  items: CorridorComparisonItem[];
+}
+
+export interface ScenarioSimulationRequest {
+  corridor_id: string;
+  baseline_date?: string;
+  tanker_transit_multiplier: number;
+  gpr_multiplier: number;
+  brent_price_multiplier: number;
+  brent_volatility_multiplier: number;
+  infrastructure_disruption: boolean;
+}
+
+export interface ScenarioSimulationResponse {
+  corridor_id: string;
+  baseline_date: string;
+  baseline_probability: number;
+  baseline_risk_level: string;
+  simulated_probability: number;
+  simulated_risk_level: string;
+  probability_delta: number;
+  feature_mutations: Record<string, { baseline: number; simulated: number }>;
+  explanation: string;
+  recommendation: string;
+}
+
+

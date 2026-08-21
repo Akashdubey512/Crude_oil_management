@@ -5,7 +5,11 @@ import type {
   GeopoliticalEvent,
   TrafficObservation,
   InfrastructureNode,
-  ModelInfo
+  ModelInfo,
+  RiskHistoryEntry,
+  CorridorComparisonResponse,
+  ScenarioSimulationRequest,
+  ScenarioSimulationResponse
 } from '../types';
 
 const API_BASE = 'http://127.0.0.1:8000';
@@ -76,4 +80,22 @@ export const api = {
   
   getExplainability: (corridorId: string) => 
     request<import('../types').ExplainabilityResponse>(`/api/models/explainability?corridor_id=${corridorId.toUpperCase()}`),
+  
+  getRiskHistory: (corridorId: string, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    return request<RiskHistoryEntry[]>(`/api/risk/${corridorId.toUpperCase()}/history?${params.toString()}`);
+  },
+
+  getComparison: () => request<CorridorComparisonResponse>('/api/risk/comparison'),
+
+  simulateScenario: (req: ScenarioSimulationRequest) => 
+    request<ScenarioSimulationResponse>('/api/scenarios/simulate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req),
+    }),
 };

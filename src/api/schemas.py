@@ -126,3 +126,54 @@ class ExplainabilityResponse(BaseModel):
     method: str = Field(..., description="Explainability attribution method (e.g. SHAP)")
     global_importance: List[FeatureImportanceEntry] = Field(..., description="Sorted features list by impact weight")
 
+
+# --- Phase 8 Schemas ---
+
+class RiskHistoryResponse(BaseModel):
+    date: str = Field(..., description="Prediction date (YYYY-MM-DD)")
+    corridor_id: str = Field(..., description="Corridor ID")
+    risk_probability: float = Field(..., description="Model risk probability [0, 1]")
+    risk_level: str = Field(..., description="LOW, MODERATE, HIGH, CRITICAL, UNKNOWN")
+    is_disrupted: Optional[bool] = Field(None, description="Actual disruption ground truth flag")
+
+
+class CorridorComparisonItem(BaseModel):
+    corridor_id: str = Field(..., description="Corridor ID")
+    name: str = Field(..., description="Full descriptive name")
+    risk_level: str = Field(..., description="Risk Level band")
+    probability: Optional[float] = Field(None, description="Risk probability value")
+    risk_score: Optional[float] = Field(None, description="Risk score (0-100)")
+    primary_driver: Optional[str] = Field(None, description="Primary SHAP feature driver")
+    vessel_volume_status: str = Field(..., description="Traffic volume status: NORMAL or DROP")
+    geopolitical_status: str = Field(..., description="Geopolitical status: NORMAL or ELEVATED")
+    data_freshness_traffic: str = Field(..., description="Freshness date of the traffic data source")
+
+
+class CorridorComparisonResponse(BaseModel):
+    comparison_date: str = Field(..., description="Target date of this comparison")
+    items: List[CorridorComparisonItem] = Field(..., description="Comparison records for all active corridors")
+
+
+class ScenarioSimulationRequest(BaseModel):
+    corridor_id: str = Field(..., description="Corridor ID to simulate (HORMUZ, BAB_EL_MANDEB, SUEZ)")
+    baseline_date: Optional[str] = Field(None, description="Baseline date to simulate on. Defaults to latest available.")
+    tanker_transit_multiplier: float = Field(1.0, description="Multiplier for tanker/vessel traffic (e.g. 0.8 for a 20% drop)")
+    gpr_multiplier: float = Field(1.0, description="Multiplier for Geopolitical Risk index (e.g. 1.5 for 50% increase)")
+    brent_price_multiplier: float = Field(1.0, description="Multiplier for Brent crude price (e.g. 1.2 for 20% increase)")
+    brent_volatility_multiplier: float = Field(1.0, description="Multiplier for Brent volatility (e.g. 1.5 for 50% increase)")
+    infrastructure_disruption: bool = Field(False, description="Whether to simulate an active refinery/infrastructure supply drop flag")
+
+
+class ScenarioSimulationResponse(BaseModel):
+    corridor_id: str = Field(..., description="Corridor ID")
+    baseline_date: str = Field(..., description="Baseline date used")
+    baseline_probability: float = Field(..., description="Model risk probability before adjustments")
+    baseline_risk_level: str = Field(..., description="Model risk level before adjustments")
+    simulated_probability: float = Field(..., description="Simulated risk probability after adjustments")
+    simulated_risk_level: str = Field(..., description="Simulated risk level after adjustments")
+    probability_delta: float = Field(..., description="Difference in risk probability (simulated - baseline)")
+    feature_mutations: Dict[str, Any] = Field(..., description="Summary of modified features and their baseline vs simulated values")
+    explanation: str = Field(..., description="Decision-oriented explanation of why the risk changed or didn't")
+    recommendation: str = Field(..., description="Recommended action based on the model's actual risk drivers and active features")
+
+
