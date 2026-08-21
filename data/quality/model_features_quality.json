@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-08-21T17:03:02.945401+00:00",
+  "status": "PASS",
+  "total_rows": 3000,
+  "corridors": [
+    "HORMUZ",
+    "BAB_EL_MANDEB",
+    "SUEZ"
+  ],
+  "split_counts": {
+    "train": 2040,
+    "validation": 546,
+    "test": 414
+  },
+  "target_class_balance": {
+    "train": {
+      "positive": 41,
+      "negative": 1999,
+      "positive_rate": 0.0201
+    },
+    "validation": {
+      "positive": 11,
+      "negative": 535,
+      "positive_rate": 0.0201
+    },
+    "test": {
+      "positive": 6,
+      "negative": 408,
+      "positive_rate": 0.0145
+    }
+  },
+  "null_rates": {
+    "gpr_daily": 0.0,
+    "gpr_act": 0.0,
+    "gpr_threat": 0.0,
+    "gpr_daily_7d_ma": 0.0,
+    "gpr_daily_28d_ma": 0.0,
+    "gpr_daily_28d_std": 0.0,
+    "gpr_india_monthly": 0.0,
+    "gpr_russia_monthly": 0.0,
+    "gpr_saudi_monthly": 0.0,
+    "gpr_china_monthly": 0.0,
+    "corridor_events_1d": 0.0,
+    "corridor_events_7d": 0.0,
+    "corridor_events_28d": 0.0,
+    "corridor_disruption_28d": 0.0,
+    "corridor_sanctions_28d": 0.0,
+    "global_events_7d": 0.0,
+    "global_events_28d": 0.0,
+    "tanker_count": 0.0,
+    "vessel_count": 0.0,
+    "cargo_count": 0.0,
+    "tanker_7d_ma": 0.0029,
+    "tanker_14d_ma": 0.0059,
+    "tanker_28d_ma": 0.0191,
+    "tanker_90d_ma": 0.0426,
+    "tanker_28d_std": 0.0191,
+    "tanker_decline_ratio_28d": 0.0191,
+    "tanker_zscore_28d": 0.0191,
+    "tanker_lag1d": 0.0015,
+    "tanker_lag7d": 0.0103,
+    "tanker_lag1d_chg": 0.002,
+    "tanker_lag7d_chg": 0.0108,
+    "anomaly_flag": 0.0,
+    "anomaly_type_drop": 0.0,
+    "anomaly_type_congestion": 0.0,
+    "brent_price": 0.0044,
+    "brent_return_1d": 0.0088,
+    "brent_return_7d": 0.0088,
+    "brent_volatility_7d": 0.0,
+    "brent_volatility_28d": 0.0,
+    "brent_28d_ma": 0.0,
+    "brent_zscore_28d": 0.0044,
+    "brent_lag7d": 0.0044,
+    "brent_lag28d": 0.0044,
+    "refinery_throughput_tmt": 0.0,
+    "refinery_mom_change": 0.0,
+    "consumption_total_tmt": 0.0,
+    "consumption_mom_change": 0.0,
+    "crude_import_tmt": 0.225,
+    "crude_import_mom_change": 0.225,
+    "month_sin": 0.0,
+    "month_cos": 0.0,
+    "day_of_week": 0.0
+  },
+  "warnings": [],
+  "failures": [],
+  "feature_count": 52,
+  "source_datasets": [
+    "geopolitical_risk.csv (staging)",
+    "geopolitical_events.csv (processed)",
+    "corridor_traffic_daily.csv (processed)",
+    "corridor_anomalies.csv (processed)",
+    "event_corridor_links.csv (processed)",
+    "crude_prices.csv (staging)",
+    "refinery_throughput.csv (staging)",
+    "petroleum_consumption.csv (staging)",
+    "crude_imports.csv (staging)"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "dataset_id": "refinery_crude_processing",
+  "original_filename": "8d3b6596-b09e-4077-aebf-425193185a5b.csv",
+  "sha256": "2aca872a202c6802ee5f15cc82b4b0971f40c936a53162f7cab0b36ac217c5c6",
+  "file_size_bytes": 85915,
+  "row_count": 2088,
+  "duplicates": 0,
+  "date_range": "0001-01-01 to 0001-12-01",
+  "columns": [
+    "Month",
+    "Year",
+    "OIL COMPANIES",
+    "Quantity (000 Metric Tonnes)"
+  ],
+  "missing_values": {
+    "Month": 0,
+    "Year": 0,
+    "OIL COMPANIES": 0,
+    "Quantity (000 Metric Tonnes)": 4
+  },
+  "sheets_detail": {}
+}

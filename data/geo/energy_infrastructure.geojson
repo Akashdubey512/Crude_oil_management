@@ -1,0 +1,805 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "6968454d524e5395",
+        "name": "Mundra Port",
+        "facility_type": "port",
+        "operator": "Adani Ports & SEZ",
+        "country": "India",
+        "state": "Gujarat",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.7,
+          22.73
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "eb967b817aaceac2",
+        "name": "Vadinar Port",
+        "facility_type": "port",
+        "operator": "Deendayal Port Authority / Nayara Energy",
+        "country": "India",
+        "state": "Gujarat",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.72,
+          22.44
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "935664d3e8740af5",
+        "name": "Mumbai Port",
+        "facility_type": "port",
+        "operator": "Mumbai Port Authority",
+        "country": "India",
+        "state": "Maharashtra",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.86,
+          18.94
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "3930f887d6d9a5ec",
+        "name": "Paradip Port",
+        "facility_type": "port",
+        "operator": "Paradip Port Authority",
+        "country": "India",
+        "state": "Odisha",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.67,
+          20.26
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "fbdecc3010adf85c",
+        "name": "Haldia Port",
+        "facility_type": "port",
+        "operator": "Syama Prasad Mookerjee Port Authority",
+        "country": "India",
+        "state": "West Bengal",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          88.06,
+          22.02
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "ecb65bdea60d7540",
+        "name": "Kochi Port",
+        "facility_type": "port",
+        "operator": "Cochin Port Authority",
+        "country": "India",
+        "state": "Kerala",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.26,
+          9.96
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "ef0795ee6a382393",
+        "name": "Mangalore Port",
+        "facility_type": "port",
+        "operator": "New Mangalore Port Authority",
+        "country": "India",
+        "state": "Karnataka",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.82,
+          12.93
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "af19e950a5816e6f",
+        "name": "Visakhapatnam Port",
+        "facility_type": "port",
+        "operator": "Visakhapatnam Port Authority",
+        "country": "India",
+        "state": "Andhra Pradesh",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.28,
+          17.69
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "a792dc8c53192904",
+        "name": "Chennai Port",
+        "facility_type": "port",
+        "operator": "Chennai Port Authority",
+        "country": "India",
+        "state": "Tamil Nadu",
+        "capacity": null,
+        "unit": "MMTPA",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2888abe923d9bc592c33c0323388730f7084fc23192269c27968273f99fb0312",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.29,
+          13.09
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "1b8ef358574ca0b0",
+        "name": "Visakhapatnam SPR",
+        "facility_type": "spr",
+        "operator": "ISPRL",
+        "country": "India",
+        "state": "Andhra Pradesh",
+        "capacity": 1.33,
+        "unit": "MMT",
+        "source": "Indian Strategic Petroleum Reserves Limited",
+        "source_url": "https://www.isprl.in/visakhapatnam.asp",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "239c2c720f9c429fc434d0c0c19d335350877a10a4ef3ebbe1a9caa6f24f156c",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.25,
+          17.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "27751a28b6266c19",
+        "name": "Mangalore SPR",
+        "facility_type": "spr",
+        "operator": "ISPRL",
+        "country": "India",
+        "state": "Karnataka",
+        "capacity": 1.5,
+        "unit": "MMT",
+        "source": "Indian Strategic Petroleum Reserves Limited",
+        "source_url": "https://www.isprl.in/mangalore.asp",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "0335055b51b158078a9fac619f4b1f0428288f8dcfec3ebc5a512440d3bc6ec8",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.85,
+          12.92
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "183d394b6e31632a",
+        "name": "Padur SPR",
+        "facility_type": "spr",
+        "operator": "ISPRL",
+        "country": "India",
+        "state": "Karnataka",
+        "capacity": 2.5,
+        "unit": "MMT",
+        "source": "Indian Strategic Petroleum Reserves Limited",
+        "source_url": "https://www.isprl.in/padur.asp",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b1d8de598aff2375bbb7be31dc3a26d23883264b8eb04adbe89cd5e4828a2589",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.79,
+          13.23
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "ad9acb13428710cb",
+        "name": "RIL,JAMNAGAR,GUJARAT",
+        "facility_type": "refinery",
+        "operator": "Reliance Industries Limited",
+        "country": "India",
+        "state": "Gujarat",
+        "capacity": 33.0,
+        "unit": "MMTPA",
+        "source": "Reliance Industries Annual Reports",
+        "source_url": "https://www.ril.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "242935fee4f44aa11c3ed1b2f1d51fba87faefca0d8a2db7b648e9a7079a399c",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.83,
+          22.43
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "0abf123532945c9b",
+        "name": "RIL-(SEZ), JAMNAGAR,GUJARAT",
+        "facility_type": "refinery",
+        "operator": "Reliance Industries Limited",
+        "country": "India",
+        "state": "Gujarat",
+        "capacity": 27.0,
+        "unit": "MMTPA",
+        "source": "Reliance Industries Annual Reports",
+        "source_url": "https://www.ril.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "242935fee4f44aa11c3ed1b2f1d51fba87faefca0d8a2db7b648e9a7079a399c",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.83,
+          22.43
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "7cf38bf87d4bb0cc",
+        "name": "NEL-VADINAR,GUJARAT",
+        "facility_type": "refinery",
+        "operator": "Nayara Energy Limited",
+        "country": "India",
+        "state": "Gujarat",
+        "capacity": 20.0,
+        "unit": "MMTPA",
+        "source": "Nayara Energy Corporate Statement",
+        "source_url": "https://www.nayaraenergy.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "2e48305bf8e0c4e5708847a5d90e3f6b22171a8460ece1ab0e79a5cae6ec5741",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.74,
+          22.42
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "6d4ac5069516599f",
+        "name": "BPCL-KOCHI, KERALA",
+        "facility_type": "refinery",
+        "operator": "Bharat Petroleum Corporation Limited",
+        "country": "India",
+        "state": "Kerala",
+        "capacity": 15.5,
+        "unit": "MMTPA",
+        "source": "BPCL Corporate Reports",
+        "source_url": "https://www.bharatpetroleum.in/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "a55810070150f1a4f6901dac42bf4e682cf8666c3de8b2348c11482d49a03d16",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.36,
+          9.95
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "28318a926989f634",
+        "name": "HPCL-MUMBAI,MAHARASHTRA",
+        "facility_type": "refinery",
+        "operator": "Hindustan Petroleum Corporation Limited",
+        "country": "India",
+        "state": "Maharashtra",
+        "capacity": 9.5,
+        "unit": "MMTPA",
+        "source": "HPCL Annual Statement",
+        "source_url": "https://www.hindustanpetroleum.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "d4bfd44dea9c6403c4fa6ec73be1f436503f031f1db26160ca3d87a51178ad67",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.89,
+          19.01
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "3a051058faa5da8a",
+        "name": "IOCL-MATHURA, UTTAR PRADESH",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Uttar Pradesh",
+        "capacity": 8.0,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7,
+          27.41
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "f37cc09645ec76d4",
+        "name": "IOCL-KOYALI, GUJARAT",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Gujarat",
+        "capacity": 13.7,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.13,
+          22.36
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "6d33d8c5ab0b6e2a",
+        "name": "IOCL-PARADIP,ODISHA",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Odisha",
+        "capacity": 15.0,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.69,
+          20.27
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "7201dafd1e70b348",
+        "name": "HMEL-GGSR, BATHINDA, PUNJAB",
+        "facility_type": "refinery",
+        "operator": "HPCL-Mittal Energy Limited",
+        "country": "India",
+        "state": "Punjab",
+        "capacity": 11.3,
+        "unit": "MMTPA",
+        "source": "HMEL Corporate Site",
+        "source_url": "https://www.hmel.in/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "edb413d812f206a9e9cfa26b0ef928c6316fac4b4742bd6ae3afad8395697ee7",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.02,
+          30.13
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "af8674bf56cabb90",
+        "name": "NRL-NUMALIGARH, ASSAM",
+        "facility_type": "refinery",
+        "operator": "Numaligarh Refinery Limited",
+        "country": "India",
+        "state": "Assam",
+        "capacity": 3.0,
+        "unit": "MMTPA",
+        "source": "NRL Corporate Reports",
+        "source_url": "https://www.nrl.co.in/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "9ad6ffa4fb163b9a51c0fc1ea1024f4e33295f98fd526df2c4d4a42f14fcea07",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          93.73,
+          26.61
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "cdbcf78ff01f3562",
+        "name": "BPCL-BINA, MADHYA PRADESH",
+        "facility_type": "refinery",
+        "operator": "Bharat Petroleum Corporation Limited",
+        "country": "India",
+        "state": "Madhya Pradesh",
+        "capacity": 7.8,
+        "unit": "MMTPA",
+        "source": "BPCL Annual Statement",
+        "source_url": "https://www.bharatpetroleum.in/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "a2961258ddf525354c705920b7521b833ad1a14422ae87035fcad5c566c9c0c2",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.18,
+          24.23
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "a27285657f2f200b",
+        "name": "HPCL-VISAKH, ANDHRA PRADESH",
+        "facility_type": "refinery",
+        "operator": "Hindustan Petroleum Corporation Limited",
+        "country": "India",
+        "state": "Andhra Pradesh",
+        "capacity": 8.3,
+        "unit": "MMTPA",
+        "source": "HPCL Annual Statement",
+        "source_url": "https://www.hindustanpetroleum.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "d4bfd44dea9c6403c4fa6ec73be1f436503f031f1db26160ca3d87a51178ad67",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.23,
+          17.69
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "3e68a190c3807096",
+        "name": "MRPL-MANGALORE,KARNATAKA",
+        "facility_type": "refinery",
+        "operator": "Mangalore Refinery & Petrochemicals Limited",
+        "country": "India",
+        "state": "Karnataka",
+        "capacity": 15.0,
+        "unit": "MMTPA",
+        "source": "MRPL Corporate Statement",
+        "source_url": "https://www.mrpl.co.in/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "c5a1d502d161c7f7f8ccdc095468d7ef61de749b509d0c2536f543d09b813d24",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.85,
+          12.95
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "7067bd894cdf31de",
+        "name": "CPCL-MANALI, TAMILNADU",
+        "facility_type": "refinery",
+        "operator": "Chennai Petroleum Corporation Limited",
+        "country": "India",
+        "state": "Tamil Nadu",
+        "capacity": 10.5,
+        "unit": "MMTPA",
+        "source": "CPCL Corporate Report",
+        "source_url": "https://www.cpcl.co.in/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "33cd80ad55ae353d7e1caefcc08a6f097038f4e233cabc353579015fcfd39a04",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.27,
+          13.16
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "995769c593561531",
+        "name": "IOCL-HALDIA, WEST BENGAL",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "West Bengal",
+        "capacity": 8.0,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          88.06,
+          22.06
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "1a63d975b8656683",
+        "name": "IOCL-BARAUNI, BIHAR",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Bihar",
+        "capacity": 6.0,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.02,
+          25.39
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "b8ff899d8efbf0bf",
+        "name": "IOCL-DIGBOI,ASSAM",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Assam",
+        "capacity": 0.65,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          95.63,
+          27.38
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "595c045e7d2ef55a",
+        "name": "IOCL-BONGAIGAON,ASSAM",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Assam",
+        "capacity": 2.35,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          90.53,
+          26.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "d07bf7e0d14462b7",
+        "name": "IOCL-GUWAHATI, ASSAM",
+        "facility_type": "refinery",
+        "operator": "Indian Oil Corporation Limited",
+        "country": "India",
+        "state": "Assam",
+        "capacity": 1.0,
+        "unit": "MMTPA",
+        "source": "IOCL Refinery Profile",
+        "source_url": "https://iocl.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "b09826409c09ccfce5de86daf910a70588972159a93439937a7df33f9b85325f",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          91.8,
+          26.17
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "facility_id": "cd448c75727c0835",
+        "name": "ONGC-TATIPAKA,ANDHRA PRADESH",
+        "facility_type": "refinery",
+        "operator": "Oil & Natural Gas Corporation Limited",
+        "country": "India",
+        "state": "Andhra Pradesh",
+        "capacity": 0.08,
+        "unit": "MMTPA",
+        "source": "ONGC Asset Details",
+        "source_url": "https://www.ongcindia.com/",
+        "retrieval_timestamp": "2026-08-21T16:43:58.305768+00:00",
+        "source_hash": "1e59e3f28dc0525b8e551855f40aca14bb20fd0873c283028dd47da32db4e9fe",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.93,
+          16.53
+        ]
+      }
+    }
+  ]
+}

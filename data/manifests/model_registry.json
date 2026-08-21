@@ -1,0 +1,605 @@
+{
+  "LogisticRegression__HORMUZ__1.0": {
+    "model_name": "LogisticRegression",
+    "corridor_id": "HORMUZ",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "C": 0.1,
+      "class_weight": "balanced",
+      "max_iter": 1000
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0013,
+        "confusion_matrix": [
+          [
+            176,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ],
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 176,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 12,
+        "n_positive": 6,
+        "n_total": 182
+      },
+      "test": {
+        "note": "No positive labels in split \u2014 metrics skipped"
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_hormuz_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:12.907327+00:00"
+  },
+  "RandomForest__HORMUZ__1.0": {
+    "model_name": "RandomForest",
+    "corridor_id": "HORMUZ",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "n_estimators": 200,
+      "max_depth": 6,
+      "class_weight": "balanced"
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0074,
+        "confusion_matrix": [
+          [
+            176,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ],
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 176,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 12,
+        "n_positive": 6,
+        "n_total": 182
+      },
+      "test": {
+        "note": "No positive labels in split \u2014 metrics skipped"
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_hormuz_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:13.173656+00:00"
+  },
+  "XGBoost__HORMUZ__1.0": {
+    "model_name": "XGBoost",
+    "corridor_id": "HORMUZ",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "n_estimators": 200,
+      "max_depth": 4,
+      "scale_pos_weight": 36.77777777777778
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            176,
+            0
+          ],
+          [
+            0,
+            6
+          ]
+        ],
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 176,
+        "precision_at_k": 0.4615,
+        "recall_at_k": 1.0,
+        "k": 12,
+        "n_positive": 6,
+        "n_total": 182
+      },
+      "test": {
+        "note": "No positive labels in split \u2014 metrics skipped"
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_hormuz_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:13.904900+00:00"
+  },
+  "LogisticRegression__BAB_EL_MANDEB__1.0": {
+    "model_name": "LogisticRegression",
+    "corridor_id": "BAB_EL_MANDEB",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "C": 0.1,
+      "class_weight": "balanced",
+      "max_iter": 1000
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            179,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 179,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 182
+      },
+      "test": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            135,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 135,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 138
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_bab_el_mandeb_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:13.965339+00:00"
+  },
+  "RandomForest__BAB_EL_MANDEB__1.0": {
+    "model_name": "RandomForest",
+    "corridor_id": "BAB_EL_MANDEB",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "n_estimators": 200,
+      "max_depth": 6,
+      "class_weight": "balanced"
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0013,
+        "confusion_matrix": [
+          [
+            179,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 179,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 182
+      },
+      "test": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0024,
+        "confusion_matrix": [
+          [
+            135,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 135,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 138
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_bab_el_mandeb_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:14.294528+00:00"
+  },
+  "XGBoost__BAB_EL_MANDEB__1.0": {
+    "model_name": "XGBoost",
+    "corridor_id": "BAB_EL_MANDEB",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "n_estimators": 200,
+      "max_depth": 4,
+      "scale_pos_weight": 84.0
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            179,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 179,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 182
+      },
+      "test": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            135,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 135,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 138
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_bab_el_mandeb_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:14.501603+00:00"
+  },
+  "LogisticRegression__SUEZ__1.0": {
+    "model_name": "LogisticRegression",
+    "corridor_id": "SUEZ",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "C": 0.1,
+      "class_weight": "balanced",
+      "max_iter": 1000
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            180,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 180,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 4,
+        "n_positive": 2,
+        "n_total": 182
+      },
+      "test": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            135,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 135,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 138
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_suez_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:14.560154+00:00"
+  },
+  "RandomForest__SUEZ__1.0": {
+    "model_name": "RandomForest",
+    "corridor_id": "SUEZ",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "n_estimators": 200,
+      "max_depth": 6,
+      "class_weight": "balanced"
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0029,
+        "confusion_matrix": [
+          [
+            180,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 180,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 4,
+        "n_positive": 2,
+        "n_total": 182
+      },
+      "test": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.003,
+        "confusion_matrix": [
+          [
+            135,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 135,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 138
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_suez_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:14.923536+00:00"
+  },
+  "XGBoost__SUEZ__1.0": {
+    "model_name": "XGBoost",
+    "corridor_id": "SUEZ",
+    "version": "1.0",
+    "training_start": "2023-11-21",
+    "training_end": "2025-09-30",
+    "feature_version": "1.0",
+    "feature_count": 52,
+    "dataset_hashes": {
+      "model_features.csv": "500b8e26bc4940fa82689d73fb01363a663c5b6f87867771cff54d45f38ec15b"
+    },
+    "parameters": {
+      "n_estimators": 200,
+      "max_depth": 4,
+      "scale_pos_weight": 44.333333333333336
+    },
+    "metrics": {
+      "validation": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            180,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 180,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 4,
+        "n_positive": 2,
+        "n_total": 182
+      },
+      "test": {
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "brier_score": 0.0,
+        "confusion_matrix": [
+          [
+            135,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 135,
+        "precision_at_k": 0.5,
+        "recall_at_k": 1.0,
+        "k": 6,
+        "n_positive": 3,
+        "n_total": 138
+      }
+    },
+    "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_suez_v1.0.pkl",
+    "registered_at": "2026-08-21T17:05:15.125781+00:00"
+  }
+}

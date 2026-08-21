@@ -1,0 +1,31 @@
+{
+  "filename": "crude_import_values.csv",
+  "status": "PASS",
+  "row_count": 3396,
+  "duplicate_rows": 0,
+  "null_counts": {
+    "date": 0,
+    "calendar_year": 0,
+    "financial_year": 0,
+    "month": 0,
+    "product": 0,
+    "flow_type": 0,
+    "value_inr_crores": 120,
+    "value_usd_million": 108,
+    "source": 0,
+    "source_file_inr": 120,
+    "source_sheet_inr": 120,
+    "source_row_inr": 120,
+    "source_file_usd": 108,
+    "source_sheet_usd": 108,
+    "source_row_usd": 108,
+    "ingestion_timestamp": 120,
+    "transformation_version": 120
+  },
+  "suspicious_zeros": {
+    "value_inr_crores": 437,
+    "value_usd_million": 437
+  },
+  "validation_issues": [],
+  "timestamp": "2026-08-21T17:38:02.787974+00:00"
+}

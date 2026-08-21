@@ -1,0 +1,69 @@
+{
+  "model_name": "RandomForest",
+  "corridor_id": "HORMUZ",
+  "n_samples_explained": 138,
+  "method": "SHAP TreeExplainer",
+  "global_importance": [
+    {
+      "feature": "anomaly_type_drop",
+      "mean_abs_shap": 0.158850850735076
+    },
+    {
+      "feature": "tanker_zscore_28d",
+      "mean_abs_shap": 0.13278215299329132
+    },
+    {
+      "feature": "anomaly_flag",
+      "mean_abs_shap": 0.09829888162961267
+    },
+    {
+      "feature": "tanker_decline_ratio_28d",
+      "mean_abs_shap": 0.06520053307092556
+    },
+    {
+      "feature": "tanker_lag1d_chg",
+      "mean_abs_shap": 0.02610744840936609
+    },
+    {
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.021151803748631254
+    },
+    {
+      "feature": "vessel_count",
+      "mean_abs_shap": 0.019169336028708073
+    },
+    {
+      "feature": "tanker_count",
+      "mean_abs_shap": 0.018250836600974454
+    },
+    {
+      "feature": "tanker_lag7d_chg",
+      "mean_abs_shap": 0.017785520870800788
+    },
+    {
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.010361726219837268
+    },
+    {
+      "feature": "cargo_count",
+      "mean_abs_shap": 0.007996627299234864
+    },
+    {
+      "feature": "brent_volatility_7d",
+      "mean_abs_shap": 0.0075230411615864815
+    },
+    {
+      "feature": "tanker_lag1d",
+      "mean_abs_shap": 0.0043072755494907335
+    },
+    {
+      "feature": "tanker_14d_ma",
+      "mean_abs_shap": 0.0028030805130448895
+    },
+    {
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.0022596390411187784
+    }
+  ],
+  "shap_available": true
+}

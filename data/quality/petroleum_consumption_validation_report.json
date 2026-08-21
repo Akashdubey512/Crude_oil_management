@@ -1,0 +1,24 @@
+{
+  "filename": "petroleum_consumption.csv",
+  "status": "PASS",
+  "row_count": 4176,
+  "duplicate_rows": 0,
+  "null_counts": {
+    "date": 0,
+    "calendar_year": 0,
+    "financial_year": 0,
+    "month": 0,
+    "product": 0,
+    "quantity_tmt": 96,
+    "unit": 0,
+    "source": 0,
+    "source_file": 0,
+    "source_sheet": 0,
+    "source_row": 0,
+    "ingestion_timestamp": 0,
+    "transformation_version": 0
+  },
+  "suspicious_zeros": {},
+  "validation_issues": [],
+  "timestamp": "2026-08-21T17:38:02.760486+00:00"
+}

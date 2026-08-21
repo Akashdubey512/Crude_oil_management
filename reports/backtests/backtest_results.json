@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-08-21T17:05:34.445968+00:00",
+  "results": {
+    "HORMUZ": {
+      "corridor_id": "HORMUZ",
+      "model_used": "XGBoost",
+      "detection_threshold": 0.3,
+      "total_disruption_episodes": 6,
+      "detected": 3,
+      "missed": 3,
+      "detection_rate": 0.5,
+      "avg_lead_time_days": 2.0,
+      "false_alarm_days": 0,
+      "false_alarm_rate": 0.0,
+      "limitations": [
+        "Ground truth derived from traffic anomalies only (GDELT coverage gap).",
+        "Only 6 positive instances in eval set \u2014 limited statistical power.",
+        "Detection threshold (30%) is heuristic, not calibrated."
+      ]
+    },
+    "BAB_EL_MANDEB": {
+      "corridor_id": "BAB_EL_MANDEB",
+      "model_used": "XGBoost",
+      "detection_threshold": 0.3,
+      "total_disruption_episodes": 6,
+      "detected": 1,
+      "missed": 5,
+      "detection_rate": 0.167,
+      "avg_lead_time_days": 1.0,
+      "false_alarm_days": 0,
+      "false_alarm_rate": 0.0,
+      "limitations": [
+        "Ground truth derived from traffic anomalies only (GDELT coverage gap).",
+        "Only 6 positive instances in eval set \u2014 limited statistical power.",
+        "Detection threshold (30%) is heuristic, not calibrated."
+      ]
+    },
+    "SUEZ": {
+      "corridor_id": "SUEZ",
+      "model_used": "XGBoost",
+      "detection_threshold": 0.3,
+      "total_disruption_episodes": 5,
+      "detected": 0,
+      "missed": 5,
+      "detection_rate": 0.0,
+      "avg_lead_time_days": null,
+      "false_alarm_days": 0,
+      "false_alarm_rate": 0.0,
+      "limitations": [
+        "Ground truth derived from traffic anomalies only (GDELT coverage gap).",
+        "Only 5 positive instances in eval set \u2014 limited statistical power.",
+        "Detection threshold (30%) is heuristic, not calibrated."
+      ]
+    }
+  }
+}

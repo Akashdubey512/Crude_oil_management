@@ -1,0 +1,389 @@
+{
+  "dataset_id": "import_export_value_usd_historical",
+  "original_filename": "1751964622_PT_IMPORT_VAL_US$_H.xlsx",
+  "sha256": "fd2ebfb9a9c93e544c89c4008615062b6d6f76190170f758dd7b20bbad47064b",
+  "file_size_bytes": 307537,
+  "row_count": 769,
+  "duplicates": 33,
+  "date_range": "1998-04-01 to 2025-03-31",
+  "columns": [
+    "PT_IMPORT_VAL$_H",
+    "PT_Import_Val_2024-25",
+    "PT_Import_Val_2023-24",
+    "PT_Import_Val_2022-23",
+    "PT_Import_Val_2021-22",
+    "PT_Import_Val_2020-21",
+    "PT_Import_Val_2019-20",
+    "PT_Import_Val_2018-19",
+    "PT_Import_Val_2017-18",
+    "PT_Import_Val_2016-17",
+    "PT_IMPORT_VAL$_2015-16",
+    "PT_IMPORT_VALUS$_2014-15",
+    "PT_IMPORT_VALUS$_H_2013-14",
+    "PT_IMPORT_VAL$_H_2012-13",
+    "Sheet1",
+    "Sheet2",
+    "PT_IMPORT_VAL$_H_2011-12"
+  ],
+  "missing_values": {
+    "PT_IMPORT_VAL$_H": 628,
+    "PT_Import_Val_2024-25": 263,
+    "PT_Import_Val_2023-24": 263,
+    "PT_Import_Val_2022-23": 250,
+    "PT_Import_Val_2021-22": 250,
+    "PT_Import_Val_2020-21": 250,
+    "PT_Import_Val_2019-20": 250,
+    "PT_Import_Val_2018-19": 250,
+    "PT_Import_Val_2017-18": 274,
+    "PT_Import_Val_2016-17": 274,
+    "PT_IMPORT_VAL$_2015-16": 250,
+    "PT_IMPORT_VALUS$_2014-15": 250,
+    "PT_IMPORT_VALUS$_H_2013-14": 250,
+    "PT_IMPORT_VAL$_H_2012-13": 250,
+    "Sheet1": 70,
+    "Sheet2": 65,
+    "PT_IMPORT_VAL$_H_2011-12": 250
+  },
+  "sheets_detail": {
+    "PT_IMPORT_VAL$_H": {
+      "shape": [
+        51,
+        28
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 628,
+      "duplicates": 5
+    },
+    "PT_Import_Val_2024-25": {
+      "shape": [
+        49,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 263,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2023-24": {
+      "shape": [
+        49,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 263,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2022-23": {
+      "shape": [
+        48,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2021-22": {
+      "shape": [
+        48,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2020-21": {
+      "shape": [
+        48,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2019-20": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2018-19": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_Import_Val_2017-18": {
+      "shape": [
+        45,
+        15
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 274,
+      "duplicates": 1
+    },
+    "PT_Import_Val_2016-17": {
+      "shape": [
+        45,
+        15
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 274,
+      "duplicates": 1
+    },
+    "PT_IMPORT_VAL$_2015-16": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_IMPORT_VALUS$_2014-15": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_IMPORT_VALUS$_H_2013-14": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "PT_IMPORT_VAL$_H_2012-13": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    },
+    "Sheet1": {
+      "shape": [
+        32,
+        14
+      ],
+      "columns": [
+        "IMPORT",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 70,
+      "duplicates": 2
+    },
+    "Sheet2": {
+      "shape": [
+        32,
+        14
+      ],
+      "columns": [
+        "IMPORT",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 65,
+      "duplicates": 0
+    },
+    "PT_IMPORT_VAL$_H_2011-12": {
+      "shape": [
+        46,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Unnamed: 1",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 250,
+      "duplicates": 2
+    }
+  }
+}

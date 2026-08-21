@@ -1,0 +1,278 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "HORMUZ",
+        "name": "Strait of Hormuz",
+        "description": "Narrow transit corridor connecting the Persian Gulf and the Gulf of Oman.",
+        "source": "US Energy Information Administration (EIA) Choke Points",
+        "source_url": "https://www.eia.gov/international/analysis/special-topics/World_Oil_Transit_Chokepoints",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              55.8,
+              26.2
+            ],
+            [
+              56.9,
+              26.2
+            ],
+            [
+              56.9,
+              26.9
+            ],
+            [
+              55.8,
+              26.9
+            ],
+            [
+              55.8,
+              26.2
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "BAB_EL_MANDEB",
+        "name": "Bab-el-Mandeb",
+        "description": "Strategic chokepoint between Horn of Africa and Middle East linking Red Sea to Gulf of Aden.",
+        "source": "US EIA Choke Points",
+        "source_url": "https://www.eia.gov/international/analysis/special-topics/World_Oil_Transit_Chokepoints",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.1,
+              12.5
+            ],
+            [
+              43.6,
+              12.5
+            ],
+            [
+              43.6,
+              13.0
+            ],
+            [
+              43.1,
+              13.0
+            ],
+            [
+              43.1,
+              12.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "SUEZ",
+        "name": "Suez Canal",
+        "description": "Suez Canal waterway connecting Mediterranean Sea to the Red Sea.",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              32.2,
+              29.9
+            ],
+            [
+              32.6,
+              29.9
+            ],
+            [
+              32.6,
+              31.3
+            ],
+            [
+              32.2,
+              31.3
+            ],
+            [
+              32.2,
+              29.9
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "RED_SEA",
+        "name": "Red Sea",
+        "description": "Maritime corridor connecting Bab-el-Mandeb and Suez Canal.",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              32.5,
+              12.5
+            ],
+            [
+              43.5,
+              12.5
+            ],
+            [
+              43.5,
+              28.0
+            ],
+            [
+              32.5,
+              28.0
+            ],
+            [
+              32.5,
+              12.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "GULF_OF_OMAN",
+        "name": "Gulf of Oman",
+        "description": "Corridor leading to Strait of Hormuz from the Arabian Sea.",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              56.5,
+              23.5
+            ],
+            [
+              60.5,
+              23.5
+            ],
+            [
+              60.5,
+              26.0
+            ],
+            [
+              56.5,
+              26.0
+            ],
+            [
+              56.5,
+              23.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "GULF_OF_ADEN",
+        "name": "Gulf of Aden",
+        "description": "Corridor leading to Bab-el-Mandeb from the Arabian Sea.",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              43.5,
+              11.5
+            ],
+            [
+              51.5,
+              11.5
+            ],
+            [
+              51.5,
+              15.0
+            ],
+            [
+              43.5,
+              15.0
+            ],
+            [
+              43.5,
+              11.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "corridor_id": "ARABIAN_SEA",
+        "name": "Arabian Sea",
+        "description": "Regional sea forming the northwestern part of the Indian Ocean.",
+        "source": "NGA World Port Index",
+        "source_url": "https://msi.nga.mil/Publications/WPI",
+        "retrieval_timestamp": "2026-08-21T16:43:58.293270+00:00",
+        "processing_version": 1.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              51.5,
+              5.0
+            ],
+            [
+              77.5,
+              5.0
+            ],
+            [
+              77.5,
+              25.0
+            ],
+            [
+              51.5,
+              25.0
+            ],
+            [
+              51.5,
+              5.0
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "report_timestamp": "2026-08-21T15:53:36.901643",
+  "status": "PASS",
+  "metrics": {
+    "total_events": 19325,
+    "duplicate_event_ids": 0,
+    "missing_dates": 0,
+    "impossible_dates": 0,
+    "gdelt_missing_urls": 0,
+    "unmapped_corridors_count": 19190,
+    "unmapped_corridors_pct": 99.3,
+    "missing_provenance_records": 0,
+    "days_with_suspicious_volume_count": 1
+  },
+  "breakdown": {
+    "categories": {
+      "sanctions": 19254,
+      "UNKNOWN": 66,
+      "infrastructure attack": 2,
+      "supply disruption": 2,
+      "tanker attack": 1
+    },
+    "corridors": {
+      "HORMUZ": 102,
+      "RED_SEA": 28,
+      "SUEZ": 4,
+      "BAB_EL_MANDEB": 1,
+      "UNMAPPED": 19190
+    }
+  },
+  "anomalies": {
+    "suspicious_volume_days": {
+      "2026-08-21": 19253
+    }
+  }
+}

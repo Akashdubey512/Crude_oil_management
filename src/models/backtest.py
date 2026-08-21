@@ -1,0 +1,152 @@
+"""
+Historical Backtesting — Phase 4
+
+Evaluates how well the risk model would have detected disruption episodes
+that are actually present in the available real data window (Nov 2023 – Aug 2026).
+
+Known observable episodes in data range:
+  1. Red Sea / Bab-el-Mandeb disruptions (Dec 2023 – Jan 2024): Houthi attacks
+     on commercial shipping caused significant tanker traffic drops through Bab-el-Mandeb
+     and Suez Canal. This is reflected in the PortWatch daily transit data.
+  2. Hormuz tension spikes: Multiple periods of elevated GPR index.
+
+Backtest methodology:
+  - Walk the risk model over the validation+test period in chronological order.
+  - For each disruption episode (identified by label_method == DISRUPTED_TRAFFIC_ONLY),
+    check whether model risk_probability was elevated in the days BEFORE the event.
+  - Compute: detection rate, average lead time, false alarm rate.
+
+Honest limitations documented:
+  - Ground truth labels are traffic-only (no GDELT event confirmation due to coverage gap).
+  - Small positive count (58 drops across 3 corridors) limits statistical power.
+  - No cherry-picking: all disruption episodes evaluated.
+"""
+
+import os
+import json
+import pickle
+import datetime
+import numpy as np
+import pandas as pd
+
+from src.features.feature_pipeline import FEATURE_COLS, MODELED_CORRIDORS
+
+PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
+MODELS_DIR = r"D:\hackathon project\energy-resilience\models"
+REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\backtests"
+
+os.makedirs(REPORTS_DIR, exist_ok=True)
+
+DETECTION_THRESHOLD = 0.3   # Risk probability threshold for "elevated alert"
+LEAD_TIME_WINDOW = 7         # Days before event to check for elevated risk
+
+
+def run_backtest(features_path: str = None) -> dict:
+    if features_path is None:
+        features_path = os.path.join(PROCESSED_DIR, "model_features.csv")
+
+    df = pd.read_csv(features_path)
+    df["date"] = pd.to_datetime(df["date"])
+
+    all_results = {}
+    timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+    for corridor_id in MODELED_CORRIDORS:
+        print(f"\n--- Backtesting {corridor_id} ---")
+        df_corr = df[df["corridor_id"] == corridor_id].copy().sort_values("date")
+
+        # Load best model (use XGBoost if available, fall back to RF then LR)
+        model_artifact = None
+        for prefix, mname in [("xgb", "XGBoost"), ("rf", "RandomForest"), ("lr", "LogisticRegression")]:
+            mpath = os.path.join(MODELS_DIR, f"{prefix}_{corridor_id.lower()}_v1.0.pkl")
+            if os.path.exists(mpath):
+                with open(mpath, "rb") as f:
+                    model_artifact = pickle.load(f)
+                used_model = mname
+                break
+
+        if model_artifact is None:
+            print(f"  No trained model found for {corridor_id}. Skipping backtest.")
+            all_results[corridor_id] = {"status": "NO_MODEL"}
+            continue
+
+        model = model_artifact["model"]
+        feature_medians = model_artifact["feature_medians"]
+
+        # Generate predictions over full test+validation period
+        eval_splits = df_corr[df_corr["split"].isin(["validation", "test"])].copy()
+        X_eval = eval_splits[FEATURE_COLS].fillna(feature_medians)
+
+        if hasattr(model, "predict_proba"):
+            probs = model.predict_proba(X_eval)[:, 1]
+        else:
+            probs = model.predict(X_eval).astype(float)
+
+        eval_splits = eval_splits.copy()
+        eval_splits["risk_probability"] = probs
+
+        # Identify disruption episodes
+        disrupted_rows = eval_splits[eval_splits["is_disrupted"] == 1]
+        total_disruptions = len(disrupted_rows)
+
+        detected = 0
+        false_alarms = 0
+        lead_times = []
+
+        for _, dis_row in disrupted_rows.iterrows():
+            event_date = dis_row["date"]
+
+            # Check if model probability was elevated in the LEAD_TIME_WINDOW days before
+            window_start = event_date - pd.Timedelta(days=LEAD_TIME_WINDOW)
+            prior_window = eval_splits[
+                (eval_splits["date"] >= window_start) &
+                (eval_splits["date"] < event_date)
+            ]
+
+            if not prior_window.empty and (prior_window["risk_probability"] >= DETECTION_THRESHOLD).any():
+                detected += 1
+                # Lead time = days between first elevated signal and event
+                first_elevated = prior_window[prior_window["risk_probability"] >= DETECTION_THRESHOLD]["date"].min()
+                lead_time = (event_date - first_elevated).days
+                lead_times.append(lead_time)
+
+        # False alarms: days with probability >= threshold where is_disrupted == 0
+        non_disrupted = eval_splits[eval_splits["is_disrupted"] == 0]
+        false_alarm_days = (non_disrupted["risk_probability"] >= DETECTION_THRESHOLD).sum()
+        false_alarm_rate = float(false_alarm_days / max(len(non_disrupted), 1))
+
+        detection_rate = detected / total_disruptions if total_disruptions > 0 else None
+        avg_lead_time = float(np.mean(lead_times)) if lead_times else None
+
+        result = {
+            "corridor_id": corridor_id,
+            "model_used": used_model,
+            "detection_threshold": DETECTION_THRESHOLD,
+            "total_disruption_episodes": total_disruptions,
+            "detected": detected,
+            "missed": total_disruptions - detected,
+            "detection_rate": round(detection_rate, 3) if detection_rate is not None else None,
+            "avg_lead_time_days": round(avg_lead_time, 1) if avg_lead_time is not None else None,
+            "false_alarm_days": int(false_alarm_days),
+            "false_alarm_rate": round(false_alarm_rate, 4),
+            "limitations": [
+                "Ground truth derived from traffic anomalies only (GDELT coverage gap).",
+                f"Only {total_disruptions} positive instances in eval set — limited statistical power.",
+                "Detection threshold ({:.0f}%) is heuristic, not calibrated.".format(DETECTION_THRESHOLD * 100),
+            ],
+        }
+
+        all_results[corridor_id] = result
+        print(f"  Episodes: {total_disruptions} | Detected: {detected} | "
+              f"Detection rate: {detection_rate:.0%}" if detection_rate else
+              f"  No disruption episodes in eval period.")
+        print(f"  False alarm rate: {false_alarm_rate:.1%} | Avg lead time: {avg_lead_time:.1f}d" if avg_lead_time else "  —")
+
+    # Write report
+    report = {"timestamp": timestamp, "results": all_results}
+    report_path = os.path.join(REPORTS_DIR, "backtest_results.json")
+    with open(report_path, "w") as f:
+        json.dump(report, f, indent=2)
+    print(f"\nSaved backtest report to {report_path}")
+
+    return report

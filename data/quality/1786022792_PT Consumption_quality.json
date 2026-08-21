@@ -1,0 +1,37 @@
+{
+  "dataset_id": "petroleum_consumption_fy_2026_27_partial",
+  "original_filename": "1786022792_PT Consumption.xlsx",
+  "sha256": "1cfe45bc44ec2fc8d0e03cc5bf4a059c98fb9b3dfc6a563d3007b2ef5dd1c582",
+  "file_size_bytes": 61207,
+  "row_count": 30,
+  "duplicates": 3,
+  "date_range": "2026-04-01 to 2026-07-31 (Provisional)",
+  "columns": [
+    "Consumption"
+  ],
+  "missing_values": {
+    "Consumption": 308
+  },
+  "sheets_detail": {
+    "Consumption": {
+      "shape": [
+        30,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 308,
+      "duplicates": 3
+    }
+  }
+}

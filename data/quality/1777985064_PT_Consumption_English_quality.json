@@ -1,0 +1,653 @@
+{
+  "dataset_id": "petroleum_consumption_historical_master",
+  "original_filename": "1777985064_PT_Consumption_English.xls",
+  "sha256": "d8da87f322342657a81227600d3448ff8b3efa0112cb7d38150d3bb0b991cae6",
+  "file_size_bytes": 431616,
+  "row_count": 662,
+  "duplicates": 58,
+  "date_range": "1997-04-01 to 2026-03-31",
+  "columns": [
+    "Historical (year-wise)",
+    "1998-99",
+    "1999-00",
+    "2000-01",
+    "2001-02",
+    "2002-03",
+    "2003-04",
+    "2004-05",
+    "2005-06",
+    "2006-07",
+    "2007-08",
+    "2008-09",
+    "2009-10",
+    "2010-11",
+    "2011-12",
+    "2012-13",
+    "2013-14",
+    "2014-15",
+    "2015-16",
+    "2016-17",
+    "2017-18",
+    "2018-19",
+    "2019-20",
+    "2020-21",
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26"
+  ],
+  "missing_values": {
+    "Historical (year-wise)": 801,
+    "1998-99": 94,
+    "1999-00": 94,
+    "2000-01": 94,
+    "2001-02": 94,
+    "2002-03": 94,
+    "2003-04": 94,
+    "2004-05": 94,
+    "2005-06": 94,
+    "2006-07": 94,
+    "2007-08": 94,
+    "2008-09": 94,
+    "2009-10": 94,
+    "2010-11": 94,
+    "2011-12": 94,
+    "2012-13": 94,
+    "2013-14": 94,
+    "2014-15": 94,
+    "2015-16": 94,
+    "2016-17": 94,
+    "2017-18": 172,
+    "2018-19": 159,
+    "2019-20": 160,
+    "2020-21": 159,
+    "2021-22": 159,
+    "2022-23": 159,
+    "2023-24": 159,
+    "2024-25": 159,
+    "2025-26": 159
+  },
+  "sheets_detail": {
+    "Historical (year-wise)": {
+      "shape": [
+        28,
+        58
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 801,
+      "duplicates": 2
+    },
+    "1998-99": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "1999-00": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2000-01": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2001-02": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2002-03": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2003-04": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2004-05": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2005-06": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2006-07": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2007-08": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2008-09": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2009-10": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2010-11": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2011-12": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2012-13": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2013-14": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2014-15": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2015-16": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2016-17": {
+      "shape": [
+        21,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 94,
+      "duplicates": 2
+    },
+    "2017-18": {
+      "shape": [
+        27,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 172,
+      "duplicates": 2
+    },
+    "2018-19": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    },
+    "2019-20": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 160,
+      "duplicates": 2
+    },
+    "2020-21": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    },
+    "2021-22": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    },
+    "2022-23": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    },
+    "2023-24": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    },
+    "2024-25": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    },
+    "2025-26": {
+      "shape": [
+        26,
+        14
+      ],
+      "columns": [
+        "Unnamed: 0",
+        "Petroleum Planning & Analysis Cell",
+        "Unnamed: 2",
+        "Unnamed: 3",
+        "Unnamed: 4",
+        "Unnamed: 5",
+        "Unnamed: 6",
+        "Unnamed: 7",
+        "Unnamed: 8",
+        "Unnamed: 9"
+      ],
+      "nulls": 159,
+      "duplicates": 2
+    }
+  }
+}

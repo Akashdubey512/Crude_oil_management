@@ -1,0 +1,320 @@
+{
+  "manifest_version": "1.0",
+  "timestamp": "2026-08-21T15:32:20.323416+00:00",
+  "datasets": [
+    {
+      "dataset_id": "staged_crude_prices",
+      "source_file": [
+        "DCOILBRENTEU.csv"
+      ],
+      "source_hash": [
+        "fc9e2e3064d8458c8f31180b6f3ec329284b3e6782994ffafda7f7c06db15218"
+      ],
+      "source_sheet": [],
+      "ingestion_time": "2026-08-21T15:32:16.886220+00:00",
+      "row_count": 1305,
+      "column_count": 10,
+      "date_min": "2021-08-18",
+      "date_max": "2026-08-18",
+      "frequency": "Daily",
+      "units": "USD per Barrel ($/bbl)",
+      "quality_status": "PASS",
+      "transformation_version": 1.0
+    },
+    {
+      "dataset_id": "staged_geopolitical_risk",
+      "source_file": [
+        "data_gpr_daily_recent.xls",
+        "data_gpr_export.xls"
+      ],
+      "source_hash": [
+        "827d56d130e1265407c9c91fbe8116717f2f1447457c119bcf21e22830c18442",
+        "6126ac6838929a4fd2e4c287979ed985f31f05fc92ab5784a55172b8bef993c2"
+      ],
+      "source_sheet": [
+        "Sheet1"
+      ],
+      "ingestion_time": "2026-08-21T15:32:17.155405+00:00",
+      "row_count": 49604,
+      "column_count": 13,
+      "date_min": "1985-01-01",
+      "date_max": "2026-08-17",
+      "frequency": "Mixed (Daily & Monthly)",
+      "units": "Index",
+      "quality_status": "PASS",
+      "transformation_version": 1.0
+    },
+    {
+      "dataset_id": "staged_refinery_throughput",
+      "source_file": [
+        "8d3b6596-b09e-4077-aebf-425193185a5b.csv"
+      ],
+      "source_hash": [
+        "2aca872a202c6802ee5f15cc82b4b0971f40c936a53162f7cab0b36ac217c5c6"
+      ],
+      "source_sheet": [],
+      "ingestion_time": "2026-08-21T15:32:18.198485+00:00",
+      "row_count": 2088,
+      "column_count": 13,
+      "date_min": "2020-04-01",
+      "date_max": "2026-03-01",
+      "frequency": "Monthly",
+      "units": "Thousand Metric Tonnes (TMT)",
+      "quality_status": "PASS",
+      "transformation_version": 1.0
+    },
+    {
+      "dataset_id": "staged_petroleum_consumption",
+      "source_file": [
+        "1777985064_PT_Consumption_English.xls",
+        "1786022792_PT Consumption.xlsx"
+      ],
+      "source_hash": [
+        "d8da87f322342657a81227600d3448ff8b3efa0112cb7d38150d3bb0b991cae6",
+        "1cfe45bc44ec2fc8d0e03cc5bf4a059c98fb9b3dfc6a563d3007b2ef5dd1c582"
+      ],
+      "source_sheet": [
+        "1998-99",
+        "1999-00",
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05",
+        "2005-06",
+        "2006-07",
+        "2007-08",
+        "2008-09",
+        "2009-10",
+        "2010-11",
+        "2011-12",
+        "2012-13",
+        "2013-14",
+        "2014-15",
+        "2015-16",
+        "2016-17",
+        "2017-18",
+        "2018-19",
+        "2019-20",
+        "2020-21",
+        "2021-22",
+        "2022-23",
+        "2023-24",
+        "2024-25",
+        "2025-26",
+        "Consumption"
+      ],
+      "ingestion_time": "2026-08-21T15:32:18.410531+00:00",
+      "row_count": 4176,
+      "column_count": 13,
+      "date_min": "1998-04-01",
+      "date_max": "2027-03-01",
+      "frequency": "Monthly",
+      "units": "Thousand Metric Tonnes (TMT)",
+      "quality_status": "PASS",
+      "transformation_version": 1.0
+    },
+    {
+      "dataset_id": "staged_crude_imports",
+      "source_file": [
+        "1751964547_PT_IMPORT_TMT_H.xlsx",
+        "1787119551_PT_import.xls"
+      ],
+      "source_hash": [
+        "772d7c9f54f6650960d0c3b1885575d638de478148374cba936c41cee457353b",
+        "6e81e61e674489d5d3ad460aa7db053f6909dd193b1756da06aa961e3623c041"
+      ],
+      "source_sheet": [
+        "PT_IMPORT_2024-25",
+        "PT_IMPORT_2023-24",
+        "PT_IMPORT_2022-23",
+        "PT_IMPORT_2021-22",
+        "PT_IMPORT_2020-21",
+        "PT_IMPORT_2019-20",
+        "PT_IMPORT_2018-19",
+        "PT_IMPORT_2017-18",
+        "PT_IMPORT_2016-17",
+        "PT_IMPORT_H_2015-16",
+        "PT_Import_H_2014-15",
+        "PT_import_H_2013-14",
+        "PT_import_H_2012-13",
+        "PT_import_H_2011-12",
+        "PT_import"
+      ],
+      "ingestion_time": "2026-08-21T15:32:18.860646+00:00",
+      "row_count": 4104,
+      "column_count": 14,
+      "date_min": "2011-04-01",
+      "date_max": "2027-03-01",
+      "frequency": "Monthly",
+      "units": "Thousand Metric Tonnes (TMT)",
+      "quality_status": "PASS",
+      "transformation_version": 1.0
+    },
+    {
+      "dataset_id": "staged_crude_import_values",
+      "source_file": [
+        "1751964598_PT_IMPORT_VAL_RS.CRS._H.xlsx",
+        "1751964622_PT_IMPORT_VAL_US$_H.xlsx"
+      ],
+      "source_hash": [
+        "c7f52e764c9b8c47542dd14776073d1b76fa6ea3ab1de3fbfdf18fd3f09a0e9a",
+        "fd2ebfb9a9c93e544c89c4008615062b6d6f76190170f758dd7b20bbad47064b"
+      ],
+      "source_sheet": [
+        "PT_IMPORT_VALRS_H 2011-12",
+        "PT_IMPORT_VALRS_H 2012-13 ",
+        "PT_IMPORT_VALRS_H_2013-14",
+        "PT_IMPORT_VALRS_H_2014-15",
+        "PT_IMPORT_VALRS_H_2015-16",
+        "PT_Import_Val_2018-19",
+        "PT_Import_Val_2019-20",
+        "PT_Import_Val_2020-21",
+        "PT_Import_Val_2021-22",
+        "PT_Import_Val_2022-23",
+        "PT_Import_Val_2023-24",
+        "PT_Import_Val_2024-25"
+      ],
+      "ingestion_time": "2026-08-21T15:32:19.538410+00:00",
+      "row_count": 3396,
+      "column_count": 17,
+      "date_min": "2011-04-01",
+      "date_max": "2025-03-01",
+      "frequency": "Monthly",
+      "units": "INR Crores & USD Millions",
+      "quality_status": "PASS",
+      "transformation_version": 1.0
+    }
+  ],
+  "energy_corridors.csv": {
+    "description": "authoritative maritime corridors tabular mapping",
+    "row_count": 7,
+    "column_count": 8,
+    "columns": [
+      "corridor_id",
+      "name",
+      "description",
+      "source",
+      "source_url",
+      "retrieval_timestamp",
+      "geometry_coordinates",
+      "processing_version"
+    ],
+    "file_hash": "6f4365b14b5fc10351c3de16684533f9cafb323c7ffdbf769e67c7b34fa2a74a",
+    "last_modified": "2026-08-21T16:44:05.142392+00:00",
+    "source": "Derived / Phase 3 Pipeline",
+    "transformation_version": 1.0
+  },
+  "energy_infrastructure.csv": {
+    "description": "ports, refineries, and SPR coordinates and capacities",
+    "row_count": 32,
+    "column_count": 15,
+    "columns": [
+      "facility_id",
+      "name",
+      "facility_type",
+      "operator",
+      "country",
+      "state",
+      "latitude",
+      "longitude",
+      "capacity",
+      "unit",
+      "source",
+      "source_url",
+      "retrieval_timestamp",
+      "source_hash",
+      "processing_version"
+    ],
+    "file_hash": "9497401747781f98ddaa4e3e8439bac43efeaf4c9a9333f6644e6a427a7adc57",
+    "last_modified": "2026-08-21T16:44:05.142392+00:00",
+    "source": "Derived / Phase 3 Pipeline",
+    "transformation_version": 1.0
+  },
+  "vessel_observations.csv": {
+    "description": "AIS vessel observations dataset",
+    "row_count": 0,
+    "column_count": 12,
+    "columns": [
+      "vessel_id",
+      "imo",
+      "mmsi",
+      "timestamp",
+      "latitude",
+      "longitude",
+      "speed",
+      "heading",
+      "vessel_type",
+      "source",
+      "source_timestamp",
+      "ingestion_timestamp"
+    ],
+    "file_hash": "066e929c89d7bff7de82291593731a7dd986e403d1780a71e71f7a83364dfc71",
+    "last_modified": "2026-08-21T16:44:05.142392+00:00",
+    "source": "Derived / Phase 3 Pipeline",
+    "transformation_version": 1.0
+  },
+  "corridor_traffic_daily.csv": {
+    "description": "daily transit volume counts from IMF PortWatch",
+    "row_count": 3000,
+    "column_count": 13,
+    "columns": [
+      "date",
+      "corridor_id",
+      "portid",
+      "portname",
+      "vessel_count",
+      "tanker_count",
+      "cargo_count",
+      "capacity_tanker",
+      "capacity_total",
+      "source",
+      "source_url",
+      "retrieval_timestamp",
+      "processing_version"
+    ],
+    "file_hash": "ace53a40a64c460679c95cd34d0391c06f7920f7c377a41d9a652edb772909c7",
+    "last_modified": "2026-08-21T16:44:05.142392+00:00",
+    "source": "Derived / Phase 3 Pipeline",
+    "transformation_version": 1.0
+  },
+  "corridor_anomalies.csv": {
+    "description": "rolling deviations and data availability signals",
+    "row_count": 3000,
+    "column_count": 9,
+    "columns": [
+      "date",
+      "corridor_id",
+      "tanker_count",
+      "vessel_count",
+      "rolling_median_28d",
+      "rolling_std_28d",
+      "anomaly_flag",
+      "anomaly_type",
+      "data_availability"
+    ],
+    "file_hash": "03357aa626250b0758689148e265d62b28db0868dcb53a7a79afe8081e9cf544",
+    "last_modified": "2026-08-21T16:44:05.142392+00:00",
+    "source": "Derived / Phase 3 Pipeline",
+    "transformation_version": 1.0
+  },
+  "event_corridor_links.csv": {
+    "description": "links mapping geopolitical events to corridors",
+    "row_count": 135,
+    "column_count": 8,
+    "columns": [
+      "link_id",
+      "event_id",
+      "event_date",
+      "source",
+      "event_type",
+      "corridor_id",
+      "text_reference",
+      "source_url"
+    ],
+    "file_hash": "fb833b08ca73f9e6d85bf90aed7d4b813ebe3fce0f1590ae041f26dc6a49d844",
+    "last_modified": "2026-08-21T16:44:05.142392+00:00",
+    "source": "Derived / Phase 3 Pipeline",
+    "transformation_version": 1.0
+  }
+}

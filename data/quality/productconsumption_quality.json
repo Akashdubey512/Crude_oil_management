@@ -1,0 +1,24 @@
+{
+  "dataset_id": "petroleum_consumption_subset",
+  "original_filename": "productconsumption.csv",
+  "sha256": "3d53ff10ec6036eae78245fc50d047712026dd2b1a610bb7e3469091916b34dd",
+  "file_size_bytes": 23660,
+  "row_count": 492,
+  "duplicates": 0,
+  "date_range": "0001-01-01 to 0001-12-01",
+  "columns": [
+    "Month",
+    "Year",
+    "PRODUCTS",
+    "Quantity (000 Metric Tonnes)",
+    "updated_date"
+  ],
+  "missing_values": {
+    "Month": 0,
+    "Year": 0,
+    "PRODUCTS": 0,
+    "Quantity (000 Metric Tonnes)": 0,
+    "updated_date": 0
+  },
+  "sheets_detail": {}
+}

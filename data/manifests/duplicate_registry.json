@@ -1,0 +1,31 @@
+{
+  "duplicate_registry": [
+    {
+      "source_workbook": "1735553804_consumption_en.xlsx",
+      "sha256": "a763332687ebcd81cd54f93543fb4a5f07df3b65f121106891d1e78579a055f2",
+      "compared_against_master": "1777985064_PT_Consumption_English.xls",
+      "compared_against_sheet": "2023-24",
+      "exact_duplicate_data": false,
+      "recommendation": "REVIEW",
+      "notes": "Redundant extracted sheet; master workbook has all historical records."
+    },
+    {
+      "source_workbook": "1773140735_FY_24-25_consumption-en.xlsx",
+      "sha256": "6f8f08b7fe6e83d430b21e69881d4a43bcacc1787bbd0c5a5b24e9696874ad9f",
+      "compared_against_master": "1777985064_PT_Consumption_English.xls",
+      "compared_against_sheet": "2024-25",
+      "exact_duplicate_data": false,
+      "recommendation": "REVIEW",
+      "notes": "Redundant extracted sheet; master workbook has all historical records."
+    },
+    {
+      "source_workbook": "1783938756_PT Consumption.xlsx",
+      "sha256": "ac7f5d3ebc0ceee17e3bff8d2731a0728d7e4282fc5425bea3b04eb0caec0689",
+      "compared_against_master": "1777985064_PT_Consumption_English.xls",
+      "compared_against_sheet": "2025-26",
+      "exact_duplicate_data": false,
+      "recommendation": "REVIEW",
+      "notes": "Redundant extracted sheet; master workbook has all historical records."
+    }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "timestamp": "2026-08-21T17:05:15.127787+00:00",
+  "results": {
+    "HORMUZ": {
+      "LogisticRegression": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0013,
+          "confusion_matrix": [
+            [
+              176,
+              0
+            ],
+            [
+              0,
+              6
+            ]
+          ],
+          "tp": 6,
+          "fp": 0,
+          "fn": 0,
+          "tn": 176,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 12,
+          "n_positive": 6,
+          "n_total": 182
+        },
+        "test": {
+          "note": "No positive labels in split \u2014 metrics skipped"
+        }
+      },
+      "RandomForest": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0074,
+          "confusion_matrix": [
+            [
+              176,
+              0
+            ],
+            [
+              0,
+              6
+            ]
+          ],
+          "tp": 6,
+          "fp": 0,
+          "fn": 0,
+          "tn": 176,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 12,
+          "n_positive": 6,
+          "n_total": 182
+        },
+        "test": {
+          "note": "No positive labels in split \u2014 metrics skipped"
+        }
+      },
+      "XGBoost": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              176,
+              0
+            ],
+            [
+              0,
+              6
+            ]
+          ],
+          "tp": 6,
+          "fp": 0,
+          "fn": 0,
+          "tn": 176,
+          "precision_at_k": 0.4615,
+          "recall_at_k": 1.0,
+          "k": 12,
+          "n_positive": 6,
+          "n_total": 182
+        },
+        "test": {
+          "note": "No positive labels in split \u2014 metrics skipped"
+        }
+      }
+    },
+    "BAB_EL_MANDEB": {
+      "LogisticRegression": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              179,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 179,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 182
+        },
+        "test": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              135,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 135,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 138
+        }
+      },
+      "RandomForest": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0013,
+          "confusion_matrix": [
+            [
+              179,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 179,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 182
+        },
+        "test": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0024,
+          "confusion_matrix": [
+            [
+              135,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 135,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 138
+        }
+      },
+      "XGBoost": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              179,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 179,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 182
+        },
+        "test": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              135,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 135,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 138
+        }
+      }
+    },
+    "SUEZ": {
+      "LogisticRegression": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              180,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 180,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 4,
+          "n_positive": 2,
+          "n_total": 182
+        },
+        "test": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              135,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 135,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 138
+        }
+      },
+      "RandomForest": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0029,
+          "confusion_matrix": [
+            [
+              180,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 180,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 4,
+          "n_positive": 2,
+          "n_total": 182
+        },
+        "test": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.003,
+          "confusion_matrix": [
+            [
+              135,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 135,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 138
+        }
+      },
+      "XGBoost": {
+        "validation": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              180,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 180,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 4,
+          "n_positive": 2,
+          "n_total": 182
+        },
+        "test": {
+          "roc_auc": 1.0,
+          "pr_auc": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "brier_score": 0.0,
+          "confusion_matrix": [
+            [
+              135,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ],
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 135,
+          "precision_at_k": 0.5,
+          "recall_at_k": 1.0,
+          "k": 6,
+          "n_positive": 3,
+          "n_total": 138
+        }
+      }
+    }
+  },
+  "best_per_corridor": {
+    "HORMUZ": {
+      "model": null,
+      "test_roc_auc": -1.0
+    },
+    "BAB_EL_MANDEB": {
+      "model": "LogisticRegression",
+      "test_roc_auc": 1.0
+    },
+    "SUEZ": {
+      "model": "LogisticRegression",
+      "test_roc_auc": 1.0
+    }
+  }
+}

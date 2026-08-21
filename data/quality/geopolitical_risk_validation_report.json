@@ -1,0 +1,26 @@
+{
+  "filename": "geopolitical_risk.csv",
+  "status": "PASS",
+  "row_count": 49604,
+  "duplicate_rows": 0,
+  "null_counts": {
+    "date": 0,
+    "financial_year": 0,
+    "month": 0,
+    "geography": 0,
+    "unit": 0,
+    "source": 0,
+    "source_file": 0,
+    "source_sheet": 0,
+    "source_row": 0,
+    "ingestion_timestamp": 0,
+    "transformation_version": 0,
+    "metric": 0,
+    "value": 0
+  },
+  "suspicious_zeros": {
+    "value": 100
+  },
+  "validation_issues": [],
+  "timestamp": "2026-08-21T17:38:02.734249+00:00"
+}

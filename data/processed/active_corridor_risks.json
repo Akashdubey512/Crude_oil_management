@@ -1,0 +1,313 @@
+[
+  {
+    "corridor": "HORMUZ",
+    "timestamp": "2026-08-16",
+    "risk_probability": 0.0017,
+    "risk_level": "LOW",
+    "confidence": "model-based",
+    "leading_indicators": {
+      "gpr_daily": 56.30426788330078,
+      "tanker_decline_ratio_28d": 0.0,
+      "brent_volatility_28d": 0.045306431009737115,
+      "corridor_events_28d": 1.0,
+      "anomaly_flag": 0
+    },
+    "top_risk_factors": [
+      "anomaly_type_drop",
+      "tanker_zscore_28d",
+      "anomaly_flag",
+      "tanker_decline_ratio_28d",
+      "vessel_count"
+    ],
+    "traffic_signal": "NORMAL",
+    "geopolitical_signal": "NORMAL",
+    "sanctions_signal": "NORMAL",
+    "market_signal": "VOLATILE",
+    "supply_signal": "NORMAL",
+    "model_version": "1.0",
+    "feature_version": "1.0",
+    "data_timestamp": "2026-08-21T17:05:52.164517+00:00",
+    "risk_decomposition": {
+      "geopolitical_risk": {
+        "score": 34.2092,
+        "features_used": [
+          "gpr_daily",
+          "gpr_act",
+          "gpr_threat",
+          "gpr_daily_7d_ma",
+          "gpr_daily_28d_ma",
+          "gpr_india_monthly",
+          "gpr_russia_monthly",
+          "gpr_saudi_monthly",
+          "corridor_events_1d",
+          "corridor_events_7d",
+          "corridor_events_28d",
+          "corridor_disruption_28d",
+          "global_events_7d"
+        ],
+        "note": "13/13 features available",
+        "normalized_contribution": 0.0
+      },
+      "sanctions_risk": {
+        "score": 31.5,
+        "features_used": [
+          "corridor_sanctions_28d",
+          "global_events_28d"
+        ],
+        "note": "2/2 features available",
+        "normalized_contribution": 0.0
+      },
+      "maritime_risk": {
+        "score": 0.0176,
+        "features_used": [
+          "tanker_count",
+          "vessel_count",
+          "tanker_decline_ratio_28d",
+          "tanker_zscore_28d",
+          "tanker_7d_ma",
+          "tanker_28d_ma",
+          "anomaly_flag",
+          "anomaly_type_drop",
+          "anomaly_type_congestion",
+          "tanker_lag1d_chg"
+        ],
+        "note": "10/11 features available",
+        "normalized_contribution": 0.0
+      },
+      "market_risk": {
+        "score": 15.3777,
+        "features_used": [
+          "brent_price",
+          "brent_return_1d",
+          "brent_return_7d",
+          "brent_volatility_7d",
+          "brent_volatility_28d",
+          "brent_zscore_28d"
+        ],
+        "note": "6/6 features available",
+        "normalized_contribution": 0.0
+      },
+      "supply_risk": {
+        "score": 10330.5025,
+        "features_used": [
+          "consumption_total_tmt",
+          "consumption_mom_change",
+          "crude_import_tmt",
+          "crude_import_mom_change"
+        ],
+        "note": "4/6 features available",
+        "normalized_contribution": 0.0017
+      },
+      "_methodology": "Components are NOT statistically independent. Decomposition is for interpretability only. Individual components should not be combined multiplicatively.",
+      "_overall_risk_probability": 0.0017
+    }
+  },
+  {
+    "corridor": "BAB_EL_MANDEB",
+    "timestamp": "2026-08-16",
+    "risk_probability": 0.0014,
+    "risk_level": "LOW",
+    "confidence": "model-based",
+    "leading_indicators": {
+      "gpr_daily": 56.30426788330078,
+      "tanker_decline_ratio_28d": 0.7333333333333333,
+      "brent_volatility_28d": 0.045306431009737115,
+      "corridor_events_28d": 1.0,
+      "anomaly_flag": 0
+    },
+    "top_risk_factors": [
+      "anomaly_type_drop",
+      "tanker_zscore_28d",
+      "anomaly_flag",
+      "tanker_lag1d_chg",
+      "tanker_decline_ratio_28d"
+    ],
+    "traffic_signal": "NORMAL",
+    "geopolitical_signal": "NORMAL",
+    "sanctions_signal": "NORMAL",
+    "market_signal": "VOLATILE",
+    "supply_signal": "NORMAL",
+    "model_version": "1.0",
+    "feature_version": "1.0",
+    "data_timestamp": "2026-08-21T17:05:52.639740+00:00",
+    "risk_decomposition": {
+      "geopolitical_risk": {
+        "score": 34.2092,
+        "features_used": [
+          "gpr_daily",
+          "gpr_act",
+          "gpr_threat",
+          "gpr_daily_7d_ma",
+          "gpr_daily_28d_ma",
+          "gpr_india_monthly",
+          "gpr_russia_monthly",
+          "gpr_saudi_monthly",
+          "corridor_events_1d",
+          "corridor_events_7d",
+          "corridor_events_28d",
+          "corridor_disruption_28d",
+          "global_events_7d"
+        ],
+        "note": "13/13 features available",
+        "normalized_contribution": 0.0
+      },
+      "sanctions_risk": {
+        "score": 31.5,
+        "features_used": [
+          "corridor_sanctions_28d",
+          "global_events_28d"
+        ],
+        "note": "2/2 features available",
+        "normalized_contribution": 0.0
+      },
+      "maritime_risk": {
+        "score": 0.3035,
+        "features_used": [
+          "tanker_count",
+          "vessel_count",
+          "tanker_decline_ratio_28d",
+          "tanker_zscore_28d",
+          "tanker_7d_ma",
+          "tanker_28d_ma",
+          "anomaly_flag",
+          "anomaly_type_drop",
+          "anomaly_type_congestion",
+          "tanker_lag1d_chg",
+          "tanker_lag7d_chg"
+        ],
+        "note": "11/11 features available",
+        "normalized_contribution": 0.0
+      },
+      "market_risk": {
+        "score": 15.3777,
+        "features_used": [
+          "brent_price",
+          "brent_return_1d",
+          "brent_return_7d",
+          "brent_volatility_7d",
+          "brent_volatility_28d",
+          "brent_zscore_28d"
+        ],
+        "note": "6/6 features available",
+        "normalized_contribution": 0.0
+      },
+      "supply_risk": {
+        "score": 10330.5025,
+        "features_used": [
+          "consumption_total_tmt",
+          "consumption_mom_change",
+          "crude_import_tmt",
+          "crude_import_mom_change"
+        ],
+        "note": "4/6 features available",
+        "normalized_contribution": 0.0014
+      },
+      "_methodology": "Components are NOT statistically independent. Decomposition is for interpretability only. Individual components should not be combined multiplicatively.",
+      "_overall_risk_probability": 0.0014
+    }
+  },
+  {
+    "corridor": "SUEZ",
+    "timestamp": "2026-08-16",
+    "risk_probability": 0.0015,
+    "risk_level": "LOW",
+    "confidence": "model-based",
+    "leading_indicators": {
+      "gpr_daily": 56.30426788330078,
+      "tanker_decline_ratio_28d": 0.125,
+      "brent_volatility_28d": 0.045306431009737115,
+      "corridor_events_28d": 2.0,
+      "anomaly_flag": 0
+    },
+    "top_risk_factors": [
+      "anomaly_type_drop",
+      "tanker_zscore_28d",
+      "anomaly_flag",
+      "tanker_decline_ratio_28d",
+      "tanker_count"
+    ],
+    "traffic_signal": "NORMAL",
+    "geopolitical_signal": "NORMAL",
+    "sanctions_signal": "NORMAL",
+    "market_signal": "VOLATILE",
+    "supply_signal": "NORMAL",
+    "model_version": "1.0",
+    "feature_version": "1.0",
+    "data_timestamp": "2026-08-21T17:05:53.093542+00:00",
+    "risk_decomposition": {
+      "geopolitical_risk": {
+        "score": 156.407,
+        "features_used": [
+          "gpr_daily",
+          "gpr_act",
+          "gpr_threat",
+          "gpr_daily_7d_ma",
+          "gpr_daily_28d_ma",
+          "gpr_india_monthly",
+          "gpr_russia_monthly",
+          "gpr_saudi_monthly",
+          "corridor_events_1d",
+          "corridor_events_7d",
+          "corridor_events_28d",
+          "corridor_disruption_28d",
+          "global_events_7d"
+        ],
+        "note": "13/13 features available",
+        "normalized_contribution": 0.0
+      },
+      "sanctions_risk": {
+        "score": 31.5,
+        "features_used": [
+          "corridor_sanctions_28d",
+          "global_events_28d"
+        ],
+        "note": "2/2 features available",
+        "normalized_contribution": 0.0
+      },
+      "maritime_risk": {
+        "score": 0.2846,
+        "features_used": [
+          "tanker_count",
+          "vessel_count",
+          "tanker_decline_ratio_28d",
+          "tanker_zscore_28d",
+          "tanker_7d_ma",
+          "tanker_28d_ma",
+          "anomaly_flag",
+          "anomaly_type_drop",
+          "anomaly_type_congestion",
+          "tanker_lag1d_chg",
+          "tanker_lag7d_chg"
+        ],
+        "note": "11/11 features available",
+        "normalized_contribution": 0.0
+      },
+      "market_risk": {
+        "score": 0.049,
+        "features_used": [
+          "brent_price",
+          "brent_return_1d",
+          "brent_return_7d",
+          "brent_volatility_7d",
+          "brent_volatility_28d",
+          "brent_zscore_28d"
+        ],
+        "note": "6/6 features available",
+        "normalized_contribution": 0.0
+      },
+      "supply_risk": {
+        "score": 10330.5025,
+        "features_used": [
+          "consumption_total_tmt",
+          "consumption_mom_change",
+          "crude_import_tmt",
+          "crude_import_mom_change"
+        ],
+        "note": "4/6 features available",
+        "normalized_contribution": 0.0015
+      },
+      "_methodology": "Components are NOT statistically independent. Decomposition is for interpretability only. Individual components should not be combined multiplicatively.",
+      "_overall_risk_probability": 0.0015
+    }
+  }
+]

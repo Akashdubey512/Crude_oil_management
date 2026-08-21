@@ -1,0 +1,84 @@
+{
+  "model_name": "LogisticRegression",
+  "corridor_id": "SUEZ",
+  "n_samples_explained": 138,
+  "method": "Standardized Coefficients (proxy)",
+  "global_importance": [
+    {
+      "feature": "anomaly_type_drop",
+      "coefficient": 0.9844307109824691,
+      "abs_coefficient": 0.9844307109824691
+    },
+    {
+      "feature": "anomaly_flag",
+      "coefficient": 0.609208555709983,
+      "abs_coefficient": 0.609208555709983
+    },
+    {
+      "feature": "tanker_zscore_28d",
+      "coefficient": -0.24091099226522084,
+      "abs_coefficient": 0.24091099226522084
+    },
+    {
+      "feature": "tanker_decline_ratio_28d",
+      "coefficient": -0.2226091633510767,
+      "abs_coefficient": 0.2226091633510767
+    },
+    {
+      "feature": "tanker_count",
+      "coefficient": -0.16849458514142446,
+      "abs_coefficient": 0.16849458514142446
+    },
+    {
+      "feature": "tanker_lag7d_chg",
+      "coefficient": -0.14525941019049962,
+      "abs_coefficient": 0.14525941019049962
+    },
+    {
+      "feature": "tanker_lag1d_chg",
+      "coefficient": -0.12298153600528185,
+      "abs_coefficient": 0.12298153600528185
+    },
+    {
+      "feature": "tanker_90d_ma",
+      "coefficient": 0.05916704302813306,
+      "abs_coefficient": 0.05916704302813306
+    },
+    {
+      "feature": "vessel_count",
+      "coefficient": -0.05610762652377705,
+      "abs_coefficient": 0.05610762652377705
+    },
+    {
+      "feature": "gpr_daily_7d_ma",
+      "coefficient": -0.05210780110755465,
+      "abs_coefficient": 0.05210780110755465
+    },
+    {
+      "feature": "tanker_28d_ma",
+      "coefficient": 0.049751506198730075,
+      "abs_coefficient": 0.049751506198730075
+    },
+    {
+      "feature": "tanker_lag7d",
+      "coefficient": 0.0467912781381685,
+      "abs_coefficient": 0.0467912781381685
+    },
+    {
+      "feature": "gpr_daily_28d_std",
+      "coefficient": -0.04156886032096698,
+      "abs_coefficient": 0.04156886032096698
+    },
+    {
+      "feature": "gpr_saudi_monthly",
+      "coefficient": -0.039658365258712316,
+      "abs_coefficient": 0.039658365258712316
+    },
+    {
+      "feature": "anomaly_type_congestion",
+      "coefficient": -0.03618458467803839,
+      "abs_coefficient": 0.03618458467803839
+    }
+  ],
+  "shap_available": true
+}

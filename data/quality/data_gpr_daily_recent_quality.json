@@ -1,0 +1,37 @@
+{
+  "dataset_id": "gpr_daily_recent",
+  "original_filename": "data_gpr_daily_recent.xls",
+  "sha256": "827d56d130e1265407c9c91fbe8116717f2f1447457c119bcf21e22830c18442",
+  "file_size_bytes": 3259904,
+  "row_count": 15204,
+  "duplicates": 0,
+  "date_range": "1985-01-01 to 2026-08-17",
+  "columns": [
+    "Sheet1"
+  ],
+  "missing_values": {
+    "Sheet1": 45583
+  },
+  "sheets_detail": {
+    "Sheet1": {
+      "shape": [
+        15204,
+        11
+      ],
+      "columns": [
+        "DAY",
+        "N10D",
+        "GPRD",
+        "GPRD_ACT",
+        "GPRD_THREAT",
+        "date",
+        "GPRD_MA30",
+        "GPRD_MA7",
+        "event",
+        "var_name"
+      ],
+      "nulls": 45583,
+      "duplicates": 0
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "dataset_id": "gpr_monthly_historical",
+  "original_filename": "data_gpr_export.xls",
+  "sha256": "6126ac6838929a4fd2e4c287979ed985f31f05fc92ab5784a55172b8bef993c2",
+  "file_size_bytes": 2712064,
+  "row_count": 1519,
+  "duplicates": 0,
+  "date_range": "1900-01-01 to 2026-07-01",
+  "columns": [
+    "Sheet1"
+  ],
+  "missing_values": {
+    "Sheet1": 55852
+  },
+  "sheets_detail": {
+    "Sheet1": {
+      "shape": [
+        1519,
+        115
+      ],
+      "columns": [
+        "month",
+        "GPR",
+        "GPRT",
+        "GPRA",
+        "GPRH",
+        "GPRHT",
+        "GPRHA",
+        "SHARE_GPR",
+        "N10",
+        "SHARE_GPRH"
+      ],
+      "nulls": 55852,
+      "duplicates": 0
+    }
+  }
+}

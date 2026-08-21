@@ -1,0 +1,18 @@
+{
+  "dataset_id": "fred_brent_crude_prices",
+  "original_filename": "DCOILBRENTEU.csv",
+  "sha256": "fc9e2e3064d8458c8f31180b6f3ec329284b3e6782994ffafda7f7c06db15218",
+  "file_size_bytes": 22177,
+  "row_count": 1305,
+  "duplicates": 0,
+  "date_range": "2021-08-18 to 2026-08-18",
+  "columns": [
+    "observation_date",
+    "DCOILBRENTEU"
+  ],
+  "missing_values": {
+    "observation_date": 0,
+    "DCOILBRENTEU": 41
+  },
+  "sheets_detail": {}
+}
