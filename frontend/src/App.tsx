@@ -77,14 +77,17 @@ export default function App() {
 
   const fetchCorridorDetails = async (id: string) => {
     try {
+      // Each call is individually fault-tolerant — a 404 on traffic (RED_SEA)
+      // must NOT abort the risk or events fetch.
       const [risk, events, traffic] = await Promise.all([
-        api.getCorridorRisk(id),
-        api.getCorridorEvents(id, 20),
-        api.getCorridorTraffic(id, 60),
+        api.getCorridorRisk(id).catch(() => null),
+        api.getCorridorEvents(id, 20).catch(() => [] as any[]),
+        api.getCorridorTraffic(id, 60).catch(() => [] as any[]),
       ]);
-      setActiveRisk(risk);
-      setActiveEvents(events);
-      setActiveTraffic(traffic);
+
+      if (risk) setActiveRisk(risk);
+      setActiveEvents(events ?? []);
+      setActiveTraffic(traffic ?? []);
 
       if (id !== 'RED_SEA') {
         api.getModelInfo(id).then(setActiveModelInfo).catch(() => setActiveModelInfo(null));
@@ -303,6 +306,21 @@ export default function App() {
           {selectedCorridor ? (
             <div className="flex flex-col gap-6">
               
+              {/* RED_SEA documented limitation banner */}
+              {selectedCorridor === 'RED_SEA' && (
+                <div className="p-3 rounded-lg border border-yellow-900/60 bg-yellow-950/20 flex gap-3 items-start">
+                  <span className="text-yellow-400 text-lg leading-none mt-0.5">⚠</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-bold text-yellow-300 uppercase tracking-wider">Red Sea — Data Unavailable</span>
+                    <p className="text-[11px] text-yellow-600 leading-snug">
+                      PortWatch (the platform's AIS source) does not publish daily vessel transit counts
+                      for the Red Sea corridor. Risk score and traffic data are therefore unavailable
+                      — not fabricated. Geopolitical events are still monitored via GDELT when available.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Corridor snapshot overview */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <RiskGauge
@@ -314,8 +332,10 @@ export default function App() {
                 <RiskDecompositionChart decomposition={activeRisk?.risk_decomposition || null} />
               </div>
 
-              {/* Daily traffic chart */}
-              <TrafficChart traffic={activeTraffic} />
+              {/* Daily traffic chart — hidden for RED_SEA (no AIS coverage) */}
+              {selectedCorridor !== 'RED_SEA' && (
+                <TrafficChart traffic={activeTraffic} />
+              )}
 
               {/* Geopolitical events table */}
               <EventsList events={activeEvents} />
