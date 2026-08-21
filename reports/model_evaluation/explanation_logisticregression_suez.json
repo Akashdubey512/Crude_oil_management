@@ -5,79 +5,79 @@
   "method": "Standardized Coefficients (proxy)",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "coefficient": 0.9844307109824691,
-      "abs_coefficient": 0.9844307109824691
+      "feature": "tanker_28d_std",
+      "coefficient": -1.3545990975367952,
+      "abs_coefficient": 1.3545990975367952
     },
     {
-      "feature": "anomaly_flag",
-      "coefficient": 0.609208555709983,
-      "abs_coefficient": 0.609208555709983
-    },
-    {
-      "feature": "tanker_zscore_28d",
-      "coefficient": -0.24091099226522084,
-      "abs_coefficient": 0.24091099226522084
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "coefficient": -0.2226091633510767,
-      "abs_coefficient": 0.2226091633510767
-    },
-    {
-      "feature": "tanker_count",
-      "coefficient": -0.16849458514142446,
-      "abs_coefficient": 0.16849458514142446
-    },
-    {
-      "feature": "tanker_lag7d_chg",
-      "coefficient": -0.14525941019049962,
-      "abs_coefficient": 0.14525941019049962
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "coefficient": -0.12298153600528185,
-      "abs_coefficient": 0.12298153600528185
-    },
-    {
-      "feature": "tanker_90d_ma",
-      "coefficient": 0.05916704302813306,
-      "abs_coefficient": 0.05916704302813306
-    },
-    {
-      "feature": "vessel_count",
-      "coefficient": -0.05610762652377705,
-      "abs_coefficient": 0.05610762652377705
-    },
-    {
-      "feature": "gpr_daily_7d_ma",
-      "coefficient": -0.05210780110755465,
-      "abs_coefficient": 0.05210780110755465
-    },
-    {
-      "feature": "tanker_28d_ma",
-      "coefficient": 0.049751506198730075,
-      "abs_coefficient": 0.049751506198730075
-    },
-    {
-      "feature": "tanker_lag7d",
-      "coefficient": 0.0467912781381685,
-      "abs_coefficient": 0.0467912781381685
-    },
-    {
-      "feature": "gpr_daily_28d_std",
-      "coefficient": -0.04156886032096698,
-      "abs_coefficient": 0.04156886032096698
+      "feature": "refinery_mom_change",
+      "coefficient": -1.0320862134959707,
+      "abs_coefficient": 1.0320862134959707
     },
     {
       "feature": "gpr_saudi_monthly",
-      "coefficient": -0.039658365258712316,
-      "abs_coefficient": 0.039658365258712316
+      "coefficient": -0.9796044676000959,
+      "abs_coefficient": 0.9796044676000959
+    },
+    {
+      "feature": "tanker_90d_ma",
+      "coefficient": 0.8940848260500495,
+      "abs_coefficient": 0.8940848260500495
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "coefficient": -0.7371831114009817,
+      "abs_coefficient": 0.7371831114009817
+    },
+    {
+      "feature": "gpr_daily_7d_ma",
+      "coefficient": -0.6780470140048317,
+      "abs_coefficient": 0.6780470140048317
+    },
+    {
+      "feature": "crude_import_tmt",
+      "coefficient": 0.6289246822956963,
+      "abs_coefficient": 0.6289246822956963
+    },
+    {
+      "feature": "gpr_india_monthly",
+      "coefficient": -0.5966902982970261,
+      "abs_coefficient": 0.5966902982970261
+    },
+    {
+      "feature": "tanker_decline_ratio_28d",
+      "coefficient": -0.5552090997314466,
+      "abs_coefficient": 0.5552090997314466
+    },
+    {
+      "feature": "brent_volatility_7d",
+      "coefficient": 0.5227382424298339,
+      "abs_coefficient": 0.5227382424298339
+    },
+    {
+      "feature": "gpr_daily",
+      "coefficient": 0.5089008055324569,
+      "abs_coefficient": 0.5089008055324569
+    },
+    {
+      "feature": "tanker_28d_ma",
+      "coefficient": 0.4924775254808343,
+      "abs_coefficient": 0.4924775254808343
+    },
+    {
+      "feature": "gpr_act",
+      "coefficient": 0.491967745217378,
+      "abs_coefficient": 0.491967745217378
+    },
+    {
+      "feature": "month_sin",
+      "coefficient": 0.4348484520562296,
+      "abs_coefficient": 0.4348484520562296
     },
     {
       "feature": "anomaly_type_congestion",
-      "coefficient": -0.03618458467803839,
-      "abs_coefficient": 0.03618458467803839
+      "coefficient": 0.30518878185770265,
+      "abs_coefficient": 0.30518878185770265
     }
   ],
   "shap_available": true

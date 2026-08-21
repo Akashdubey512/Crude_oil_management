@@ -1,31 +1,31 @@
 {
-  "timestamp": "2026-08-21T17:05:15.127787+00:00",
+  "timestamp": "2026-08-21T18:12:25.086130+00:00",
   "results": {
     "HORMUZ": {
       "LogisticRegression": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0013,
+          "roc_auc": 0.3958,
+          "pr_auc": 0.0449,
+          "precision": 0.1111,
+          "recall": 0.1667,
+          "f1": 0.1333,
+          "brier_score": 0.0688,
           "confusion_matrix": [
             [
-              176,
-              0
+              168,
+              8
             ],
             [
-              0,
-              6
+              5,
+              1
             ]
           ],
-          "tp": 6,
-          "fp": 0,
-          "fn": 0,
-          "tn": 176,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 1,
+          "fp": 8,
+          "fn": 5,
+          "tn": 168,
+          "precision_at_k": 0.0833,
+          "recall_at_k": 0.1667,
           "k": 12,
           "n_positive": 6,
           "n_total": 182
@@ -36,28 +36,28 @@
       },
       "RandomForest": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0074,
+          "roc_auc": 0.3873,
+          "pr_auc": 0.1078,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0436,
           "confusion_matrix": [
             [
               176,
               0
             ],
             [
-              0,
-              6
+              6,
+              0
             ]
           ],
-          "tp": 6,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 6,
           "tn": 176,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.0833,
+          "recall_at_k": 0.1667,
           "k": 12,
           "n_positive": 6,
           "n_total": 182
@@ -68,28 +68,28 @@
       },
       "XGBoost": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.3248,
+          "pr_auc": 0.1055,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0323,
           "confusion_matrix": [
             [
               176,
               0
             ],
             [
-              0,
-              6
+              6,
+              0
             ]
           ],
-          "tp": 6,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 6,
           "tn": 176,
-          "precision_at_k": 0.4615,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.0833,
+          "recall_at_k": 0.1667,
           "k": 12,
           "n_positive": 6,
           "n_total": 182
@@ -102,55 +102,55 @@
     "BAB_EL_MANDEB": {
       "LogisticRegression": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.3017,
+          "pr_auc": 0.0171,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0842,
           "confusion_matrix": [
             [
-              179,
-              0
+              161,
+              18
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
-          "fp": 0,
-          "fn": 0,
-          "tn": 179,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 0,
+          "fp": 18,
+          "fn": 3,
+          "tn": 161,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 6,
           "n_positive": 3,
           "n_total": 182
         },
         "test": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.5728,
+          "pr_auc": 0.0389,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0801,
           "confusion_matrix": [
             [
-              135,
-              0
+              127,
+              8
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
-          "fp": 0,
-          "fn": 0,
-          "tn": 135,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 0,
+          "fp": 8,
+          "fn": 3,
+          "tn": 127,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 6,
           "n_positive": 3,
           "n_total": 138
@@ -158,55 +158,55 @@
       },
       "RandomForest": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0013,
+          "roc_auc": 0.3547,
+          "pr_auc": 0.1205,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0227,
           "confusion_matrix": [
             [
               179,
               0
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 3,
           "tn": 179,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.1667,
+          "recall_at_k": 0.3333,
           "k": 6,
           "n_positive": 3,
           "n_total": 182
         },
         "test": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0024,
+          "roc_auc": 0.7778,
+          "pr_auc": 0.0883,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0275,
           "confusion_matrix": [
             [
               135,
               0
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 3,
           "tn": 135,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 6,
           "n_positive": 3,
           "n_total": 138
@@ -214,55 +214,55 @@
       },
       "XGBoost": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.3687,
+          "pr_auc": 0.1208,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0158,
           "confusion_matrix": [
             [
               179,
               0
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 3,
           "tn": 179,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.1667,
+          "recall_at_k": 0.3333,
           "k": 6,
           "n_positive": 3,
           "n_total": 182
         },
         "test": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.7951,
+          "pr_auc": 0.1256,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0213,
           "confusion_matrix": [
             [
               135,
               0
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 3,
           "tn": 135,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.1667,
+          "recall_at_k": 0.3333,
           "k": 6,
           "n_positive": 3,
           "n_total": 138
@@ -272,16 +272,16 @@
     "SUEZ": {
       "LogisticRegression": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
+          "roc_auc": 0.9389,
+          "pr_auc": 0.127,
+          "precision": 0.0235,
           "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "f1": 0.046,
+          "brier_score": 0.3137,
           "confusion_matrix": [
             [
-              180,
-              0
+              97,
+              83
             ],
             [
               0,
@@ -289,38 +289,38 @@
             ]
           ],
           "tp": 2,
-          "fp": 0,
+          "fp": 83,
           "fn": 0,
-          "tn": 180,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tn": 97,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 4,
           "n_positive": 2,
           "n_total": 182
         },
         "test": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.6519,
+          "pr_auc": 0.0661,
+          "precision": 0.125,
+          "recall": 0.3333,
+          "f1": 0.1818,
+          "brier_score": 0.0676,
           "confusion_matrix": [
             [
-              135,
-              0
+              128,
+              7
             ],
             [
-              0,
-              3
+              2,
+              1
             ]
           ],
-          "tp": 3,
-          "fp": 0,
-          "fn": 0,
-          "tn": 135,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 1,
+          "fp": 7,
+          "fn": 2,
+          "tn": 128,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 6,
           "n_positive": 3,
           "n_total": 138
@@ -328,55 +328,55 @@
       },
       "RandomForest": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0029,
+          "roc_auc": 0.8694,
+          "pr_auc": 0.1061,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0678,
           "confusion_matrix": [
             [
-              180,
-              0
+              177,
+              3
             ],
             [
-              0,
-              2
+              2,
+              0
             ]
           ],
-          "tp": 2,
-          "fp": 0,
-          "fn": 0,
-          "tn": 180,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 0,
+          "fp": 3,
+          "fn": 2,
+          "tn": 177,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 4,
           "n_positive": 2,
           "n_total": 182
         },
         "test": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.003,
+          "roc_auc": 0.5333,
+          "pr_auc": 0.0296,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.048,
           "confusion_matrix": [
             [
               135,
               0
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
+          "tp": 0,
           "fp": 0,
-          "fn": 0,
+          "fn": 3,
           "tn": 135,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 6,
           "n_positive": 3,
           "n_total": 138
@@ -384,55 +384,55 @@
       },
       "XGBoost": {
         "validation": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.95,
+          "pr_auc": 0.55,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "brier_score": 0.0116,
           "confusion_matrix": [
             [
-              180,
-              0
+              179,
+              1
             ],
             [
-              0,
-              2
+              1,
+              1
             ]
           ],
-          "tp": 2,
-          "fp": 0,
-          "fn": 0,
-          "tn": 180,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 1,
+          "fp": 1,
+          "fn": 1,
+          "tn": 179,
+          "precision_at_k": 0.25,
+          "recall_at_k": 0.5,
           "k": 4,
           "n_positive": 2,
           "n_total": 182
         },
         "test": {
-          "roc_auc": 1.0,
-          "pr_auc": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "brier_score": 0.0,
+          "roc_auc": 0.8,
+          "pr_auc": 0.0681,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "brier_score": 0.0273,
           "confusion_matrix": [
             [
-              135,
-              0
+              134,
+              1
             ],
             [
-              0,
-              3
+              3,
+              0
             ]
           ],
-          "tp": 3,
-          "fp": 0,
-          "fn": 0,
-          "tn": 135,
-          "precision_at_k": 0.5,
-          "recall_at_k": 1.0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 3,
+          "tn": 134,
+          "precision_at_k": 0.0,
+          "recall_at_k": 0.0,
           "k": 6,
           "n_positive": 3,
           "n_total": 138
@@ -446,12 +446,12 @@
       "test_roc_auc": -1.0
     },
     "BAB_EL_MANDEB": {
-      "model": "LogisticRegression",
-      "test_roc_auc": 1.0
+      "model": "XGBoost",
+      "test_roc_auc": 0.7951
     },
     "SUEZ": {
-      "model": "LogisticRegression",
-      "test_roc_auc": 1.0
+      "model": "XGBoost",
+      "test_roc_auc": 0.8
     }
   }
 }

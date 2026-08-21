@@ -5,64 +5,64 @@
   "method": "SHAP TreeExplainer",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "mean_abs_shap": 4.867053508758545
-    },
-    {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 0.9770079851150513
-    },
-    {
-      "feature": "anomaly_flag",
-      "mean_abs_shap": 0.34111854434013367
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.251246839761734
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.08106397837400436
-    },
-    {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.04503151401877403
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.973947286605835
     },
     {
       "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.015929659828543663
+      "mean_abs_shap": 0.9267956018447876
     },
     {
-      "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.0
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 0.7092412710189819
     },
     {
       "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.0
+      "mean_abs_shap": 0.6351951360702515
     },
     {
-      "feature": "gpr_china_monthly",
-      "mean_abs_shap": 0.0
+      "feature": "gpr_daily_28d_ma",
+      "mean_abs_shap": 0.5368736386299133
     },
     {
-      "feature": "corridor_events_1d",
-      "mean_abs_shap": 0.0
+      "feature": "gpr_act",
+      "mean_abs_shap": 0.5243167281150818
     },
     {
-      "feature": "gpr_russia_monthly",
-      "mean_abs_shap": 0.0
-    },
-    {
-      "feature": "corridor_events_7d",
-      "mean_abs_shap": 0.0
-    },
-    {
-      "feature": "corridor_events_28d",
-      "mean_abs_shap": 0.0
+      "feature": "tanker_decline_ratio_28d",
+      "mean_abs_shap": 0.45986586809158325
     },
     {
       "feature": "gpr_india_monthly",
-      "mean_abs_shap": 0.0
+      "mean_abs_shap": 0.4499373137950897
+    },
+    {
+      "feature": "tanker_lag1d_chg",
+      "mean_abs_shap": 0.3826870918273926
+    },
+    {
+      "feature": "tanker_zscore_28d",
+      "mean_abs_shap": 0.3772745430469513
+    },
+    {
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.373686820268631
+    },
+    {
+      "feature": "cargo_count",
+      "mean_abs_shap": 0.3637026250362396
+    },
+    {
+      "feature": "crude_import_mom_change",
+      "mean_abs_shap": 0.3165152370929718
+    },
+    {
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.2872265577316284
+    },
+    {
+      "feature": "brent_zscore_28d",
+      "mean_abs_shap": 0.24348416924476624
     }
   ],
   "shap_available": true

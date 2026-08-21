@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.api.routes import health, corridors, risk, events
+from src.api.routes import health, corridors, risk, events, prices, data_status, explainability
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
 LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()
@@ -83,3 +83,6 @@ app.include_router(health.router)
 app.include_router(corridors.router, prefix="/api")
 app.include_router(events.router, prefix="/api")
 app.include_router(risk.router, prefix="/api")
+app.include_router(prices.router, prefix="/api")
+app.include_router(data_status.router, prefix="/api")
+app.include_router(explainability.router, prefix="/api")

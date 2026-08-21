@@ -5,64 +5,64 @@
   "method": "SHAP TreeExplainer",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "mean_abs_shap": 4.9279351234436035
+      "feature": "gpr_daily_7d_ma",
+      "mean_abs_shap": 0.9694675803184509
     },
     {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 0.7155017852783203
+      "feature": "brent_price",
+      "mean_abs_shap": 0.822100043296814
     },
     {
-      "feature": "anomaly_flag",
-      "mean_abs_shap": 0.5158975720405579
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.23823143541812897
-    },
-    {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.05287427827715874
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.04144096001982689
-    },
-    {
-      "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.03699396923184395
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.8134790658950806
     },
     {
       "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.02724074013531208
+      "mean_abs_shap": 0.718137800693512
     },
     {
-      "feature": "tanker_90d_ma",
-      "mean_abs_shap": 0.008102286607027054
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.6274195313453674
     },
     {
-      "feature": "vessel_count",
-      "mean_abs_shap": 0.006017925217747688
+      "feature": "tanker_lag7d_chg",
+      "mean_abs_shap": 0.4706460237503052
+    },
+    {
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 0.429318904876709
     },
     {
       "feature": "brent_return_7d",
-      "mean_abs_shap": 0.003831162815913558
+      "mean_abs_shap": 0.39036959409713745
     },
     {
-      "feature": "gpr_russia_monthly",
-      "mean_abs_shap": 0.0
-    },
-    {
-      "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.0
-    },
-    {
-      "feature": "gpr_threat",
-      "mean_abs_shap": 0.0
+      "feature": "tanker_lag7d",
+      "mean_abs_shap": 0.3837975263595581
     },
     {
       "feature": "gpr_act",
-      "mean_abs_shap": 0.0
+      "mean_abs_shap": 0.3034953773021698
+    },
+    {
+      "feature": "gpr_daily",
+      "mean_abs_shap": 0.3003026843070984
+    },
+    {
+      "feature": "brent_volatility_28d",
+      "mean_abs_shap": 0.28715386986732483
+    },
+    {
+      "feature": "brent_return_1d",
+      "mean_abs_shap": 0.25002244114875793
+    },
+    {
+      "feature": "gpr_saudi_monthly",
+      "mean_abs_shap": 0.23773856461048126
+    },
+    {
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.21216440200805664
     }
   ],
   "shap_available": true

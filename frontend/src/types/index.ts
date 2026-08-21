@@ -88,3 +88,43 @@ export interface ModelInfo {
   limitations: string[];
   metrics: ModelMetrics;
 }
+
+export interface PriceHistoryEntry {
+  date: string;
+  price: number;
+  daily_return: number | null;
+}
+
+export interface BrentPriceResponse {
+  latest_price: number;
+  latest_date: string;
+  daily_return: number | null;
+  volatility_7d: number | null;
+  volatility_28d: number | null;
+  data_freshness: string;
+  source: string;
+  historical_prices: PriceHistoryEntry[];
+}
+
+export interface SourceStatusResponse {
+  source_name: string;
+  latest_date: string;
+  status: 'FRESH' | 'STALE' | 'UNAVAILABLE' | 'PARTIAL';
+  row_count: number | null;
+  retrieval_timestamp: string | null;
+  source_url: string;
+  limitation: string | null;
+}
+
+export interface FeatureImportanceEntry {
+  feature: string;
+  mean_abs_shap: number;
+}
+
+export interface ExplainabilityResponse {
+  model_name: string;
+  corridor_id: string;
+  method: string;
+  global_importance: FeatureImportanceEntry[];
+}
+

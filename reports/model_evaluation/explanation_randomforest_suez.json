@@ -5,64 +5,64 @@
   "method": "SHAP TreeExplainer",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "mean_abs_shap": 0.1254846829579107
-    },
-    {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 0.10927396024621189
-    },
-    {
-      "feature": "anomaly_flag",
-      "mean_abs_shap": 0.08575440023646268
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.059618042775488655
-    },
-    {
-      "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.02861408609496768
-    },
-    {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.027232696948312138
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.018189099566224005
-    },
-    {
       "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.009599014968820672
-    },
-    {
-      "feature": "vessel_count",
-      "mean_abs_shap": 0.00908731945929632
-    },
-    {
-      "feature": "crude_import_mom_change",
-      "mean_abs_shap": 0.0069651183167075215
-    },
-    {
-      "feature": "gpr_saudi_monthly",
-      "mean_abs_shap": 0.0069411747261157895
+      "mean_abs_shap": 0.09799208290894455
     },
     {
       "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.004890116190784305
+      "mean_abs_shap": 0.06345464584800826
     },
     {
-      "feature": "gpr_daily_28d_std",
-      "mean_abs_shap": 0.004470372875785387
-    },
-    {
-      "feature": "gpr_threat",
-      "mean_abs_shap": 0.004198027403332275
+      "feature": "brent_volatility_28d",
+      "mean_abs_shap": 0.03939894537156398
     },
     {
       "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.003370308610881962
+      "mean_abs_shap": 0.03532883585880421
+    },
+    {
+      "feature": "gpr_saudi_monthly",
+      "mean_abs_shap": 0.03504070149800139
+    },
+    {
+      "feature": "brent_price",
+      "mean_abs_shap": 0.02844434380364007
+    },
+    {
+      "feature": "crude_import_mom_change",
+      "mean_abs_shap": 0.025915713726104538
+    },
+    {
+      "feature": "tanker_lag7d",
+      "mean_abs_shap": 0.020948829755437073
+    },
+    {
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.018462708188145924
+    },
+    {
+      "feature": "vessel_count",
+      "mean_abs_shap": 0.017276719953757843
+    },
+    {
+      "feature": "gpr_daily_28d_std",
+      "mean_abs_shap": 0.0171297186384197
+    },
+    {
+      "feature": "gpr_act",
+      "mean_abs_shap": 0.014939436231191039
+    },
+    {
+      "feature": "cargo_count",
+      "mean_abs_shap": 0.013716560036791118
+    },
+    {
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 0.012150437362703681
+    },
+    {
+      "feature": "gpr_daily",
+      "mean_abs_shap": 0.011618545511280592
     }
   ],
   "shap_available": true

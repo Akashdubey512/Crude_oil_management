@@ -88,3 +88,41 @@ class ModelInfoResponse(BaseModel):
     features_used: List[str] = Field(..., description="List of feature names")
     limitations: List[str] = Field(..., description="Model card caveats")
     metrics: ModelMetrics = Field(..., description="Out-of-time partition validation statistics")
+
+# --- Price Schemas ---
+class PriceHistoryEntry(BaseModel):
+    date: str = Field(..., description="Trading date (YYYY-MM-DD)")
+    price: float = Field(..., description="Brent crude spot price value")
+    daily_return: Optional[float] = Field(None, description="Daily log return ratio")
+
+class BrentPriceResponse(BaseModel):
+    latest_price: float = Field(..., description="Most recent Brent crude price")
+    latest_date: str = Field(..., description="Date of the most recent price observation")
+    daily_return: Optional[float] = Field(None, description="Most recent daily return")
+    volatility_7d: Optional[float] = Field(None, description="7-day rolling return standard deviation")
+    volatility_28d: Optional[float] = Field(None, description="28-day rolling return standard deviation")
+    data_freshness: str = Field(..., description="Latest price timestamp/date")
+    source: str = Field(..., description="Price data publisher source")
+    historical_prices: List[PriceHistoryEntry] = Field(..., description="Time-series list of historical price objects")
+
+# --- Data Status / Observability ---
+class SourceStatusResponse(BaseModel):
+    source_name: str = Field(..., description="Name of the external data feed or pipeline step")
+    latest_date: str = Field(..., description="Latest record date (YYYY-MM-DD) or 'UNAVAILABLE'")
+    status: str = Field(..., description="Observed health: FRESH, STALE, UNAVAILABLE, or PARTIAL")
+    row_count: Optional[int] = Field(None, description="Total number of database or CSV file records")
+    retrieval_timestamp: Optional[str] = Field(None, description="Datetime when the dataset was last ingested")
+    source_url: str = Field(..., description="Authoritative reference or dataset URL")
+    limitation: Optional[str] = Field(None, description="Documented data limitation or credential note")
+
+# --- Model Explainability ---
+class FeatureImportanceEntry(BaseModel):
+    feature: str = Field(..., description="Model input feature name")
+    mean_abs_shap: float = Field(..., description="Global mean absolute SHAP feature importance")
+
+class ExplainabilityResponse(BaseModel):
+    model_name: str = Field(..., description="Algorithm type (e.g., XGBoost)")
+    corridor_id: str = Field(..., description="Monitored chokepoint corridor ID")
+    method: str = Field(..., description="Explainability attribution method (e.g. SHAP)")
+    global_importance: List[FeatureImportanceEntry] = Field(..., description="Sorted features list by impact weight")
+

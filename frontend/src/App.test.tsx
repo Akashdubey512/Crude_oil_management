@@ -39,7 +39,7 @@ describe('India Energy Supply Chain Resilience Dashboard Tests', () => {
     {
       corridor: 'HORMUZ',
       risk_score: 0.17,
-      risk_level: 'LOW',
+      risk_level: 'LOW' as const,
       probability: 0.0017,
       prediction_date: '2026-08-16',
       model_version: '1.0',
@@ -81,6 +81,17 @@ describe('India Energy Supply Chain Resilience Dashboard Tests', () => {
     vi.spyOn(api, 'getEvents').mockResolvedValue([]);
     vi.spyOn(api, 'getCorridorEvents').mockResolvedValue([]);
     vi.spyOn(api, 'getCorridorTraffic').mockResolvedValue([]);
+    // Phase 7 mocks
+    vi.spyOn(api, 'getBrentPrices').mockResolvedValue({
+      latest_price: 82.5, latest_date: '2026-08-16', daily_return: -0.002,
+      volatility_7d: 0.01, volatility_28d: 0.015, data_freshness: '2026-08-16',
+      source: 'FRED', historical_prices: []
+    });
+    vi.spyOn(api, 'getDataStatus').mockResolvedValue([]);
+    vi.spyOn(api, 'getExplainability').mockResolvedValue({
+      model_name: 'XGBoost', corridor_id: 'HORMUZ',
+      method: 'SHAP TreeExplainer', global_importance: []
+    });
     vi.spyOn(api, 'getModelInfo').mockResolvedValue({
       model_name: 'XGBoost',
       version: '1.0',
@@ -111,7 +122,7 @@ describe('India Energy Supply Chain Resilience Dashboard Tests', () => {
 
     // Check title and connection indicators
     expect(screen.getByText(/India Energy Supply Chain Resilience/i)).toBeDefined();
-    expect(screen.getByText(/ONLINE/i)).toBeDefined();
+    expect(screen.getAllByText(/ONLINE/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/Visakhapatnam SPR/i)).toBeDefined();
   });
 

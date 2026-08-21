@@ -5,64 +5,64 @@
   "method": "SHAP TreeExplainer",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "mean_abs_shap": 4.819952011108398
+      "feature": "tanker_90d_ma",
+      "mean_abs_shap": 1.0288652181625366
     },
     {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 1.0058894157409668
-    },
-    {
-      "feature": "anomaly_flag",
-      "mean_abs_shap": 0.4820481538772583
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.0667177066206932
+      "feature": "tanker_14d_ma",
+      "mean_abs_shap": 0.702719509601593
     },
     {
       "feature": "vessel_count",
-      "mean_abs_shap": 0.039119232445955276
-    },
-    {
-      "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.02938378043472767
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.028660999611020088
+      "mean_abs_shap": 0.6359906196594238
     },
     {
       "feature": "cargo_count",
-      "mean_abs_shap": 0.012514038942754269
+      "mean_abs_shap": 0.5566504597663879
     },
     {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.003716628532856703
+      "feature": "tanker_7d_ma",
+      "mean_abs_shap": 0.5437846183776855
     },
     {
-      "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.0013607527362182736
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.5024427175521851
     },
     {
-      "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.0
+      "feature": "brent_zscore_28d",
+      "mean_abs_shap": 0.48490867018699646
     },
     {
-      "feature": "gpr_russia_monthly",
-      "mean_abs_shap": 0.0
+      "feature": "tanker_lag7d_chg",
+      "mean_abs_shap": 0.4443196654319763
     },
     {
-      "feature": "corridor_events_7d",
-      "mean_abs_shap": 0.0
+      "feature": "gpr_daily_28d_ma",
+      "mean_abs_shap": 0.4299522638320923
     },
     {
       "feature": "gpr_threat",
-      "mean_abs_shap": 0.0
+      "mean_abs_shap": 0.40796777606010437
     },
     {
-      "feature": "gpr_act",
-      "mean_abs_shap": 0.0
+      "feature": "tanker_lag1d_chg",
+      "mean_abs_shap": 0.38511884212493896
+    },
+    {
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.33108457922935486
+    },
+    {
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.3034522533416748
+    },
+    {
+      "feature": "tanker_count",
+      "mean_abs_shap": 0.27228906750679016
+    },
+    {
+      "feature": "tanker_lag1d",
+      "mean_abs_shap": 0.2648448646068573
     }
   ],
   "shap_available": true

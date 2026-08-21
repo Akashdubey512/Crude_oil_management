@@ -98,6 +98,12 @@ def run_feature_pipeline() -> pd.DataFrame:
         df = df.merge(df_ene, on="date", how="left", suffixes=("", "_ene"))
         df = df.merge(df_tgt[["date", "is_disrupted", "label_method"]], on="date", how="left")
 
+        # Lag all feature columns by 1 day to prevent target leakage and look-ahead bias
+        df = df.sort_values("date").reset_index(drop=True)
+        for col in FEATURE_COLS:
+            if col in df.columns:
+                df[col] = df[col].shift(1)
+
         # Drop warmup period (first WARMUP_DAYS rows lack sufficient rolling history)
         warmup_cutoff = corridor_dates.min()
         df = df[df["date"] >= warmup_cutoff].copy()

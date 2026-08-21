@@ -5,79 +5,79 @@
   "method": "Standardized Coefficients (proxy)",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "coefficient": 0.8788122971488752,
-      "abs_coefficient": 0.8788122971488752
-    },
-    {
-      "feature": "anomaly_flag",
-      "coefficient": 0.4608099596142742,
-      "abs_coefficient": 0.4608099596142742
-    },
-    {
-      "feature": "tanker_zscore_28d",
-      "coefficient": -0.17486318885195964,
-      "abs_coefficient": 0.17486318885195964
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "coefficient": -0.16498755994096861,
-      "abs_coefficient": 0.16498755994096861
-    },
-    {
-      "feature": "tanker_lag7d_chg",
-      "coefficient": -0.11019073940420357,
-      "abs_coefficient": 0.11019073940420357
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "coefficient": -0.10507548369341399,
-      "abs_coefficient": 0.10507548369341399
-    },
-    {
-      "feature": "tanker_count",
-      "coefficient": -0.10083203245035366,
-      "abs_coefficient": 0.10083203245035366
-    },
-    {
-      "feature": "brent_volatility_7d",
-      "coefficient": 0.07254612608569548,
-      "abs_coefficient": 0.07254612608569548
+      "feature": "tanker_28d_std",
+      "coefficient": -1.2140938108257155,
+      "abs_coefficient": 1.2140938108257155
     },
     {
       "feature": "tanker_90d_ma",
-      "coefficient": 0.05008090733407942,
-      "abs_coefficient": 0.05008090733407942
-    },
-    {
-      "feature": "crude_import_mom_change",
-      "coefficient": -0.043885598461287575,
-      "abs_coefficient": 0.043885598461287575
-    },
-    {
-      "feature": "tanker_lag1d",
-      "coefficient": 0.0429439916212866,
-      "abs_coefficient": 0.0429439916212866
-    },
-    {
-      "feature": "vessel_count",
-      "coefficient": -0.04227333604586704,
-      "abs_coefficient": 0.04227333604586704
+      "coefficient": 1.2059460377141247,
+      "abs_coefficient": 1.2059460377141247
     },
     {
       "feature": "tanker_28d_ma",
-      "coefficient": 0.04150827130241675,
-      "abs_coefficient": 0.04150827130241675
+      "coefficient": 1.0207812483518932,
+      "abs_coefficient": 1.0207812483518932
     },
     {
-      "feature": "brent_return_1d",
-      "coefficient": -0.038713904893747,
-      "abs_coefficient": 0.038713904893747
+      "feature": "brent_volatility_7d",
+      "coefficient": 0.9225018537013883,
+      "abs_coefficient": 0.9225018537013883
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "coefficient": -0.8469026272846979,
+      "abs_coefficient": 0.8469026272846979
     },
     {
       "feature": "gpr_india_monthly",
-      "coefficient": -0.0352006211008703,
-      "abs_coefficient": 0.0352006211008703
+      "coefficient": -0.8287830832757915,
+      "abs_coefficient": 0.8287830832757915
+    },
+    {
+      "feature": "refinery_throughput_tmt",
+      "coefficient": -0.7659630467625316,
+      "abs_coefficient": 0.7659630467625316
+    },
+    {
+      "feature": "crude_import_tmt",
+      "coefficient": 0.6679138277665588,
+      "abs_coefficient": 0.6679138277665588
+    },
+    {
+      "feature": "tanker_count",
+      "coefficient": 0.6409689179259175,
+      "abs_coefficient": 0.6409689179259175
+    },
+    {
+      "feature": "gpr_russia_monthly",
+      "coefficient": 0.5495372264281313,
+      "abs_coefficient": 0.5495372264281313
+    },
+    {
+      "feature": "month_cos",
+      "coefficient": -0.5213273341282074,
+      "abs_coefficient": 0.5213273341282074
+    },
+    {
+      "feature": "month_sin",
+      "coefficient": 0.5148473223504136,
+      "abs_coefficient": 0.5148473223504136
+    },
+    {
+      "feature": "day_of_week",
+      "coefficient": 0.5144000629245115,
+      "abs_coefficient": 0.5144000629245115
+    },
+    {
+      "feature": "gpr_threat",
+      "coefficient": 0.4923265720750351,
+      "abs_coefficient": 0.4923265720750351
+    },
+    {
+      "feature": "gpr_act",
+      "coefficient": -0.47941477060142595,
+      "abs_coefficient": 0.47941477060142595
     }
   ],
   "shap_available": true

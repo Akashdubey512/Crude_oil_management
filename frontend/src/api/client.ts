@@ -69,4 +69,11 @@ export const api = {
   getMetrics: () => request<any>('/api/metrics'),
   
   getModelInfo: (corridorId: string) => request<ModelInfo>(`/api/model-info?corridor_id=${corridorId.toUpperCase()}`),
+  
+  getBrentPrices: (limit = 90) => request<import('../types').BrentPriceResponse>(`/api/prices?limit=${limit}`),
+  
+  getDataStatus: () => request<import('../types').SourceStatusResponse[]>('/api/data-status'),
+  
+  getExplainability: (corridorId: string) => 
+    request<import('../types').ExplainabilityResponse>(`/api/models/explainability?corridor_id=${corridorId.toUpperCase()}`),
 };

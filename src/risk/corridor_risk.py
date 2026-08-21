@@ -97,6 +97,12 @@ def get_corridor_risk(corridor_id: str, timestamp: datetime.date) -> dict:
     df = df.merge(df_ene, on="date", how="left")
     df["date"] = pd.to_datetime(df["date"])
 
+    # Lag all feature columns by 1 day to match training alignment
+    df = df.sort_values("date").reset_index(drop=True)
+    for col in FEATURE_COLS:
+        if col in df.columns:
+            df[col] = df[col].shift(1)
+
     row = df[df["date"] == date_end]
     if row.empty:
         return {

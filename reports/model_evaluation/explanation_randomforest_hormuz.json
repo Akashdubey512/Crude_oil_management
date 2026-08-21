@@ -5,64 +5,64 @@
   "method": "SHAP TreeExplainer",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "mean_abs_shap": 0.158850850735076
-    },
-    {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 0.13278215299329132
-    },
-    {
-      "feature": "anomaly_flag",
-      "mean_abs_shap": 0.09829888162961267
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.06520053307092556
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.02610744840936609
-    },
-    {
-      "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.021151803748631254
-    },
-    {
       "feature": "vessel_count",
-      "mean_abs_shap": 0.019169336028708073
-    },
-    {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.018250836600974454
-    },
-    {
-      "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.017785520870800788
-    },
-    {
-      "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.010361726219837268
+      "mean_abs_shap": 0.06285135691462176
     },
     {
       "feature": "cargo_count",
-      "mean_abs_shap": 0.007996627299234864
+      "mean_abs_shap": 0.05428915200869339
     },
     {
-      "feature": "brent_volatility_7d",
-      "mean_abs_shap": 0.0075230411615864815
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.03282386883290953
     },
     {
-      "feature": "tanker_lag1d",
-      "mean_abs_shap": 0.0043072755494907335
+      "feature": "brent_zscore_28d",
+      "mean_abs_shap": 0.030912479155579556
+    },
+    {
+      "feature": "tanker_90d_ma",
+      "mean_abs_shap": 0.027124458376503065
     },
     {
       "feature": "tanker_14d_ma",
-      "mean_abs_shap": 0.0028030805130448895
+      "mean_abs_shap": 0.024124365753290074
+    },
+    {
+      "feature": "tanker_7d_ma",
+      "mean_abs_shap": 0.023879437470544062
+    },
+    {
+      "feature": "tanker_count",
+      "mean_abs_shap": 0.021114296746556495
     },
     {
       "feature": "brent_lag28d",
-      "mean_abs_shap": 0.0022596390411187784
+      "mean_abs_shap": 0.018959705977948795
+    },
+    {
+      "feature": "tanker_lag1d",
+      "mean_abs_shap": 0.018010424176291822
+    },
+    {
+      "feature": "tanker_lag7d_chg",
+      "mean_abs_shap": 0.017587214164533356
+    },
+    {
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.014288994530153474
+    },
+    {
+      "feature": "tanker_decline_ratio_28d",
+      "mean_abs_shap": 0.012314663341025997
+    },
+    {
+      "feature": "tanker_lag1d_chg",
+      "mean_abs_shap": 0.011825192974542587
+    },
+    {
+      "feature": "brent_volatility_28d",
+      "mean_abs_shap": 0.01066667409849924
     }
   ],
   "shap_available": true

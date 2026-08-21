@@ -5,64 +5,64 @@
   "method": "SHAP TreeExplainer",
   "global_importance": [
     {
-      "feature": "anomaly_type_drop",
-      "mean_abs_shap": 0.12127533049653523
+      "feature": "gpr_india_monthly",
+      "mean_abs_shap": 0.08430158974774385
     },
     {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 0.11279881434633136
-    },
-    {
-      "feature": "anomaly_flag",
-      "mean_abs_shap": 0.07841568475136375
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.05031377047534089
-    },
-    {
-      "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.0425711486226928
+      "feature": "gpr_daily_7d_ma",
+      "mean_abs_shap": 0.0731969049111643
     },
     {
       "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.04012677561615644
+      "mean_abs_shap": 0.06373048579724373
+    },
+    {
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.0369026199289054
+    },
+    {
+      "feature": "tanker_decline_ratio_28d",
+      "mean_abs_shap": 0.03245261022876888
+    },
+    {
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.027056616787045233
+    },
+    {
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 0.025479512602100476
     },
     {
       "feature": "tanker_count",
-      "mean_abs_shap": 0.017960236116441514
+      "mean_abs_shap": 0.025129196290089886
     },
     {
-      "feature": "gpr_india_monthly",
-      "mean_abs_shap": 0.015825370848415437
+      "feature": "tanker_lag1d_chg",
+      "mean_abs_shap": 0.022857826799351687
     },
     {
-      "feature": "tanker_lag1d",
-      "mean_abs_shap": 0.008575042286439329
+      "feature": "brent_volatility_28d",
+      "mean_abs_shap": 0.017145332425856124
+    },
+    {
+      "feature": "tanker_zscore_28d",
+      "mean_abs_shap": 0.01589684278913596
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "mean_abs_shap": 0.0136694897771035
     },
     {
       "feature": "vessel_count",
-      "mean_abs_shap": 0.005308572784706409
+      "mean_abs_shap": 0.013105605022137005
     },
     {
-      "feature": "crude_import_mom_change",
-      "mean_abs_shap": 0.003759507716127215
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.012690927543480163
     },
     {
-      "feature": "tanker_7d_ma",
-      "mean_abs_shap": 0.0031310362985738837
-    },
-    {
-      "feature": "tanker_lag7d",
-      "mean_abs_shap": 0.0028854389385485598
-    },
-    {
-      "feature": "tanker_90d_ma",
-      "mean_abs_shap": 0.002167058681144319
-    },
-    {
-      "feature": "brent_return_1d",
-      "mean_abs_shap": 0.0019946827689333087
+      "feature": "brent_zscore_28d",
+      "mean_abs_shap": 0.010375031599109338
     }
   ],
   "shap_available": true
