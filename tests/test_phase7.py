@@ -70,7 +70,7 @@ class TestDataStatusAPI:
 
 # ─── Model Explainability ─────────────────────────────────────────────────────
 class TestExplainabilityAPI:
-    @pytest.mark.parametrize("corridor", ["HORMUZ", "BAB_EL_MANDEB", "SUEZ"])
+    @pytest.mark.parametrize("corridor", ["HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"])
     def test_explainability_returns_200(self, corridor):
         r = client.get(f"/api/models/explainability?corridor_id={corridor}")
         assert r.status_code == 200
@@ -80,11 +80,13 @@ class TestExplainabilityAPI:
         assert "global_importance" in body
         assert isinstance(body["global_importance"], list)
 
-    def test_red_sea_explainability_returns_404(self):
-        # RED_SEA has no trained model/explainability
+    def test_red_sea_explainability_returns_200(self):
+        # RED_SEA now has a trained model and explainability
         r = client.get("/api/models/explainability?corridor_id=RED_SEA")
-        assert r.status_code == 404
-        assert "Explainability unavailable" in r.json()["detail"]
+        assert r.status_code == 200
+        body = r.json()
+        assert body["corridor_id"] == "RED_SEA"
+        assert len(body["global_importance"]) > 0
 
     def test_invalid_corridor_explainability_returns_404(self):
         r = client.get("/api/models/explainability?corridor_id=MALACCA")

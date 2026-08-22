@@ -84,18 +84,18 @@ class TestCorridorComparisonAPI:
             if item["corridor_id"] == "RED_SEA":
                 red_sea_item = item
 
-        # Verify RED_SEA constraints
+        # Verify RED_SEA constraints (now fully modeled in Phase 10)
         assert red_sea_item is not None
-        assert red_sea_item["risk_level"] == "UNKNOWN"
-        assert red_sea_item["probability"] is None
-        assert red_sea_item["risk_score"] is None
-        assert red_sea_item["vessel_volume_status"] == "UNKNOWN"
-        assert red_sea_item["geopolitical_status"] == "UNKNOWN"
+        assert red_sea_item["risk_level"] in ["LOW", "MODERATE", "HIGH", "CRITICAL"]
+        assert isinstance(red_sea_item["probability"], float)
+        assert isinstance(red_sea_item["risk_score"], float)
+        assert red_sea_item["vessel_volume_status"] in ["NORMAL", "DROP", "CONGESTION", "UNKNOWN"]
+        assert red_sea_item["geopolitical_status"] in ["NORMAL", "ELEVATED", "UNKNOWN"]
 
 
 # ─── Scenario Simulation API ──────────────────────────────────────────────────
 class TestScenarioSimulationAPI:
-    @pytest.mark.parametrize("corridor", ["HORMUZ", "BAB_EL_MANDEB", "SUEZ"])
+    @pytest.mark.parametrize("corridor", ["HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"])
     def test_simulation_success(self, corridor):
         payload = {
             "corridor_id": corridor,
@@ -125,15 +125,17 @@ class TestScenarioSimulationAPI:
         assert len(body["explanation"]) > 0
         assert len(body["recommendation"]) > 0
 
-    def test_simulation_red_sea_returns_400(self):
+    def test_simulation_red_sea_success(self):
         payload = {
             "corridor_id": "RED_SEA",
             "tanker_transit_multiplier": 0.8,
         }
         r = client.post("/api/scenarios/simulate", json=payload)
-        # Should fail because Red Sea has no model
-        assert r.status_code == 400
-        assert "Scenario simulation only supported for modeled corridors" in r.json()["detail"]
+        # Should succeed because Red Sea is now fully modeled in Phase 10
+        assert r.status_code == 200
+        body = r.json()
+        assert body["corridor_id"] == "RED_SEA"
+        assert body["simulated_probability"] is not None
 
     def test_simulation_mutates_correctly(self):
         payload = {

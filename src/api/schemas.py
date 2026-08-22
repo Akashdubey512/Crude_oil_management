@@ -177,3 +177,111 @@ class ScenarioSimulationResponse(BaseModel):
     recommendation: str = Field(..., description="Recommended action based on the model's actual risk drivers and active features")
 
 
+# --- Phase 9 Schemas ---
+
+class ModelEvaluationMetrics(BaseModel):
+    roc_auc: Optional[float] = None
+    pr_auc: Optional[float] = None
+    accuracy: Optional[float] = None
+    precision: Optional[float] = None
+    recall: Optional[float] = None
+    f1: Optional[float] = None
+    specificity: Optional[float] = None
+    mcc: Optional[float] = None
+    brier_score: Optional[float] = None
+    log_loss: Optional[float] = None
+
+
+class CalibrationBinEntry(BaseModel):
+    bin_midpoint: float
+    predicted_prob: float
+    observed_freq: float
+
+
+class CalibrationInfo(BaseModel):
+    status: str
+    ece: Optional[float] = None
+    curve: List[CalibrationBinEntry] = []
+
+
+class ModelEvaluationResponse(BaseModel):
+    model_version: str
+    evaluation_period: Dict[str, str]
+    sample_count: int
+    positive_count: int
+    negative_count: int
+    metrics: ModelEvaluationMetrics
+    calibration: CalibrationInfo
+    data_quality: Dict[str, Any]
+
+
+class DriftFeatureItem(BaseModel):
+    feature: str
+    drift_method: str
+    drift_score: float
+    threshold: float
+    severity: str
+    recommendation: Optional[str] = None
+
+
+class DriftResponseSummary(BaseModel):
+    low: int
+    medium: int
+    high: int
+
+
+class DriftResponse(BaseModel):
+    status: str
+    overall_drift: str
+    features: List[DriftFeatureItem]
+    summary: DriftResponseSummary
+
+
+class ModelHealthResponse(BaseModel):
+    status: str
+    performance_status: str
+    calibration_status: str
+    drift_status: str
+    data_quality_status: str
+    freshness_status: str
+    recommendations: List[str]
+
+
+class PredictionRecordResponse(BaseModel):
+    id: int
+    corridor: str
+    timestamp: str
+    model_version: str
+    predicted_probability: float
+    predicted_class: int
+    confidence: Optional[float] = None
+    actual_outcome: Optional[int] = None
+    outcome_available: bool
+    created_at: str
+
+
+# --- Phase 11 MLOps Schemas ---
+class PromotionRequest(BaseModel):
+    challenger_key: str = Field(..., description="Unique registry key of the challenger model to promote")
+    reason: str = Field(..., description="Audit rationale for model promotion")
+
+class RollbackRequest(BaseModel):
+    rollback_key: str = Field(..., description="Registry key of the historic model version to rollback to")
+    reason: str = Field(..., description="Audit rationale for model rollback")
+
+class RetrainStatusResponse(BaseModel):
+    corridor: str
+    retrain_recommended: bool
+    reasons: List[str]
+    severity: str
+
+class PromotionResponse(BaseModel):
+    success: bool
+    detail: str
+
+class RollbackResponse(BaseModel):
+    success: bool
+    detail: str
+
+
+

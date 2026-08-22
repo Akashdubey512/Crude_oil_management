@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.api.routes import health, corridors, risk, events, prices, data_status, explainability, scenarios
+from src.api.routes import health, corridors, risk, events, prices, data_status, explainability, scenarios, monitoring
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
 LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()
@@ -30,6 +30,13 @@ async def lifespan(app: FastAPI):
     logger.info(f"  Environment : {os.getenv('ENVIRONMENT', 'development')}")
     logger.info(f"  Model dir   : {os.getenv('MODEL_DIR', 'models/')}")
     logger.info(f"  Data dir    : {os.getenv('DATA_DIR', 'data/')}")
+    # Phase 9: Initialize SQLite prediction tracking database
+    try:
+        from src.api.database import init_database
+        init_database()
+        logger.info("  Phase 9 database initialized successfully.")
+    except Exception as db_exc:
+        logger.warning(f"  Phase 9 database initialization skipped: {db_exc}")
     yield
     logger.info("=== Energy Resilience API shutting down ===")
 
@@ -87,3 +94,4 @@ app.include_router(prices.router, prefix="/api")
 app.include_router(data_status.router, prefix="/api")
 app.include_router(explainability.router, prefix="/api")
 app.include_router(scenarios.router, prefix="/api")
+app.include_router(monitoring.router, prefix="/api")
