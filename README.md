@@ -114,8 +114,9 @@ Open your browser and navigate to: http://localhost:5173
 | Phase 11 | Challenger-vs-Champion, Promotion, Rollback, Retraining | COMPLETE |
 | Phase 12 | Observability, Postgres, Rate Limiting, Lifespan Probes | COMPLETE |
 | Phase 13 | Enterprise Security, API Security & Production Deployment Hardening | COMPLETE |
+| Phase 14 | Premium Cinematic Maritime Command Center & Landing Experience | COMPLETE |
 
-**Backend:** 282 tests passing. **Frontend:** 16 tests passing.
+**Backend:** 282 tests passing. **Frontend:** 30 tests passing.
 
 ## Phase 12 — Observability & Reliability Engineering
 
@@ -144,3 +145,15 @@ See full documentation in `docs/phase-12-production.md`, `docs/observability.md`
 
 See full documentation in `docs/phase-13-security-audit.md`.
 
+---
+
+## Phase 14 — Premium Geopolitical Maritime Intel Command Center & Landing
+
+- **Cinematic Landing Page** — Engaging entry experience featuring vector radar map sweeps, visual radar pulses at major chokepoints (Red Sea, Hormuz), and a live real-time Operations status bar showing Brent Crude fluctuations and API health metrics.
+- **Advanced Geospatial Command Map** — Dynamic Leaflet intelligence overlay featuring customized color coding for low/moderate/high corridor risk, pulsing chokepoint indicator overlays, and comprehensive toggles for oil facilities, refineries, shipping traffic and geopolitical GDELT events.
+- **Operational Intelligence Drawer** — Side panel featuring a 5-vector risk decomposition horizontal Recharts bar layout, deep explainable AI SHAP waterfall attribution panel, and explicit notifications indicating proxy data limitations (* Bab el-Mandeb traffic proxy).
+- **MLOps Diagnostics & Governance Portal** — A professional monitoring workspace exhibiting ROC-AUC and PR-AUC performance metrics, feature drift tables with covariate KS indicators, SRE metrics (throughput, latencies, CPU/RAM sparklines), and role-gated model promotion controls.
+- **Robust Client Credentials Manager** — Security center interface displaying live session status, authorized keys inventory, and IP audit trails with instant token revocation capabilities.
+- **Vite & TypeScript Compilation Hardened** — Fully optimized production code compilation passing tsc verification with 30 high-fidelity unit and integration tests passing.
+
+See full documentation in `docs/phase-14-frontend-transformation.md`.

@@ -1,0 +1,37 @@
+:root {
+  /* Color System */
+  --bg-primary: #030712;
+  --bg-secondary: #0b0f19;
+  --bg-tertiary: #111827;
+  --bg-surface: #1f2937;
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  
+  /* Semantic Accents */
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-amber: #f59e0b;
+  --accent-emerald: #10b981;
+  --accent-rose: #f43f5e;
+
+  /* Risk Semantics */
+  --risk-low: #10b981;
+  --risk-moderate: #f59e0b;
+  --risk-high: #ef4444;
+  --risk-critical: #b91c1c;
+  --risk-unknown: #6b7280;
+  --risk-unavailable: #4b5563;
+
+  /* Status Semantics */
+  --status-success: #10b981;
+  --status-warning: #f59e0b;
+  --status-danger: #ef4444;
+  --status-info: #3b82f6;
+
+  /* Glassmorphism Defaults */
+  --glass-bg: rgba(11, 15, 25, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+}
