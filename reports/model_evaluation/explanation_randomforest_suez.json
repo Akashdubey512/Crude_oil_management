@@ -6,63 +6,63 @@
   "global_importance": [
     {
       "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.09799208290894455
+      "mean_abs_shap": 0.10577637081379007
     },
     {
       "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.06345464584800826
-    },
-    {
-      "feature": "brent_volatility_28d",
-      "mean_abs_shap": 0.03939894537156398
+      "mean_abs_shap": 0.06537153403902406
     },
     {
       "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.03532883585880421
+      "mean_abs_shap": 0.03408335505019315
+    },
+    {
+      "feature": "brent_volatility_28d",
+      "mean_abs_shap": 0.03170052600754235
     },
     {
       "feature": "gpr_saudi_monthly",
-      "mean_abs_shap": 0.03504070149800139
-    },
-    {
-      "feature": "brent_price",
-      "mean_abs_shap": 0.02844434380364007
+      "mean_abs_shap": 0.02971400698677798
     },
     {
       "feature": "crude_import_mom_change",
-      "mean_abs_shap": 0.025915713726104538
+      "mean_abs_shap": 0.026121504217800927
     },
     {
-      "feature": "tanker_lag7d",
-      "mean_abs_shap": 0.020948829755437073
+      "feature": "brent_price",
+      "mean_abs_shap": 0.020692867676235068
     },
     {
       "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.018462708188145924
-    },
-    {
-      "feature": "vessel_count",
-      "mean_abs_shap": 0.017276719953757843
-    },
-    {
-      "feature": "gpr_daily_28d_std",
-      "mean_abs_shap": 0.0171297186384197
+      "mean_abs_shap": 0.019506288495476608
     },
     {
       "feature": "gpr_act",
-      "mean_abs_shap": 0.014939436231191039
+      "mean_abs_shap": 0.019139606142898502
     },
     {
-      "feature": "cargo_count",
-      "mean_abs_shap": 0.013716560036791118
+      "feature": "tanker_lag7d",
+      "mean_abs_shap": 0.01860614817368773
     },
     {
-      "feature": "brent_28d_ma",
-      "mean_abs_shap": 0.012150437362703681
+      "feature": "gpr_daily_28d_std",
+      "mean_abs_shap": 0.017800738093730267
     },
     {
       "feature": "gpr_daily",
-      "mean_abs_shap": 0.011618545511280592
+      "mean_abs_shap": 0.013570082442114294
+    },
+    {
+      "feature": "vessel_count",
+      "mean_abs_shap": 0.012586006447160904
+    },
+    {
+      "feature": "cargo_count",
+      "mean_abs_shap": 0.012521182717323462
+    },
+    {
+      "feature": "brent_return_7d",
+      "mean_abs_shap": 0.011242317935613803
     }
   ],
   "shap_available": true

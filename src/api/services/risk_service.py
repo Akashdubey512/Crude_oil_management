@@ -43,6 +43,13 @@ MODEL_LIMITATIONS = [
     "Monthly PPAC indicators are lagged by 1 month — supply-side signals reflect previous month's conditions.",
 ]
 
+REDSEA_LIMITATIONS = [
+    "RED_SEA model trained on Bab el-Mandeb (chokepoint4) traffic as a proxy for Red Sea corridor — PortWatch has no direct Red Sea chokepoint.",
+    "Disruption labels for RED_SEA derived from Houthi incident reports (70 events, Nov 2023–Oct 2024) and GDELT armed conflict events (2024–2026).",
+    "RED_SEA has 14 confirmed disruption events in training (vs 2.5k negatives) — ~0.5% positive rate. Model is tuned for recall.",
+    "GDELT Red Sea events filtered to armed conflict (root codes 18,19), military escalation (13), sanctions (17) only.",
+]
+
 
 def _get_data_freshness() -> Dict[str, str]:
     """Returns the most recent data date from each key data source."""
@@ -137,29 +144,8 @@ def get_risk_snapshot(corridor_id: str, prediction_date: Optional[str] = None) -
         else:
             target_date = datetime.date.today()
 
-    # RED_SEA: no independent model — return structured unavailability response
-    if corridor_id.upper() == "RED_SEA":
-        return {
-            "corridor": "RED_SEA",
-            "risk_score": None,
-            "risk_level": "UNKNOWN",
-            "probability": None,
-            "prediction_date": str(target_date),
-            "model_version": "N/A",
-            "data_freshness": _get_data_freshness(),
-            "risk_decomposition": {
-                "geopolitical": None,
-                "maritime": None,
-                "energy_market": None,
-                "infrastructure": None,
-                "historical_pattern": None,
-            },
-            "top_factors": [],
-            "limitations": [
-                "No independent trained model for RED_SEA.",
-                "RED_SEA geopolitical events are accessible via /api/events/RED_SEA.",
-            ],
-        }
+    # Pick limitations based on corridor
+    corridor_limitations = REDSEA_LIMITATIONS + MODEL_LIMITATIONS if corridor_id.upper() == "RED_SEA" else MODEL_LIMITATIONS
 
     # Load risk via Phase 4 service
     from src.risk.service import get_corridor_risk_with_explanation
@@ -181,7 +167,7 @@ def get_risk_snapshot(corridor_id: str, prediction_date: Optional[str] = None) -
 
     top_factors = risk_rec.get("top_risk_factors") or _get_top_factors(corridor_id.upper())
 
-    return {
+    snapshot = {
         "corridor": corridor_id.upper(),
         "risk_score": round(prob * 100, 4),   # Scale to 0–100 risk score
         "risk_level": risk_rec.get("risk_level", "UNKNOWN"),
@@ -191,8 +177,27 @@ def get_risk_snapshot(corridor_id: str, prediction_date: Optional[str] = None) -
         "data_freshness": _get_data_freshness(),
         "risk_decomposition": decomp,
         "top_factors": top_factors,
-        "limitations": MODEL_LIMITATIONS,
+        "limitations": corridor_limitations,
     }
+
+    # Phase 9: Log this prediction to the persistent audit database (fire-and-forget)
+    try:
+        from src.api.database import log_prediction
+        model_ver = risk_rec.get("model_version", "1.0")
+        predicted_class = 1 if prob >= 0.5 else 0
+        log_prediction(
+            corridor=corridor_id.upper(),
+            timestamp=str(target_date),
+            model_version=model_ver,
+            predicted_probability=prob,
+            predicted_class=predicted_class,
+            feature_snapshot={"top_factors": top_factors},
+        )
+    except Exception:
+        pass  # Never fail risk API due to logging errors
+
+    return snapshot
+
 
 
 def get_all_risk_snapshots() -> List[Dict[str, Any]]:

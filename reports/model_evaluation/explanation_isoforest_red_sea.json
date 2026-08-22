@@ -1,0 +1,80 @@
+{
+  "model_name": "IsolationForest",
+  "corridor_id": "RED_SEA",
+  "importance_type": "permutation_anomaly_score_change",
+  "note": "GPR anomaly baseline model. Positive labels only in test period (Jul\u2013Aug 2026).",
+  "global_importance": [
+    {
+      "feature": "gpr_china_monthly",
+      "mean_abs_shap": 0.008514
+    },
+    {
+      "feature": "gpr_russia_monthly",
+      "mean_abs_shap": 0.007999
+    },
+    {
+      "feature": "gpr_saudi_monthly",
+      "mean_abs_shap": 0.007957
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "mean_abs_shap": 0.007942
+    },
+    {
+      "feature": "gpr_daily",
+      "mean_abs_shap": 0.007908
+    },
+    {
+      "feature": "gpr_daily_28d_std",
+      "mean_abs_shap": 0.007847
+    },
+    {
+      "feature": "gpr_india_monthly",
+      "mean_abs_shap": 0.007757
+    },
+    {
+      "feature": "gpr_daily_7d_ma",
+      "mean_abs_shap": 0.007359
+    },
+    {
+      "feature": "day_of_week",
+      "mean_abs_shap": 0.006853
+    },
+    {
+      "feature": "month_cos",
+      "mean_abs_shap": 0.006418
+    },
+    {
+      "feature": "gpr_act",
+      "mean_abs_shap": 0.006191
+    },
+    {
+      "feature": "gpr_threat",
+      "mean_abs_shap": 0.006053
+    },
+    {
+      "feature": "month_sin",
+      "mean_abs_shap": 0.005424
+    },
+    {
+      "feature": "corridor_events_1d",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "corridor_events_7d",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "corridor_events_28d",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "bab_events_7d",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "bab_events_28d",
+      "mean_abs_shap": 0.0
+    }
+  ]
+}

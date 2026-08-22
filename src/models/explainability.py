@@ -120,7 +120,7 @@ def explain_all_models(features_path: str = None) -> None:
 
     df = pd.read_csv(features_path)
 
-    for corridor_id in ["HORMUZ", "BAB_EL_MANDEB", "SUEZ"]:
+    for corridor_id in ["HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"]:
         df_corr = df[df["corridor_id"] == corridor_id]
         X_explain = df_corr[df_corr["split"] == "test"][FEATURE_COLS].copy()
 
@@ -139,3 +139,4 @@ def explain_all_models(features_path: str = None) -> None:
 
             print(f"\n[{corridor_id}] Explaining {model_name}...")
             explain_model(artifact, X_explain, model_name, corridor_id)
+

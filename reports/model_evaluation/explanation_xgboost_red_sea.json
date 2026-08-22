@@ -1,0 +1,69 @@
+{
+  "model_name": "XGBoost",
+  "corridor_id": "RED_SEA",
+  "n_samples_explained": 138,
+  "method": "SHAP TreeExplainer",
+  "global_importance": [
+    {
+      "feature": "gpr_india_monthly",
+      "mean_abs_shap": 1.169137716293335
+    },
+    {
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 1.080815315246582
+    },
+    {
+      "feature": "tanker_lag7d_chg",
+      "mean_abs_shap": 0.9046155214309692
+    },
+    {
+      "feature": "tanker_decline_ratio_28d",
+      "mean_abs_shap": 0.5857818126678467
+    },
+    {
+      "feature": "brent_volatility_28d",
+      "mean_abs_shap": 0.5824251174926758
+    },
+    {
+      "feature": "tanker_lag1d_chg",
+      "mean_abs_shap": 0.5117276906967163
+    },
+    {
+      "feature": "gpr_daily_7d_ma",
+      "mean_abs_shap": 0.4877328872680664
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "mean_abs_shap": 0.42972391843795776
+    },
+    {
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.38409167528152466
+    },
+    {
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.3827618658542633
+    },
+    {
+      "feature": "corridor_events_1d",
+      "mean_abs_shap": 0.37196084856987
+    },
+    {
+      "feature": "brent_lag7d",
+      "mean_abs_shap": 0.34481167793273926
+    },
+    {
+      "feature": "corridor_disruption_28d",
+      "mean_abs_shap": 0.3342772126197815
+    },
+    {
+      "feature": "brent_zscore_28d",
+      "mean_abs_shap": 0.29803037643432617
+    },
+    {
+      "feature": "brent_volatility_7d",
+      "mean_abs_shap": 0.26593223214149475
+    }
+  ],
+  "shap_available": true
+}

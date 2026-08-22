@@ -6,63 +6,63 @@
   "global_importance": [
     {
       "feature": "gpr_india_monthly",
-      "mean_abs_shap": 0.08430158974774385
-    },
-    {
-      "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.0731969049111643
+      "mean_abs_shap": 0.0816941512795828
     },
     {
       "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.06373048579724373
+      "mean_abs_shap": 0.06018097393372647
     },
     {
-      "feature": "brent_lag28d",
-      "mean_abs_shap": 0.0369026199289054
+      "feature": "gpr_daily_7d_ma",
+      "mean_abs_shap": 0.05851738917377488
     },
     {
       "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.03245261022876888
+      "mean_abs_shap": 0.032438419331615335
     },
     {
-      "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.027056616787045233
-    },
-    {
-      "feature": "brent_28d_ma",
-      "mean_abs_shap": 0.025479512602100476
-    },
-    {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.025129196290089886
+      "feature": "brent_lag28d",
+      "mean_abs_shap": 0.02930415705655589
     },
     {
       "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.022857826799351687
+      "mean_abs_shap": 0.029060700468625692
+    },
+    {
+      "feature": "tanker_count",
+      "mean_abs_shap": 0.02898449906354496
+    },
+    {
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 0.028859052686677957
     },
     {
       "feature": "brent_volatility_28d",
-      "mean_abs_shap": 0.017145332425856124
+      "mean_abs_shap": 0.024079095023058973
     },
     {
-      "feature": "tanker_zscore_28d",
-      "mean_abs_shap": 0.01589684278913596
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.023194965235309374
     },
     {
       "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.0136694897771035
+      "mean_abs_shap": 0.02166090360975158
+    },
+    {
+      "feature": "tanker_zscore_28d",
+      "mean_abs_shap": 0.014298406932295707
     },
     {
       "feature": "vessel_count",
-      "mean_abs_shap": 0.013105605022137005
+      "mean_abs_shap": 0.013802970806483355
+    },
+    {
+      "feature": "global_events_28d",
+      "mean_abs_shap": 0.012969959163690934
     },
     {
       "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.012690927543480163
-    },
-    {
-      "feature": "brent_zscore_28d",
-      "mean_abs_shap": 0.010375031599109338
+      "mean_abs_shap": 0.009535179865556534
     }
   ],
   "shap_available": true

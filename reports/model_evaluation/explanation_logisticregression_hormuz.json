@@ -6,78 +6,78 @@
   "global_importance": [
     {
       "feature": "tanker_28d_std",
-      "coefficient": -1.3327926237943566,
-      "abs_coefficient": 1.3327926237943566
+      "coefficient": -1.3251270923406735,
+      "abs_coefficient": 1.3251270923406735
     },
     {
       "feature": "brent_zscore_28d",
-      "coefficient": -1.1686282238491272,
-      "abs_coefficient": 1.1686282238491272
+      "coefficient": -1.2404660588911385,
+      "abs_coefficient": 1.2404660588911385
     },
     {
       "feature": "tanker_14d_ma",
-      "coefficient": 0.871725658273189,
-      "abs_coefficient": 0.871725658273189
+      "coefficient": 0.9444750268467387,
+      "abs_coefficient": 0.9444750268467387
     },
     {
       "feature": "brent_return_7d",
-      "coefficient": 0.810350112168812,
-      "abs_coefficient": 0.810350112168812
-    },
-    {
-      "feature": "tanker_28d_ma",
-      "coefficient": 0.6379164370891823,
-      "abs_coefficient": 0.6379164370891823
-    },
-    {
-      "feature": "brent_lag28d",
-      "coefficient": -0.6102358596006636,
-      "abs_coefficient": 0.6102358596006636
-    },
-    {
-      "feature": "gpr_act",
-      "coefficient": 0.570991940337766,
-      "abs_coefficient": 0.570991940337766
+      "coefficient": 0.881139114609984,
+      "abs_coefficient": 0.881139114609984
     },
     {
       "feature": "refinery_mom_change",
-      "coefficient": 0.5528518012653447,
-      "abs_coefficient": 0.5528518012653447
+      "coefficient": 0.7365303117752174,
+      "abs_coefficient": 0.7365303117752174
     },
     {
-      "feature": "tanker_decline_ratio_28d",
-      "coefficient": -0.49678950431573315,
-      "abs_coefficient": 0.49678950431573315
+      "feature": "tanker_28d_ma",
+      "coefficient": 0.5869822065168343,
+      "abs_coefficient": 0.5869822065168343
     },
     {
-      "feature": "tanker_90d_ma",
-      "coefficient": 0.49506229643952654,
-      "abs_coefficient": 0.49506229643952654
+      "feature": "gpr_act",
+      "coefficient": 0.5396059747101041,
+      "abs_coefficient": 0.5396059747101041
+    },
+    {
+      "feature": "global_events_28d",
+      "coefficient": 0.5331353056213369,
+      "abs_coefficient": 0.5331353056213369
     },
     {
       "feature": "cargo_count",
-      "coefficient": -0.4921668615177527,
-      "abs_coefficient": 0.4921668615177527
+      "coefficient": -0.5088438560352924,
+      "abs_coefficient": 0.5088438560352924
     },
     {
-      "feature": "tanker_lag7d",
-      "coefficient": -0.43699407137681934,
-      "abs_coefficient": 0.43699407137681934
+      "feature": "tanker_90d_ma",
+      "coefficient": 0.4526664605267606,
+      "abs_coefficient": 0.4526664605267606
     },
     {
-      "feature": "gpr_daily",
-      "coefficient": -0.41732799941323157,
-      "abs_coefficient": 0.41732799941323157
+      "feature": "tanker_decline_ratio_28d",
+      "coefficient": -0.45111464351788705,
+      "abs_coefficient": 0.45111464351788705
     },
     {
       "feature": "consumption_mom_change",
-      "coefficient": -0.4152969428511865,
-      "abs_coefficient": 0.4152969428511865
+      "coefficient": -0.40593330156514573,
+      "abs_coefficient": 0.40593330156514573
     },
     {
-      "feature": "month_sin",
-      "coefficient": 0.39549282984833256,
-      "abs_coefficient": 0.39549282984833256
+      "feature": "brent_lag7d",
+      "coefficient": -0.4055805593302068,
+      "abs_coefficient": 0.4055805593302068
+    },
+    {
+      "feature": "tanker_lag7d",
+      "coefficient": -0.40385523641154053,
+      "abs_coefficient": 0.40385523641154053
+    },
+    {
+      "feature": "brent_lag28d",
+      "coefficient": -0.3951501223261562,
+      "abs_coefficient": 0.3951501223261562
     }
   ],
   "shap_available": true

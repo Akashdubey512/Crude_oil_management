@@ -5,79 +5,79 @@
   "method": "Standardized Coefficients (proxy)",
   "global_importance": [
     {
-      "feature": "tanker_28d_std",
-      "coefficient": -1.2140938108257155,
-      "abs_coefficient": 1.2140938108257155
+      "feature": "tanker_90d_ma",
+      "coefficient": 1.2626630581642404,
+      "abs_coefficient": 1.2626630581642404
     },
     {
-      "feature": "tanker_90d_ma",
-      "coefficient": 1.2059460377141247,
-      "abs_coefficient": 1.2059460377141247
+      "feature": "tanker_28d_std",
+      "coefficient": -1.198959634475386,
+      "abs_coefficient": 1.198959634475386
     },
     {
       "feature": "tanker_28d_ma",
-      "coefficient": 1.0207812483518932,
-      "abs_coefficient": 1.0207812483518932
+      "coefficient": 0.9462771221303271,
+      "abs_coefficient": 0.9462771221303271
     },
     {
       "feature": "brent_volatility_7d",
-      "coefficient": 0.9225018537013883,
-      "abs_coefficient": 0.9225018537013883
-    },
-    {
-      "feature": "gpr_daily_28d_ma",
-      "coefficient": -0.8469026272846979,
-      "abs_coefficient": 0.8469026272846979
+      "coefficient": 0.9259403505841888,
+      "abs_coefficient": 0.9259403505841888
     },
     {
       "feature": "gpr_india_monthly",
-      "coefficient": -0.8287830832757915,
-      "abs_coefficient": 0.8287830832757915
+      "coefficient": -0.811590684761731,
+      "abs_coefficient": 0.811590684761731
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "coefficient": -0.7648539680509114,
+      "abs_coefficient": 0.7648539680509114
     },
     {
       "feature": "refinery_throughput_tmt",
-      "coefficient": -0.7659630467625316,
-      "abs_coefficient": 0.7659630467625316
+      "coefficient": -0.7343547573609146,
+      "abs_coefficient": 0.7343547573609146
     },
     {
       "feature": "crude_import_tmt",
-      "coefficient": 0.6679138277665588,
-      "abs_coefficient": 0.6679138277665588
-    },
-    {
-      "feature": "tanker_count",
-      "coefficient": 0.6409689179259175,
-      "abs_coefficient": 0.6409689179259175
-    },
-    {
-      "feature": "gpr_russia_monthly",
-      "coefficient": 0.5495372264281313,
-      "abs_coefficient": 0.5495372264281313
-    },
-    {
-      "feature": "month_cos",
-      "coefficient": -0.5213273341282074,
-      "abs_coefficient": 0.5213273341282074
+      "coefficient": 0.7296510034807834,
+      "abs_coefficient": 0.7296510034807834
     },
     {
       "feature": "month_sin",
-      "coefficient": 0.5148473223504136,
-      "abs_coefficient": 0.5148473223504136
+      "coefficient": 0.6065619604784409,
+      "abs_coefficient": 0.6065619604784409
+    },
+    {
+      "feature": "tanker_count",
+      "coefficient": 0.5859874683899,
+      "abs_coefficient": 0.5859874683899
+    },
+    {
+      "feature": "gpr_russia_monthly",
+      "coefficient": 0.5296559854872017,
+      "abs_coefficient": 0.5296559854872017
     },
     {
       "feature": "day_of_week",
-      "coefficient": 0.5144000629245115,
-      "abs_coefficient": 0.5144000629245115
+      "coefficient": 0.5223009091400014,
+      "abs_coefficient": 0.5223009091400014
     },
     {
-      "feature": "gpr_threat",
-      "coefficient": 0.4923265720750351,
-      "abs_coefficient": 0.4923265720750351
+      "feature": "month_cos",
+      "coefficient": -0.505436252907941,
+      "abs_coefficient": 0.505436252907941
     },
     {
       "feature": "gpr_act",
-      "coefficient": -0.47941477060142595,
-      "abs_coefficient": 0.47941477060142595
+      "coefficient": -0.49458889913077436,
+      "abs_coefficient": 0.49458889913077436
+    },
+    {
+      "feature": "gpr_threat",
+      "coefficient": 0.48495328939136434,
+      "abs_coefficient": 0.48495328939136434
     }
   ],
   "shap_available": true

@@ -1,0 +1,84 @@
+{
+  "model_name": "LogisticRegression",
+  "corridor_id": "RED_SEA",
+  "n_samples_explained": 138,
+  "method": "Standardized Coefficients (proxy)",
+  "global_importance": [
+    {
+      "feature": "tanker_28d_ma",
+      "coefficient": 2.0281248870806334,
+      "abs_coefficient": 2.0281248870806334
+    },
+    {
+      "feature": "tanker_28d_std",
+      "coefficient": -1.6465120826133102,
+      "abs_coefficient": 1.6465120826133102
+    },
+    {
+      "feature": "brent_volatility_28d",
+      "coefficient": -1.428635560559782,
+      "abs_coefficient": 1.428635560559782
+    },
+    {
+      "feature": "crude_import_tmt",
+      "coefficient": 1.3291056649928137,
+      "abs_coefficient": 1.3291056649928137
+    },
+    {
+      "feature": "gpr_india_monthly",
+      "coefficient": -1.1964364083168544,
+      "abs_coefficient": 1.1964364083168544
+    },
+    {
+      "feature": "tanker_90d_ma",
+      "coefficient": 1.1905828328689219,
+      "abs_coefficient": 1.1905828328689219
+    },
+    {
+      "feature": "crude_import_mom_change",
+      "coefficient": -0.9414103430652992,
+      "abs_coefficient": 0.9414103430652992
+    },
+    {
+      "feature": "tanker_count",
+      "coefficient": 0.9366110286326473,
+      "abs_coefficient": 0.9366110286326473
+    },
+    {
+      "feature": "brent_volatility_7d",
+      "coefficient": 0.9238459397723107,
+      "abs_coefficient": 0.9238459397723107
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "coefficient": 0.8044017483529097,
+      "abs_coefficient": 0.8044017483529097
+    },
+    {
+      "feature": "tanker_lag7d",
+      "coefficient": -0.7482094851883071,
+      "abs_coefficient": 0.7482094851883071
+    },
+    {
+      "feature": "cargo_count",
+      "coefficient": -0.7431904692344916,
+      "abs_coefficient": 0.7431904692344916
+    },
+    {
+      "feature": "corridor_events_1d",
+      "coefficient": 0.7074171669916797,
+      "abs_coefficient": 0.7074171669916797
+    },
+    {
+      "feature": "day_of_week",
+      "coefficient": 0.690380871375499,
+      "abs_coefficient": 0.690380871375499
+    },
+    {
+      "feature": "tanker_7d_ma",
+      "coefficient": -0.6832463856002323,
+      "abs_coefficient": 0.6832463856002323
+    }
+  ],
+  "shap_available": true
+}

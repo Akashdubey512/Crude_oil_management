@@ -6,63 +6,63 @@
   "global_importance": [
     {
       "feature": "gpr_daily_7d_ma",
-      "mean_abs_shap": 0.9694675803184509
+      "mean_abs_shap": 0.8801694512367249
     },
     {
       "feature": "brent_price",
-      "mean_abs_shap": 0.822100043296814
+      "mean_abs_shap": 0.7716246247291565
     },
     {
       "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.8134790658950806
+      "mean_abs_shap": 0.7527183890342712
     },
     {
       "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.718137800693512
+      "mean_abs_shap": 0.6372372508049011
     },
     {
       "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.6274195313453674
+      "mean_abs_shap": 0.634920060634613
+    },
+    {
+      "feature": "global_events_28d",
+      "mean_abs_shap": 0.5027477145195007
     },
     {
       "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.4706460237503052
-    },
-    {
-      "feature": "brent_28d_ma",
-      "mean_abs_shap": 0.429318904876709
-    },
-    {
-      "feature": "brent_return_7d",
-      "mean_abs_shap": 0.39036959409713745
-    },
-    {
-      "feature": "tanker_lag7d",
-      "mean_abs_shap": 0.3837975263595581
-    },
-    {
-      "feature": "gpr_act",
-      "mean_abs_shap": 0.3034953773021698
-    },
-    {
-      "feature": "gpr_daily",
-      "mean_abs_shap": 0.3003026843070984
+      "mean_abs_shap": 0.44962865114212036
     },
     {
       "feature": "brent_volatility_28d",
-      "mean_abs_shap": 0.28715386986732483
+      "mean_abs_shap": 0.43724122643470764
+    },
+    {
+      "feature": "brent_return_7d",
+      "mean_abs_shap": 0.4307186007499695
+    },
+    {
+      "feature": "tanker_lag7d",
+      "mean_abs_shap": 0.4109536111354828
+    },
+    {
+      "feature": "brent_28d_ma",
+      "mean_abs_shap": 0.38699907064437866
+    },
+    {
+      "feature": "gpr_act",
+      "mean_abs_shap": 0.3090110719203949
+    },
+    {
+      "feature": "cargo_count",
+      "mean_abs_shap": 0.24171748757362366
+    },
+    {
+      "feature": "gpr_daily",
+      "mean_abs_shap": 0.2381240725517273
     },
     {
       "feature": "brent_return_1d",
-      "mean_abs_shap": 0.25002244114875793
-    },
-    {
-      "feature": "gpr_saudi_monthly",
-      "mean_abs_shap": 0.23773856461048126
-    },
-    {
-      "feature": "brent_lag28d",
-      "mean_abs_shap": 0.21216440200805664
+      "mean_abs_shap": 0.23258642852306366
     }
   ],
   "shap_available": true

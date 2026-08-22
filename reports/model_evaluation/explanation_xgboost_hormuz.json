@@ -6,63 +6,63 @@
   "global_importance": [
     {
       "feature": "tanker_90d_ma",
-      "mean_abs_shap": 1.0288652181625366
-    },
-    {
-      "feature": "tanker_14d_ma",
-      "mean_abs_shap": 0.702719509601593
+      "mean_abs_shap": 1.0585800409317017
     },
     {
       "feature": "vessel_count",
-      "mean_abs_shap": 0.6359906196594238
+      "mean_abs_shap": 0.7275150418281555
+    },
+    {
+      "feature": "tanker_14d_ma",
+      "mean_abs_shap": 0.6757757067680359
     },
     {
       "feature": "cargo_count",
-      "mean_abs_shap": 0.5566504597663879
+      "mean_abs_shap": 0.5101723074913025
     },
     {
       "feature": "tanker_7d_ma",
-      "mean_abs_shap": 0.5437846183776855
+      "mean_abs_shap": 0.45378589630126953
     },
     {
       "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.5024427175521851
+      "mean_abs_shap": 0.4498729407787323
     },
     {
       "feature": "brent_zscore_28d",
-      "mean_abs_shap": 0.48490867018699646
+      "mean_abs_shap": 0.44494906067848206
     },
     {
       "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.4443196654319763
-    },
-    {
-      "feature": "gpr_daily_28d_ma",
-      "mean_abs_shap": 0.4299522638320923
+      "mean_abs_shap": 0.4278198778629303
     },
     {
       "feature": "gpr_threat",
-      "mean_abs_shap": 0.40796777606010437
+      "mean_abs_shap": 0.41961053013801575
+    },
+    {
+      "feature": "gpr_daily_28d_ma",
+      "mean_abs_shap": 0.38931891322135925
     },
     {
       "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.38511884212493896
+      "mean_abs_shap": 0.38554731011390686
     },
     {
       "feature": "brent_lag28d",
-      "mean_abs_shap": 0.33108457922935486
+      "mean_abs_shap": 0.3246190845966339
     },
     {
       "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.3034522533416748
-    },
-    {
-      "feature": "tanker_count",
-      "mean_abs_shap": 0.27228906750679016
+      "mean_abs_shap": 0.3021342158317566
     },
     {
       "feature": "tanker_lag1d",
-      "mean_abs_shap": 0.2648448646068573
+      "mean_abs_shap": 0.27760255336761475
+    },
+    {
+      "feature": "brent_lag7d",
+      "mean_abs_shap": 0.27458158135414124
     }
   ],
   "shap_available": true

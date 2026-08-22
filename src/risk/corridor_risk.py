@@ -56,7 +56,20 @@ def _classify_risk(prob: float) -> str:
 
 
 def _load_best_model(corridor_id: str) -> tuple:
-    """Loads the best available model artifact for a corridor."""
+    """Loads the best available model artifact for a corridor, prioritizing the registry CHAMPION."""
+    try:
+        from src.models.model_registry import get_champion_model
+        champ = get_champion_model(corridor_id)
+        if champ and champ.get("artifact_path"):
+            mpath = champ["artifact_path"]
+            if os.path.exists(mpath):
+                with open(mpath, "rb") as f:
+                    artifact = pickle.load(f)
+                return artifact, champ.get("model_name", "XGBoost")
+    except Exception as e:
+        # Fallback if registry fails or is not initialized yet
+        pass
+
     for prefix, mname in [("xgb", "XGBoost"), ("rf", "RandomForest"), ("lr", "LogisticRegression")]:
         mpath = os.path.join(MODELS_DIR, f"{prefix}_{corridor_id.lower()}_v{MODEL_VERSION}.pkl")
         if os.path.exists(mpath):

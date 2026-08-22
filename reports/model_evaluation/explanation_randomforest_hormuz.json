@@ -6,63 +6,63 @@
   "global_importance": [
     {
       "feature": "vessel_count",
-      "mean_abs_shap": 0.06285135691462176
+      "mean_abs_shap": 0.05647662194070058
     },
     {
       "feature": "cargo_count",
-      "mean_abs_shap": 0.05428915200869339
-    },
-    {
-      "feature": "tanker_28d_ma",
-      "mean_abs_shap": 0.03282386883290953
+      "mean_abs_shap": 0.05227868410142341
     },
     {
       "feature": "brent_zscore_28d",
-      "mean_abs_shap": 0.030912479155579556
-    },
-    {
-      "feature": "tanker_90d_ma",
-      "mean_abs_shap": 0.027124458376503065
-    },
-    {
-      "feature": "tanker_14d_ma",
-      "mean_abs_shap": 0.024124365753290074
-    },
-    {
-      "feature": "tanker_7d_ma",
-      "mean_abs_shap": 0.023879437470544062
+      "mean_abs_shap": 0.03625810083928448
     },
     {
       "feature": "tanker_count",
-      "mean_abs_shap": 0.021114296746556495
+      "mean_abs_shap": 0.03134753234382022
+    },
+    {
+      "feature": "tanker_28d_ma",
+      "mean_abs_shap": 0.030958436399627084
     },
     {
       "feature": "brent_lag28d",
-      "mean_abs_shap": 0.018959705977948795
+      "mean_abs_shap": 0.02193355556629003
     },
     {
-      "feature": "tanker_lag1d",
-      "mean_abs_shap": 0.018010424176291822
+      "feature": "tanker_90d_ma",
+      "mean_abs_shap": 0.021932715560853022
+    },
+    {
+      "feature": "tanker_14d_ma",
+      "mean_abs_shap": 0.021386033437203977
+    },
+    {
+      "feature": "tanker_7d_ma",
+      "mean_abs_shap": 0.01999468462935768
     },
     {
       "feature": "tanker_lag7d_chg",
-      "mean_abs_shap": 0.017587214164533356
+      "mean_abs_shap": 0.014080994960885305
     },
     {
-      "feature": "tanker_28d_std",
-      "mean_abs_shap": 0.014288994530153474
-    },
-    {
-      "feature": "tanker_decline_ratio_28d",
-      "mean_abs_shap": 0.012314663341025997
+      "feature": "tanker_lag1d",
+      "mean_abs_shap": 0.013647314628621092
     },
     {
       "feature": "tanker_lag1d_chg",
-      "mean_abs_shap": 0.011825192974542587
+      "mean_abs_shap": 0.012371538770764334
+    },
+    {
+      "feature": "tanker_28d_std",
+      "mean_abs_shap": 0.011845284539978648
     },
     {
       "feature": "brent_volatility_28d",
-      "mean_abs_shap": 0.01066667409849924
+      "mean_abs_shap": 0.011176304805262027
+    },
+    {
+      "feature": "gpr_threat",
+      "mean_abs_shap": 0.011156531268247673
     }
   ],
   "shap_available": true

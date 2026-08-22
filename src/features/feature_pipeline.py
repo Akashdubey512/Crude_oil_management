@@ -25,7 +25,7 @@ PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
 QUALITY_DIR = r"D:\hackathon project\energy-resilience\data\quality"
 
 # Corridors for which we have real daily PortWatch traffic data
-MODELED_CORRIDORS = ["HORMUZ", "BAB_EL_MANDEB", "SUEZ"]
+MODELED_CORRIDORS = ["HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"]
 
 # Chronological split boundaries (dates chosen to respect data availability)
 TRAIN_END = "2025-09-30"

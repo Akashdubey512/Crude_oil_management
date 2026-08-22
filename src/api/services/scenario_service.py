@@ -33,10 +33,9 @@ def run_scenario_simulation(
     infrastructure_disruption: bool = False,
 ) -> dict:
     corridor_upper = corridor_id.upper()
-    if corridor_upper not in {"HORMUZ", "BAB_EL_MANDEB", "SUEZ"}:
+    if corridor_upper not in {"HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"}:
         raise ValueError(
-            f"Scenario simulation only supported for modeled corridors (HORMUZ, BAB_EL_MANDEB, SUEZ). "
-            f"RED_SEA does not have a trained model."
+            f"Scenario simulation only supported for modeled corridors (HORMUZ, BAB_EL_MANDEB, SUEZ, RED_SEA)."
         )
 
     features_path = os.path.join(PROCESSED_DIR, "model_features.csv")

@@ -1,0 +1,83 @@
+{
+  "corridor_id": "RED_SEA",
+  "feature_version": "1.0",
+  "total_rows": 15180,
+  "date_range": [
+    "1985-01-29",
+    "2026-08-21"
+  ],
+  "feature_cols": [
+    "gpr_daily",
+    "gpr_act",
+    "gpr_threat",
+    "gpr_daily_7d_ma",
+    "gpr_daily_28d_ma",
+    "gpr_daily_28d_std",
+    "gpr_india_monthly",
+    "gpr_russia_monthly",
+    "gpr_saudi_monthly",
+    "gpr_china_monthly",
+    "corridor_events_1d",
+    "corridor_events_7d",
+    "corridor_events_28d",
+    "bab_events_7d",
+    "bab_events_28d",
+    "brent_price",
+    "brent_return_1d",
+    "brent_return_7d",
+    "brent_volatility_7d",
+    "brent_volatility_28d",
+    "brent_28d_ma",
+    "brent_zscore_28d",
+    "month_sin",
+    "month_cos",
+    "day_of_week"
+  ],
+  "feature_count": 25,
+  "label_method": "EVENT_PRESENCE_OR_NEGATIVE",
+  "disruption_label_source": "geopolitical_daily_signals.red_sea_event_count + bab_el_mandeb_event_count",
+  "maritime_features": "EXCLUDED \u2014 PortWatch has no RED_SEA observations",
+  "brent_availability": "2021-08-18 onwards (NaN for earlier dates \u2014 NOT imputed with fabricated values)",
+  "split_counts": {
+    "train": {
+      "rows": 14855,
+      "positive": 0
+    },
+    "validation": {
+      "rows": 182,
+      "positive": 0
+    },
+    "test": {
+      "rows": 143,
+      "positive": 9
+    }
+  },
+  "missing_pct": {
+    "gpr_daily": 0.01,
+    "gpr_act": 0.01,
+    "gpr_threat": 0.01,
+    "gpr_daily_7d_ma": 0.0,
+    "gpr_daily_28d_ma": 0.0,
+    "gpr_daily_28d_std": 0.0,
+    "gpr_india_monthly": 0.02,
+    "gpr_russia_monthly": 0.02,
+    "gpr_saudi_monthly": 0.02,
+    "gpr_china_monthly": 0.02,
+    "corridor_events_1d": 0.0,
+    "corridor_events_7d": 0.0,
+    "corridor_events_28d": 0.0,
+    "bab_events_7d": 0.0,
+    "bab_events_28d": 0.0,
+    "brent_price": 88.0,
+    "brent_return_1d": 88.07,
+    "brent_return_7d": 88.11,
+    "brent_volatility_7d": 87.96,
+    "brent_volatility_28d": 88.04,
+    "brent_28d_ma": 88.03,
+    "brent_zscore_28d": 88.09,
+    "month_sin": 0.0,
+    "month_cos": 0.0,
+    "day_of_week": 0.0
+  },
+  "generated_at": "2026-08-22T07:23:52.257955+00:00"
+}
