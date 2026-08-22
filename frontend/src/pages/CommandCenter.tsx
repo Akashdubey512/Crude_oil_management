@@ -13,7 +13,7 @@ import { useGovernance } from '../api/hooks/useGovernance';
 import { useObservability } from '../api/hooks/useObservability';
 
 // Components imports
-import IntelMap from '../components/map/IntelMap';
+import GlobeMap from '../components/map/GlobeMap';
 import CorridorDrawer from '../components/corridor/CorridorDrawer';
 import RiskHistoryChart from '../components/charts/RiskHistoryChart';
 import TrafficTrendChart from '../components/charts/TrafficTrendChart';
@@ -236,9 +236,9 @@ export default function CommandCenter() {
                 >
                   {/* Map and details selection layout */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                    {/* Geospatial Map */}
-                    <div className="lg:col-span-8 h-[500px]">
-                      <IntelMap
+                    {/* 3D Globe Map */}
+                    <div className="lg:col-span-8 h-[580px]">
+                      <GlobeMap
                         infrastructure={infrastructure}
                         risks={risks}
                         onSelectCorridor={handleSelectCorridor}
