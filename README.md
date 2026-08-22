@@ -110,7 +110,6 @@ Open your browser and navigate to: http://localhost:5173
 | Phase 7 | Production hardening: Brent price API, data-status API, SHAP UI | COMPLETE |
 | Phase 8 | Decision Intelligence: Scenario Simulator, Trend Analyzer, Cross-Comparison | COMPLETE |
 | Phase 9 | Production ML Validation, Model Governance & Data-Drift Monitoring | COMPLETE |
-
 | Phase 10 | RED_SEA modeling, Bab el-Mandeb proxy, data limitations | COMPLETE |
 | Phase 11 | Challenger-vs-Champion, Promotion, Rollback, Retraining | COMPLETE |
 | Phase 12 | Observability, Postgres, Rate Limiting, Lifespan Probes | COMPLETE |
