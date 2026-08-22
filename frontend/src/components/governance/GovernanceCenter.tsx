@@ -282,7 +282,7 @@ export default function GovernanceCenter({
                         ? 'bg-cyan-950/40 text-cyan-400 border-cyan-900/30'
                         : 'bg-gray-900 text-gray-500 border-gray-800'
                     }`}>
-                      {v.status.toUpperCase()}
+                      {(v.status || 'challenger').toUpperCase()}
                     </span>
                     {v.status !== 'champion' && v.status !== 'challenger' && !isReadOnlyRole && (
                       <button

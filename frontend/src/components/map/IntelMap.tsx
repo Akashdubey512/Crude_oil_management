@@ -71,8 +71,11 @@ export default function IntelMap({
 
     L.control.zoom({ position: 'bottomright' }).addTo(leafletMap.current);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
+    // Premium dark tile layer (CartoDB Dark Matter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CartoDB',
+      subdomains: 'abcd',
+      maxZoom: 19,
     }).addTo(leafletMap.current);
 
     layerGroupRef.current = L.layerGroup().addTo(leafletMap.current);

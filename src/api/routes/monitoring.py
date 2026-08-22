@@ -269,7 +269,41 @@ def get_corridor_versions(corridor: str, auth: dict = Security(authenticate_key,
     """Returns historical versions and status logs for a corridor."""
     corridor_upper = corridor.upper()
     registry = _load_registry()
-    versions = [v for v in registry.values() if v.get("corridor_id") == corridor_upper]
+    versions = [dict(v) for v in registry.values() if v.get("corridor_id") == corridor_upper]
+    
+    from src.api.database import get_db_connection, release_db_connection
+    conn = get_db_connection()
+    db_statuses = {}
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT model_name, version, status FROM model_versions WHERE corridor_id = ?;", (corridor_upper,))
+        for row in cursor.fetchall():
+            db_statuses[(row[0], row[1])] = row[2]
+        cursor.close()
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Failed to query model versions from DB: {e}")
+    finally:
+        release_db_connection(conn)
+
+    for v in versions:
+        model_name = v.get("model_name")
+        ver = v.get("version")
+        status = db_statuses.get((model_name, ver))
+        if not status:
+            status = v.get("status")
+            
+        if status:
+            status_upper = status.upper()
+            if status_upper in ["CHAMPION", "ACTIVE"]:
+                v["status"] = "champion"
+            else:
+                v["status"] = "challenger"
+        else:
+            if model_name == "XGBoost":
+                v["status"] = "champion"
+            else:
+                v["status"] = "challenger"
+                
     return sorted(versions, key=lambda x: x.get("created_at", ""), reverse=True)
 
 @router.get("/models/{corridor}/champion", tags=["MLOps"])
