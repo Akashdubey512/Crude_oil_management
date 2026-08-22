@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield, Bell, User, ArrowRight, FileText,
   Activity, X, ExternalLink, AlertTriangle,
-  Radio, Navigation, CheckCircle2, ChevronRight
+  Radio, Navigation, CheckCircle2, ChevronRight,
+  Target
 } from 'lucide-react';
 import type { HealthResponse, SourceStatusResponse, BrentPriceResponse, RiskSnapshot, GeopoliticalEvent } from '../types';
 import { api } from '../api/client';
@@ -102,15 +103,15 @@ export default function Landing({
       case 'CRITICAL':
       case 'HIGH RISK':
       case 'HIGH':
-        return 'text-red-600 bg-red-50 border-red-200';
+        return 'text-red-600 bg-red-50/90 border-red-200';
       case 'ELEVATED':
       case 'MODERATE':
-        return 'text-amber-600 bg-amber-50 border-amber-200';
+        return 'text-amber-600 bg-amber-50/90 border-amber-200';
       case 'LOW':
       case 'LOW RISK':
-        return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+        return 'text-emerald-600 bg-emerald-50/90 border-emerald-200';
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return 'text-slate-600 bg-slate-50 border-slate-200';
     }
   };
 
@@ -121,16 +122,21 @@ export default function Landing({
   const brentVal = brentPrices?.latest_price?.toFixed(2) ?? '82.45';
 
   return (
-    <div className="min-h-screen bg-[#f4f7fb] text-slate-900 font-sans flex flex-col justify-between overflow-x-hidden relative selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans flex flex-col justify-between overflow-x-hidden relative selection:bg-blue-600 selection:text-white">
 
       {/* ── TOP HEADER NAV BAR ────────────────────────────────────────────────────────── */}
-      <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-6 py-3.5 shadow-sm">
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-6 py-3.5 shadow-xs"
+      >
         <div className="max-w-[1440px] mx-auto flex items-center justify-between">
           
           {/* Logo & Title */}
           <div
             onClick={() => onEnter('MONITOR')}
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer group select-none"
           >
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
               <Shield className="w-5 h-5 stroke-[2.5]" />
@@ -146,15 +152,15 @@ export default function Landing({
           </div>
 
           {/* Interactive Navigation Tabs */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1 select-none">
             {NAV_TABS.map((item, idx) => (
               <button
                 key={item.tab}
                 onClick={() => onEnter(item.tab)}
-                className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 cursor-pointer ${
                   idx === 0
-                    ? 'text-blue-600 bg-blue-50/80 shadow-sm border border-blue-200/50 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                    ? 'text-blue-600 bg-blue-50/90 shadow-2xs border border-blue-200/60 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
                 }`}
               >
                 {item.label}
@@ -168,96 +174,125 @@ export default function Landing({
             {/* Live System Indicator */}
             <button
               onClick={() => setShowHealthModal(true)}
-              className="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3 py-1.5 rounded-full text-xs font-medium text-emerald-700 hover:bg-emerald-100/80 transition-colors shadow-xs"
+              className="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-800 hover:bg-emerald-100/90 transition-all cursor-pointer shadow-2xs"
               title="Click to view live system diagnostic status"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Live System</span>
-              <span className="text-[10px] text-emerald-600 opacity-80">Updated just now</span>
+              <span className="text-[10px] text-emerald-600 opacity-80 font-normal">Updated just now</span>
             </button>
 
             {/* Notifications Bell */}
             <button
               onClick={() => setShowAlertsModal(true)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors relative"
+              className="p-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors relative cursor-pointer"
               title="System Alerts & Warnings"
             >
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white" />
+              <Bell className="w-4.5 h-4.5" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white" />
             </button>
 
             {/* Profile / Security Status Icon */}
             <button
               onClick={() => setShowProfileModal(true)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              className="p-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
               title="Security & User Role Settings"
             >
-              <User className="w-4 h-4" />
+              <User className="w-4.5 h-4.5" />
             </button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* ── MAIN HERO & INTERACTIVE MAP VIEW ────────────────────────────────────────── */}
-      <main className="w-full max-w-[1440px] mx-auto px-6 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+      <main className="w-full max-w-[1440px] mx-auto px-6 py-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
 
         {/* ── LEFT HAND HERO COLUMN ────────────────────────────────────────────────── */}
         <div className="lg:col-span-5 flex flex-col justify-center space-y-6 z-20">
           
           {/* Status Badge */}
-          <button
-            onClick={() => setShowHealthModal(true)}
-            className="inline-flex items-center gap-2 bg-emerald-100/80 border border-emerald-300/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-800 w-fit hover:bg-emerald-200/80 transition-all cursor-pointer shadow-xs"
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-            SYSTEM OPERATIONAL
-          </button>
+            <button
+              onClick={() => setShowHealthModal(true)}
+              className="inline-flex items-center gap-2 bg-emerald-100/90 border border-emerald-300/80 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-800 hover:bg-emerald-200/90 transition-all cursor-pointer shadow-2xs"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+              SYSTEM OPERATIONAL
+            </button>
+          </motion.div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]"
+          >
             Energy Resilience Intelligence for Maritime Supply Chains
-          </h1>
+          </motion.h1>
 
           {/* Subtitle Body */}
-          <p className="text-base text-slate-600 leading-relaxed font-normal">
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            className="text-base text-slate-600 leading-relaxed font-normal max-w-xl"
+          >
             Monitor maritime corridors, detect emerging disruption risk, and evaluate energy supply-chain resilience through real-world data and predictive intelligence.
-          </p>
+          </motion.p>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.45 }}
+            className="flex flex-wrap items-center gap-3.5 pt-2"
+          >
             {/* Primary CTA */}
             <button
               onClick={() => onEnter('MONITOR')}
-              className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:bg-blue-700 hover:shadow-blue-500/35 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-600/20 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
               <Navigation className="w-4 h-4 fill-white" />
               <span>Launch Command Center</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowRight className="w-4 h-4 ml-0.5" />
             </button>
 
             {/* Secondary CTA */}
             <button
               onClick={() => setShowLiveIntelDrawer(true)}
-              className="flex items-center gap-2.5 px-5 py-3.5 rounded-xl bg-white text-slate-700 border border-slate-300 font-semibold text-sm shadow-xs hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-2.5 px-5 py-3.5 rounded-xl bg-white text-slate-700 border border-slate-300 font-semibold text-sm shadow-2xs hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 cursor-pointer"
             >
               <FileText className="w-4 h-4 text-blue-600" />
               <span>View Live Intel Feed</span>
             </button>
-          </div>
+          </motion.div>
 
           {/* Footnote */}
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 pt-1">
-            <Radio className="w-4 h-4 text-blue-500 animate-pulse" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.55 }}
+            className="flex items-center gap-2 text-xs font-medium text-slate-500 pt-1"
+          >
+            <Target className="w-4 h-4 text-blue-500" />
             <span>Real-time monitoring across critical energy maritime corridors</span>
-          </div>
+          </motion.div>
         </div>
 
         {/* ── CENTER & RIGHT: INTERACTIVE MAP & CORRIDOR RISK CARD ───────────────────── */}
-        <div className="lg:col-span-7 relative min-h-[540px] flex items-center justify-center">
-
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="lg:col-span-7 relative min-h-[540px] flex items-center justify-center"
+        >
           {/* Map Container */}
-          <div className="w-full h-full min-h-[520px] rounded-3xl bg-[#e3ecf5] border border-slate-300/70 shadow-xl overflow-hidden relative flex items-center justify-center">
+          <div className="w-full h-full min-h-[530px] rounded-3xl bg-[#e3ecf5] border border-slate-300/80 shadow-xl overflow-hidden relative flex items-center justify-center">
             
             {/* Light High-Contrast Google Maps Relief Styling */}
             <svg
@@ -270,15 +305,6 @@ export default function Landing({
                   <stop offset="0%" stopColor="#d2e3f3" />
                   <stop offset="100%" stopColor="#b9d3eb" />
                 </radialGradient>
-
-                {/* Chokepoint Glow Effects */}
-                <filter id="redGlow">
-                  <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
               </defs>
 
               {/* Ocean base */}
@@ -286,16 +312,12 @@ export default function Landing({
 
               {/* Topographic Landmasses (Detailed Vector Silhouettes) */}
               <g fill="#f1eee4" stroke="#d5d0c1" strokeWidth="1">
-                
                 {/* Arabia & Middle East */}
                 <path d="M 380,120 L 480,110 L 580,140 L 610,210 L 600,310 L 530,350 L 440,320 L 410,240 Z" fill="#ede8d8" />
-                
                 {/* East Africa & Horn */}
                 <path d="M 280,240 L 390,220 L 470,300 L 490,380 L 450,490 L 340,510 L 260,390 Z" />
-
                 {/* India Subcontinent */}
                 <path d="M 680,210 L 800,200 L 880,260 L 840,420 L 760,470 L 710,380 L 670,280 Z" fill="#e8e4d3" />
-
                 {/* Anatolia / Turkey */}
                 <path d="M 360,60 L 480,50 L 510,110 L 380,120 Z" />
               </g>
@@ -338,13 +360,13 @@ export default function Landing({
 
               {/* Moving Vessel Icons along Routes */}
               <g className="animate-[pulse_3s_infinite]">
-                <circle cx="630" cy="270" r="10" fill="#2563eb" opacity="0.2" />
+                <circle cx="630" cy="270" r="10" fill="#2563eb" opacity="0.25" />
                 <path d="M 625,270 L 635,270 L 630,264 Z" fill="#2563eb" />
                 
-                <circle cx="830" cy="385" r="10" fill="#2563eb" opacity="0.2" />
+                <circle cx="830" cy="385" r="10" fill="#2563eb" opacity="0.25" />
                 <path d="M 825,385 L 835,385 L 830,379 Z" fill="#2563eb" />
 
-                <circle cx="920" cy="412" r="10" fill="#2563eb" opacity="0.2" />
+                <circle cx="920" cy="412" r="10" fill="#2563eb" opacity="0.25" />
                 <path d="M 915,412 L 925,412 L 920,406 Z" fill="#2563eb" />
               </g>
             </svg>
@@ -373,7 +395,7 @@ export default function Landing({
                   </div>
 
                   {/* Floating Tooltip Card */}
-                  <div className="mt-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-xl group-hover:scale-105 group-hover:shadow-2xl transition-all duration-200 whitespace-nowrap">
+                  <div className="mt-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-xl group-hover:scale-105 group-hover:shadow-2xl transition-all duration-200 whitespace-nowrap select-none">
                     <div className="text-[10px] font-black text-slate-900 tracking-wider uppercase">
                       {cp.name}
                     </div>
@@ -386,7 +408,7 @@ export default function Landing({
             })}
 
             {/* ── RIGHT FLOATING CARD: LIVE CORRIDOR RISK (Matches reference image) ───── */}
-            <div className="absolute top-6 right-6 z-20 w-72 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-xl">
+            <div className="absolute top-6 right-6 z-20 w-72 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-xl select-none">
               
               {/* Header */}
               <div className="flex justify-between items-center pb-3 mb-3 border-b border-slate-100">
@@ -439,14 +461,14 @@ export default function Landing({
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </main>
 
       {/* ── FOOTER BAR ───────────────────────────────────────────────────────────────── */}
-      <footer className="w-full bg-white/80 border-t border-slate-200/80 px-6 py-3 relative z-20">
+      <footer className="w-full bg-white/80 border-t border-slate-200/80 px-6 py-3 relative z-20 select-none">
         <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-medium text-slate-500">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 text-slate-700">
+            <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
               <Shield className="w-3.5 h-3.5 text-blue-600" />
               Energy Resilience Platform v1.5.0
             </span>
@@ -485,7 +507,7 @@ export default function Landing({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex justify-end"
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex justify-end"
           >
             <motion.div
               initial={{ x: '100%' }}
@@ -497,7 +519,7 @@ export default function Landing({
               {/* Header */}
               <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-blue-100 text-blue-600">
+                  <div className="p-2.5 rounded-xl bg-blue-100 text-blue-600">
                     <Radio className="w-5 h-5 animate-pulse" />
                   </div>
                   <div>
@@ -521,7 +543,7 @@ export default function Landing({
                     onClick={() => setSelectedFilterCorridor(cId)}
                     className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       selectedFilterCorridor === cId
-                        ? 'bg-blue-600 text-white shadow-xs'
+                        ? 'bg-blue-600 text-white shadow-2xs'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
@@ -598,7 +620,7 @@ export default function Landing({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95 }}
@@ -618,7 +640,7 @@ export default function Landing({
                 </div>
                 <button
                   onClick={() => setShowHealthModal(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -664,7 +686,7 @@ export default function Landing({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95 }}
@@ -684,7 +706,7 @@ export default function Landing({
                 </div>
                 <button
                   onClick={() => setShowAlertsModal(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -733,7 +755,7 @@ export default function Landing({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95 }}
@@ -753,7 +775,7 @@ export default function Landing({
                 </div>
                 <button
                   onClick={() => setShowProfileModal(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
