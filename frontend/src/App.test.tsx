@@ -142,7 +142,7 @@ describe('India Energy Supply Chain Resilience Dashboard Tests', () => {
       expect(screen.queryByText(/Initializing/i)).toBeNull();
     });
 
-    const babTab = screen.getByRole('button', { name: /BAB EL MANDEB/i });
+    const babTab = screen.getAllByRole('button', { name: /BAB EL MANDEB/i })[0];
     fireEvent.click(babTab);
 
     // Verify detail call is triggered with new parameter
@@ -242,6 +242,48 @@ describe('Phase 8 — Decision Intelligence & Demo Readiness', () => {
     vi.spyOn(api, 'getComparison').mockResolvedValue(mockComparisonResponse);
     vi.spyOn(api, 'getRiskHistory').mockResolvedValue(mockHistoryData);
     vi.spyOn(api, 'simulateScenario').mockResolvedValue(mockSimulationResult);
+
+    // Phase 9 API mocks
+    vi.spyOn(api, 'getModelHealth').mockResolvedValue({
+      status: 'GOOD', performance_status: 'GOOD', calibration_status: 'GOOD',
+      drift_status: 'LOW', data_quality_status: 'GOOD', freshness_status: 'FRESH',
+      recommendations: ['Model health is optimal. Continue normal monitoring.']
+    });
+    vi.spyOn(api, 'getModelEvaluation').mockResolvedValue({
+      model_version: '1.0', evaluation_period: { start: '2025-10-01', end: '2026-08-16' },
+      sample_count: 320, positive_count: 6, negative_count: 314,
+      metrics: {
+        roc_auc: 0.85, pr_auc: 0.25, accuracy: 0.98, precision: 0.33,
+        recall: 0.20, f1: 0.25, specificity: 0.98, mcc: 0.25, brier_score: 0.018, log_loss: 0.047
+      },
+      calibration: { status: 'GOOD', ece: 0.024, curve: [{ bin_midpoint: 0.05, predicted_prob: 0.04, observed_freq: 0.02 }] },
+      data_quality: { missing_rate: 0.01, usable: true }
+    });
+    vi.spyOn(api, 'getModelDrift').mockResolvedValue({
+      status: 'OK', overall_drift: 'LOW',
+      features: [
+        { feature: 'gpr_daily', drift_method: 'PSI + KS-Test', drift_score: 0.045, threshold: 0.1, severity: 'LOW', recommendation: 'Stable.' }
+      ],
+      summary: { low: 1, medium: 0, high: 0 }
+    });
+    vi.spyOn(api, 'getPredictionsHistory').mockResolvedValue([
+      { id: 1, corridor: 'HORMUZ', timestamp: '2026-08-22', model_version: '1.0', predicted_probability: 0.15, predicted_class: 0, confidence: null, actual_outcome: null, outcome_available: false, created_at: '2026-08-22T06:00:00.000Z' }
+    ]);
+
+    // Phase 11 MLOps API mocks
+    vi.spyOn(api, 'getCorridorVersions').mockResolvedValue([
+      { model_name: 'XGBoost', version: '1.0', corridor_id: 'HORMUZ', status: 'CHAMPION', training_end: '2025-09-30', metrics: { validation: { roc_auc: 0.85, pr_auc: 0.25 } } }
+    ]);
+    vi.spyOn(api, 'getComparisonMetrics').mockResolvedValue({
+      champion: { model_name: 'XGBoost', version: '1.0', corridor_id: 'HORMUZ', status: 'CHAMPION', training_end: '2025-09-30', metrics: { validation: { roc_auc: 0.85, pr_auc: 0.25 } } },
+      challenger: null
+    });
+    vi.spyOn(api, 'getRetrainStatus').mockResolvedValue({
+      retrain_recommended: false, severity: 'LOW', reasons: ['Stable']
+    });
+    vi.spyOn(api, 'getModelCard').mockResolvedValue({
+      markdown: 'RED_SEA Model Card Content'
+    });
   });
 
   it('renders dashboard mode tab navigation', async () => {
@@ -321,3 +363,77 @@ describe('Phase 8 — Decision Intelligence & Demo Readiness', () => {
   });
 });
 
+// ─── Phase 9 — Production ML Validation & Data Drift UI Tests ───────────────
+describe('Phase 9 — Production ML Validation & Data Drift UI Tests', () => {
+  beforeEach(() => {
+    // Re-use global mock setup
+  });
+
+  it('renders Model Health Center diagnostics header and navigation', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.queryByText(/Initializing/i)).toBeNull());
+
+    expect(screen.getByText(/Model Health & Validation Center/i)).toBeDefined();
+    expect(screen.getByRole('button', { name: /Data Feeds Status/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Out-of-Sample Performance/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Feature Drift Analysis/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Prediction Audit Trails/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Version Governance/i })).toBeDefined();
+  });
+
+  it('switches to Out-of-Sample Performance tab and renders metric values', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.queryByText(/Initializing/i)).toBeNull());
+
+    fireEvent.click(screen.getByRole('button', { name: /Out-of-Sample Performance/i }));
+
+    await waitFor(() => {
+      expect(api.getModelEvaluation).toHaveBeenCalled();
+    });
+
+    expect(screen.getByText(/Out-of-Sample Metric Cards/i)).toBeDefined();
+    expect(screen.getByText(/0.8500/i)).toBeDefined(); // ROC-AUC
+    expect(screen.getByText(/0.0180/i)).toBeDefined(); // Brier Score
+    expect(screen.getByText(/ECE Calibration Curve/i)).toBeDefined();
+    expect(screen.getByText(/OOS Confusion Matrix/i)).toBeDefined();
+  });
+
+  it('switches to Feature Drift Analysis tab and renders features table', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.queryByText(/Initializing/i)).toBeNull());
+
+    fireEvent.click(screen.getByRole('button', { name: /Feature Drift Analysis/i }));
+
+    await waitFor(() => {
+      expect(api.getModelDrift).toHaveBeenCalled();
+    });
+
+    expect(await screen.findByText(/Drift Score Metric Table/i)).toBeDefined();
+    expect(await screen.findByText(/gpr_daily/i)).toBeDefined();
+    expect(await screen.findByText(/0.0450/i)).toBeDefined(); // PSI score
+  });
+
+  it('switches to Prediction Audit Trails tab and lists prediction history', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.queryByText(/Initializing/i)).toBeNull());
+
+    fireEvent.click(screen.getByRole('button', { name: /Prediction Audit Trails/i }));
+
+    await waitFor(() => {
+      expect(api.getPredictionsHistory).toHaveBeenCalled();
+    });
+
+    expect(await screen.findByText(/Immutable Prediction History Log/i)).toBeDefined();
+    expect(await screen.findByText(/15.00%/i)).toBeDefined(); // Prob
+  });
+
+  it('switches to Version Governance tab and renders training logs', async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.queryByText(/Initializing/i)).toBeNull());
+
+    fireEvent.click(screen.getByRole('button', { name: /Version Governance/i }));
+
+    expect(await screen.findByText(/Version History/i)).toBeDefined();
+    expect((await screen.findAllByText(/XGBoost/i)).length).toBeGreaterThanOrEqual(1);
+  });
+});

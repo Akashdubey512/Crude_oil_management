@@ -178,4 +178,89 @@ export interface ScenarioSimulationResponse {
   recommendation: string;
 }
 
+// --- Phase 9 Types ---
 
+export interface ModelEvaluationMetrics {
+  roc_auc: number | null;
+  pr_auc: number | null;
+  accuracy: number | null;
+  precision: number | null;
+  recall: number | null;
+  f1: number | null;
+  specificity: number | null;
+  mcc: number | null;
+  brier_score: number | null;
+  log_loss: number | null;
+}
+
+export interface CalibrationBinEntry {
+  bin_midpoint: number;
+  predicted_prob: number;
+  observed_freq: number;
+}
+
+export interface CalibrationInfo {
+  status: 'GOOD' | 'MODERATE' | 'DEGRADED' | 'UNAVAILABLE';
+  ece: number | null;
+  curve: CalibrationBinEntry[];
+}
+
+export interface ModelEvaluationResponse {
+  status?: string;
+  reason?: string;
+  model_version: string;
+  evaluation_period: { start: string; end: string };
+  sample_count: number;
+  positive_count: number;
+  negative_count: number;
+  metrics: ModelEvaluationMetrics;
+  calibration: CalibrationInfo;
+  data_quality: { missing_rate: number; usable: boolean };
+}
+
+export interface DriftFeatureItem {
+  feature: string;
+  drift_method: string;
+  drift_score: number;
+  threshold: number;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH';
+  recommendation: string | null;
+  reference_distribution?: { proportions: number[]; labels: string[] };
+  current_distribution?: { proportions: number[]; labels: string[] };
+}
+
+export interface DriftResponseSummary {
+  low: number;
+  medium: number;
+  high: number;
+}
+
+export interface DriftResponse {
+  status: string;
+  overall_drift: 'LOW' | 'MEDIUM' | 'HIGH';
+  features: DriftFeatureItem[];
+  summary: DriftResponseSummary;
+}
+
+export interface ModelHealthResponse {
+  status: 'GOOD' | 'DEGRADED' | 'CRITICAL';
+  performance_status: string;
+  calibration_status: string;
+  drift_status: string;
+  data_quality_status: string;
+  freshness_status: string;
+  recommendations: string[];
+}
+
+export interface PredictionRecord {
+  id: number;
+  corridor: string;
+  timestamp: string;
+  model_version: string;
+  predicted_probability: number;
+  predicted_class: 0 | 1;
+  confidence: number | null;
+  actual_outcome: 0 | 1 | null;
+  outcome_available: boolean;
+  created_at: string;
+}

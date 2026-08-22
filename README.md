@@ -109,8 +109,9 @@ Open your browser and navigate to: http://localhost:5173
 | Phase 6 | React Digital Twin Dashboard (Leaflet map, risk gauge, charts) | COMPLETE |
 | Phase 7 | Production hardening: Brent price API, data-status API, SHAP UI | COMPLETE |
 | Phase 8 | Decision Intelligence: Scenario Simulator, Trend Analyzer, Cross-Comparison | COMPLETE |
+| Phase 9 | Production ML Validation, Model Governance & Data-Drift Monitoring | COMPLETE |
 
-**Backend:** 199 tests passing. **Frontend:** 11 tests passing.
+**Backend:** 225 tests passing. **Frontend:** 16 tests passing.
 
 ## Phase 8 — Decision Intelligence Features
 
@@ -118,4 +119,12 @@ Open your browser and navigate to: http://localhost:5173
 - **Historical Trend Analyzer** (`GET /api/risk/{corridor_id}/history`) — Out-of-time model inference time-series for each corridor.
 - **Cross-Corridor Comparison** (`GET /api/risk/comparison`) — Normalized side-by-side comparison of all corridors with risk level, primary driver, vessel flow status, and data freshness.
 
-See full documentation in `docs/phase8-walkthrough.md` and `docs/api.md`.
+## Phase 9 — Production ML Validation & Governance Features
+
+- **Out-of-Sample Performance Evaluation** (`GET /api/models/evaluation`) — Validates metrics (ROC-AUC, PR-AUC, accuracy, Brier score, ECE) and computes calibration curves.
+- **Feature Data Drift Detection** (`GET /api/models/drift`) — Calculates PSI and KS-test distributions.
+- **Unified Model Health Index** (`GET /api/models/health`) — Rules-based health statuses and resolutions.
+- **Persistent Prediction Audit Trail** (`GET /api/predictions/history/{corridor}`) — Immutable SQLite logging.
+- **Model Health Center Dashboard UI** — Interactive tabbed center for feeds status, validation curves, drift tables, prediction logs, and model governance registry.
+
+See full documentation in `docs/phase-9-ml-validation.md` and `docs/api.md`.

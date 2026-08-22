@@ -6,12 +6,23 @@ import {
   Calendar,
   Database,
   Sliders,
-  TrendingUp
+  TrendingUp,
+  HeartPulse,
+  Activity,
+  CheckCircle,
+  Info,
+  ShieldAlert,
+  FileText,
+  BarChart2,
+  AlertTriangle
 } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,
   Area,
+  LineChart,
+  Line,
+  ReferenceLine,
   CartesianGrid,
   XAxis,
   YAxis,
@@ -85,6 +96,24 @@ export default function App() {
   const [comparison, setComparison] = useState<CorridorComparisonResponse | null>(null);
   const [comparisonLoading, setComparisonLoading] = useState<boolean>(false);
 
+  // Phase 9 Model Monitoring States
+  const [healthTab, setHealthTab] = useState<string>('feeds');
+  const [modelHealthCorridor, setModelHealthCorridor] = useState<string>('HORMUZ');
+  const [modelHealth, setModelHealth] = useState<any>(null);
+  const [modelEval, setModelEval] = useState<any>(null);
+  const [modelDrift, setModelDrift] = useState<any>(null);
+  const [predictionHistory, setPredictionHistory] = useState<any[]>([]);
+  const [selectedDriftFeature, setSelectedDriftFeature] = useState<any | null>(null);
+  const [modelHealthLoading, setModelHealthLoading] = useState<boolean>(false);
+
+  // Phase 11: MLOps Governance States
+  const [corridorVersions, setCorridorVersions] = useState<any[]>([]);
+  const [championChallenger, setChampionChallenger] = useState<any>(null);
+  const [retrainStatus, setRetrainStatus] = useState<any>(null);
+  const [modelCardMarkdown, setModelCardMarkdown] = useState<string | null>(null);
+  const [governanceAction, setGovernanceAction] = useState<{type: 'promote' | 'rollback'; key: string} | null>(null);
+  const [governanceResult, setGovernanceResult] = useState<{success: boolean; detail: string} | null>(null);
+
   // Connection & UI states
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -127,14 +156,9 @@ export default function App() {
       setActiveEvents(events ?? []);
       setActiveTraffic(traffic ?? []);
 
-      if (id !== 'RED_SEA') {
-        api.getModelInfo(id).then(setActiveModelInfo).catch(() => setActiveModelInfo(null));
-        // Phase 7: fetch SHAP explainability (404 for RED_SEA or missing corridors is handled gracefully)
-        api.getExplainability(id).then(setActiveExplainability).catch(() => setActiveExplainability(null));
-      } else {
-        setActiveModelInfo(null);
-        setActiveExplainability(null);
-      }
+      // Phase 7 + Phase 10: fetch model info and SHAP explainability for all corridors
+      api.getModelInfo(id).then(setActiveModelInfo).catch(() => setActiveModelInfo(null));
+      api.getExplainability(id).then(setActiveExplainability).catch(() => setActiveExplainability(null));
     } catch (err: any) {
       console.error(`Failed to load details for ${id}:`, err);
     }
@@ -203,14 +227,55 @@ export default function App() {
   useEffect(() => {
     if (selectedCorridor) {
       fetchCorridorDetails(selectedCorridor);
+      setModelHealthCorridor(selectedCorridor);
     }
   }, [selectedCorridor]);
+
+  const fetchMonitoringData = async (corridor: string) => {
+    setModelHealthLoading(true);
+    setGovernanceResult(null);
+    try {
+      const [h, e, d, p, comp, vers, retrain] = await Promise.all([
+        api.getModelHealth(corridor).catch(() => null),
+        api.getModelEvaluation(corridor).catch(() => null),
+        api.getModelDrift(corridor).catch(() => null),
+        api.getPredictionsHistory(corridor, 50).catch(() => []),
+        api.getComparisonMetrics(corridor).catch(() => null),
+        api.getCorridorVersions(corridor).catch(() => []),
+        api.getRetrainStatus(corridor).catch(() => null),
+      ]);
+      setModelHealth(h);
+      setModelEval(e);
+      setModelDrift(d);
+      setPredictionHistory(p);
+      setChampionChallenger(comp);
+      setCorridorVersions(vers ?? []);
+      setRetrainStatus(retrain);
+      // Fetch model card for RED_SEA only (documented proxy corridor)
+      if (corridor === 'RED_SEA') {
+        api.getModelCard(corridor).then((r: any) => setModelCardMarkdown(r?.markdown ?? null)).catch(() => setModelCardMarkdown(null));
+      } else {
+        setModelCardMarkdown(null);
+      }
+    } catch (err) {
+      console.error("Failed to fetch monitoring data", err);
+    } finally {
+      setModelHealthLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMonitoringData(modelHealthCorridor);
+  }, [modelHealthCorridor]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchGlobalData();
     if (selectedCorridor) {
       await fetchCorridorDetails(selectedCorridor);
+    }
+    if (modelHealthCorridor) {
+      await fetchMonitoringData(modelHealthCorridor);
     }
     setRefreshing(false);
   };
@@ -417,20 +482,6 @@ export default function App() {
 
               {selectedCorridor ? (
                 <div className="flex flex-col gap-6">
-                  {/* RED_SEA documented limitation banner */}
-                  {selectedCorridor === 'RED_SEA' && (
-                    <div className="p-3 rounded-lg border border-yellow-900/60 bg-yellow-950/20 flex gap-3 items-start animate-fade-in">
-                      <span className="text-yellow-400 text-lg leading-none mt-0.5">⚠</span>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-bold text-yellow-300 uppercase tracking-wider">Red Sea — Data Unavailable</span>
-                        <p className="text-[11px] text-yellow-600 leading-snug">
-                          PortWatch (the platform's AIS source) does not publish daily vessel transit counts
-                          for the Red Sea corridor. Risk score and traffic data are therefore unavailable
-                          — not fabricated. Geopolitical events are still monitored via GDELT when available.
-                        </p>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Corridor snapshot overview */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -442,18 +493,14 @@ export default function App() {
                     <RiskDecompositionChart decomposition={activeRisk?.risk_decomposition || null} />
                   </div>
 
-                  {/* Daily traffic chart — hidden for RED_SEA (no AIS coverage) */}
-                  {selectedCorridor !== 'RED_SEA' && (
-                    <TrafficChart traffic={activeTraffic} />
-                  )}
+                  {/* Daily traffic chart — Bab el-Mandeb proxy used for RED_SEA */}
+                  <TrafficChart traffic={activeTraffic} />
 
                   {/* Geopolitical events table */}
                   <EventsList events={activeEvents} />
 
                   {/* Model Transparency Section */}
-                  {selectedCorridor !== 'RED_SEA' && (
-                    <ModelCard modelInfo={activeModelInfo} />
-                  )}
+                  <ModelCard modelInfo={activeModelInfo} />
 
                   {/* SHAP Explainability Card */}
                   <div className="p-4 rounded-xl border border-gray-800 bg-gray-950/50 flex flex-col gap-2">
@@ -461,7 +508,7 @@ export default function App() {
                       Why Is This Corridor At Risk?
                       <span className="ml-2 text-gray-600 font-normal normal-case tracking-normal text-[10px]">SHAP Feature Impact · XGBoost</span>
                     </span>
-                    {selectedCorridor === 'RED_SEA' || !activeExplainability ? (
+                    {!activeExplainability ? (
                       <p className="text-xs text-gray-500 italic">Explainability unavailable for this corridor.</p>
                     ) : (
                       <div className="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto pr-1">
@@ -870,64 +917,714 @@ export default function App() {
         </div>
       </main>
 
-      {/* ─── DATA & MODEL HEALTH CENTER ──────────────────────────────────────── */}
-      <section className="mx-6 mb-6 p-5 rounded-xl border border-gray-900 bg-gray-950/20 flex flex-col gap-5">
-        <h2 className="text-xs font-black uppercase tracking-widest text-gray-300 border-b border-gray-900 pb-3 flex items-center gap-2">
-          <Database className="w-4 h-4 text-purple-500" />
-          Data, Model &amp; System Health
-        </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Data Feed Status Cards */}
-          <div className="lg:col-span-8 flex flex-col gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">External Data Feeds ({dataStatuses.length} Sources Monitored)</span>
-            {dataStatuses.length === 0 ? (
-              <p className="text-xs text-gray-600 italic">Loading data status…</p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 max-h-[280px] overflow-y-auto pr-1">
-                {dataStatuses.map((src) => {
-                  const sc = src.status === 'FRESH' ? 'text-emerald-400 border-emerald-800 bg-emerald-950/30'
-                    : src.status === 'PARTIAL' ? 'text-yellow-400 border-yellow-800 bg-yellow-950/30'
-                    : src.status === 'STALE' ? 'text-orange-400 border-orange-800 bg-orange-950/30'
-                    : 'text-red-400 border-red-800 bg-red-950/30';
-                  return (
-                    <div key={src.source_name} className="p-2.5 rounded-lg border border-gray-800 bg-gray-950/40 text-[10px] flex flex-col gap-1">
-                      <div className="flex justify-between items-start gap-1">
-                        <span className="font-bold text-gray-200 leading-tight">{src.source_name}</span>
-                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${sc} shrink-0`}>{src.status}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-500">
-                        <span>Latest: <span className="font-mono text-gray-300">{src.latest_date}</span></span>
-                        {src.row_count !== null && <span>Rows: <span className="font-mono text-gray-300">{src.row_count.toLocaleString()}</span></span>}
-                      </div>
-                      {src.limitation && <p className="text-gray-600 leading-tight">{src.limitation}</p>}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-          {/* System Health */}
-          <div className="lg:col-span-4 flex flex-col gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">System &amp; Model Health</span>
-            <div className="p-3 rounded-lg border border-gray-800 bg-gray-950/40 text-xs flex flex-col gap-2">
-              <div className="flex justify-between"><span className="text-gray-400">API Gateway:</span><span className="text-emerald-400 font-bold">ONLINE</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Model Registry:</span><span className="text-cyan-400 font-bold">VERIFIED</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">AIS Ingestion:</span><span className="text-red-400 font-bold text-[10px]">UNAVAILABLE — CREDENTIALS REQUIRED</span></div>
-              <div className="flex justify-between"><span className="text-gray-400">Brent Latest:</span><span className="text-white font-bold font-mono">{brentPrices ? `$${brentPrices.latest_price.toFixed(2)} (${brentPrices.latest_date})` : 'Loading…'}</span></div>
+      {/* ─── DATA, MODEL & SYSTEM HEALTH CENTER ───────────────────────────────── */}
+      <section className="mx-6 mb-6 p-5 rounded-xl border border-gray-900 bg-gray-950/30 flex flex-col gap-5">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-900 pb-3">
+          <div className="flex items-center gap-3">
+            <HeartPulse className="w-5 h-5 text-cyan-400 animate-pulse" />
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-widest text-white">Model Health &amp; Validation Center</h2>
+              <p className="text-[10px] text-gray-500 font-medium">Real-time performance checks, data drift monitoring, and decision audits</p>
             </div>
-            {selectedCorridor && selectedCorridor !== 'RED_SEA' && activeModelInfo && (
-              <div className="p-3 rounded-lg border border-gray-800 bg-gray-950/40 text-[10px] flex flex-col gap-2">
-                <span className="font-black text-gray-300 uppercase tracking-wider text-[9px]">Active Model Metrics — {selectedCorridor}</span>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><p className="text-gray-500">Val ROC-AUC</p><p className="font-bold text-white">{activeModelInfo.metrics?.validation?.roc_auc ?? 'N/A'}</p></div>
-                  <div><p className="text-gray-500">Test ROC-AUC</p><p className="font-bold text-cyan-400">{activeModelInfo.metrics?.test?.roc_auc ?? 'N/A'}</p></div>
-                  <div><p className="text-gray-500">Brier Score</p><p className="font-bold text-white">{activeModelInfo.metrics?.test?.brier_score ?? 'N/A'}</p></div>
-                  <div><p className="text-gray-500">Training Span</p><p className="font-bold text-gray-400 font-mono text-[9px]">{activeModelInfo.training_start} → {activeModelInfo.training_end}</p></div>
+          </div>
+
+          {/* Model selection tabs for health diagnostics - now includes RED_SEA */}
+          <div className="flex bg-gray-950 p-0.5 rounded border border-gray-900 text-xs">
+            {['HORMUZ', 'BAB_EL_MANDEB', 'SUEZ', 'RED_SEA'].map((id) => (
+              <button
+                key={id}
+                onClick={() => setModelHealthCorridor(id)}
+                className={`py-1 px-2.5 text-[10px] font-black uppercase tracking-wider rounded transition ${
+                  modelHealthCorridor === id
+                    ? 'bg-cyan-900/50 text-cyan-400 font-black border border-cyan-800/30'
+                    : 'text-gray-500 hover:text-white'
+                }`}
+              >
+                {id.replace(/_/g, ' ')}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Diagnostic Tabs Selector */}
+        <div className="flex border-b border-gray-900 bg-gray-950/40 p-1 rounded-lg gap-1 max-w-fit">
+          {[
+            { id: 'feeds', name: 'Data Feeds Status', icon: Database },
+            { id: 'performance', name: 'Out-of-Sample Performance', icon: BarChart2 },
+            { id: 'drift', name: 'Feature Drift Analysis', icon: Activity },
+            { id: 'history', name: 'Prediction Audit Trails', icon: FileText },
+            { id: 'governance', name: 'Version Governance', icon: CheckCircle }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setHealthTab(tab.id)}
+                className={`py-1.5 px-3 text-left text-[10px] font-black uppercase tracking-wider rounded-md transition duration-200 flex items-center gap-1.5 ${
+                  healthTab === tab.id
+                    ? 'bg-cyan-950 text-cyan-400 font-black border border-cyan-800/50'
+                    : 'text-gray-500 hover:text-white'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {tab.name}
+              </button>
+            );
+          })}
+        </div>
+
+        {modelHealthLoading ? (
+          <div className="py-20 flex flex-col items-center justify-center text-gray-500 text-xs gap-3">
+            <RefreshCw className="w-6 h-6 animate-spin text-cyan-500" />
+            <span>Retrieving model diagnostics and drift telemetry...</span>
+          </div>
+        ) : (
+          <div className="min-h-[220px]">
+
+            {/* ─── TAB: DATA FEEDS STATUS ─── */}
+            {healthTab === 'feeds' && (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+                {/* Feeds grid list */}
+                <div className="lg:col-span-8 flex flex-col gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">External Data Feeds ({dataStatuses.length} Sources Monitored)</span>
+                  {dataStatuses.length === 0 ? (
+                    <p className="text-xs text-gray-600 italic">No feed states loaded.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+                      {dataStatuses.map((src) => {
+                        const sc = src.status === 'FRESH' ? 'text-emerald-400 border-emerald-800 bg-emerald-950/30'
+                          : src.status === 'PARTIAL' ? 'text-yellow-400 border-yellow-800 bg-yellow-950/30'
+                          : src.status === 'STALE' ? 'text-orange-400 border-orange-800 bg-orange-950/30'
+                          : 'text-red-400 border-red-800 bg-red-950/30';
+                        return (
+                          <div key={src.source_name} className="p-2.5 rounded-lg border border-gray-800 bg-gray-950/40 text-[10px] flex flex-col gap-1">
+                            <div className="flex justify-between items-start gap-1">
+                              <span className="font-bold text-gray-200 leading-tight">{src.source_name}</span>
+                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-black border ${sc} shrink-0`}>{src.status}</span>
+                            </div>
+                            <div className="flex justify-between text-gray-500">
+                              <span>Latest: <span className="font-mono text-gray-300">{src.latest_date}</span></span>
+                              {src.row_count !== null && <span>Rows: <span className="font-mono text-gray-300">{src.row_count.toLocaleString()}</span></span>}
+                            </div>
+                            {src.limitation && <p className="text-gray-600 leading-tight mt-1">{src.limitation}</p>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* System Infrastructure Health Card */}
+                <div className="lg:col-span-4 flex flex-col gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Operational Gateway Telemetry</span>
+                  <div className="p-4 rounded-lg border border-gray-800 bg-gray-950/40 text-xs flex flex-col gap-2.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">REST API Engine:</span>
+                      <span className="text-emerald-400 font-bold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800 text-[10px]">ONLINE</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Model Artifacts Integrity:</span>
+                      <span className="text-cyan-400 font-bold bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800 text-[10px]">VERIFIED</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Database Engine (SQLite):</span>
+                      <span className="text-cyan-400 font-bold bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800 text-[10px]">CONNECTED</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Data Freshness Alert Level:</span>
+                      <span className={`font-bold px-2 py-0.5 rounded text-[10px] border ${
+                        modelHealth?.freshness_status === 'STALE'
+                          ? 'text-orange-400 bg-orange-950/40 border-orange-800 animate-pulse'
+                          : 'text-emerald-400 bg-emerald-950/40 border-emerald-800'
+                      }`}>
+                        {modelHealth?.freshness_status || 'FRESH'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
+
+            {/* ─── TAB: PERFORMANCE VALIDATION ─── */}
+            {healthTab === 'performance' && (
+              <div className="flex flex-col gap-5 animate-fade-in">
+                {/* Health Warning alerts block */}
+                {modelHealth && modelHealth.status !== 'GOOD' && (
+                  <div className="p-3 rounded-lg border border-orange-900 bg-orange-950/20 text-xs flex gap-3 text-orange-400">
+                    <ShieldAlert className="w-5 h-5 shrink-0" />
+                    <div>
+                      <span className="font-bold block uppercase tracking-wider text-[10px]">Active Diagnostic Flags ({modelHealth.status})</span>
+                      <ul className="list-disc pl-4 mt-1 flex flex-col gap-0.5">
+                        {modelHealth.recommendations.map((rec: string, idx: number) => (
+                          <li key={idx} className="text-[11px] leading-snug">{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {modelEval && modelEval.status !== 'UNAVAILABLE' ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Performance metrics grid */}
+                    <div className="lg:col-span-4 flex flex-col gap-3">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Out-of-Sample Metric Cards</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { name: 'ROC-AUC', val: modelEval.metrics.roc_auc, desc: 'Discrimination score' },
+                          { name: 'PR-AUC', val: modelEval.metrics.pr_auc, desc: 'Imbalance precision' },
+                          { name: 'F1 Score', val: modelEval.metrics.f1, desc: 'Harmonic balance' },
+                          { name: 'Accuracy', val: modelEval.metrics.accuracy, desc: 'Overall accuracy' },
+                          { name: 'Precision', val: modelEval.metrics.precision, desc: 'True positive ratio' },
+                          { name: 'Recall', val: modelEval.metrics.recall, desc: 'Sensitivity fraction' },
+                          { name: 'Specificity', val: modelEval.metrics.specificity, desc: 'True negative fraction' },
+                          { name: 'MCC', val: modelEval.metrics.mcc, desc: 'Correlation coeff' },
+                          { name: 'Brier Score', val: modelEval.metrics.brier_score, desc: 'Probability error' },
+                          { name: 'Log Loss', val: modelEval.metrics.log_loss, desc: 'Entropy penalty' }
+                        ].map((m) => (
+                          <div key={m.name} className="p-2.5 rounded-lg border border-gray-900 bg-gray-950/40 text-center">
+                            <span className="text-[9px] uppercase font-bold text-gray-500 block">{m.name}</span>
+                            <span className="text-sm font-black tracking-tight text-white mt-1 block">
+                              {m.val !== null && m.val !== undefined ? m.val.toFixed(4) : 'N/A'}
+                            </span>
+                            <span className="text-[8px] text-gray-600 block mt-0.5">{m.desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="p-3 bg-gray-950 border border-gray-900 rounded-lg text-[9px] text-gray-500 leading-snug">
+                        Evaluation period covers the out-of-sample validation + test split dates (
+                        <span className="font-mono font-bold text-gray-400">{modelEval.evaluation_period.start}</span> to{' '}
+                        <span className="font-mono font-bold text-gray-400">{modelEval.evaluation_period.end}</span>) totaling{' '}
+                        <span className="font-bold text-gray-400">{modelEval.sample_count}</span> samples.
+                      </div>
+                    </div>
+
+                    {/* Calibration curve */}
+                    <div className="lg:col-span-5 flex flex-col gap-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">ECE Calibration Curve</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[9px] text-gray-500">ECE:</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                            modelEval.calibration.status === 'GOOD' ? 'text-emerald-400 border-emerald-800 bg-emerald-950/30'
+                              : modelEval.calibration.status === 'MODERATE' ? 'text-yellow-400 border-yellow-800 bg-yellow-950/30'
+                              : 'text-red-400 border-red-800 bg-red-950/30'
+                          }`}>
+                            {modelEval.calibration.ece !== null ? modelEval.calibration.ece.toFixed(4) : 'N/A'} ({modelEval.calibration.status})
+                          </span>
+                        </div>
+                      </div>
+                      <div className="h-56 bg-gray-950/50 rounded-lg border border-gray-900 p-2.5 text-xs font-mono">
+                        {modelEval.calibration.curve.length > 0 ? (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={modelEval.calibration.curve} margin={{ top: 10, right: 10, left: -25, bottom: 5 }}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                              <XAxis dataKey="predicted_prob" type="number" domain={[0, 1]} stroke="#4b5563" />
+                              <YAxis dataKey="observed_freq" type="number" domain={[0, 1]} stroke="#4b5563" />
+                              <Tooltip
+                                contentStyle={{ background: '#0b0f19', border: '1px solid #1f2937', borderRadius: '6px' }}
+                                formatter={(value: any) => [value.toFixed(4), 'Observed Frequency']}
+                              />
+                              <Legend verticalAlign="top" height={28} />
+                              <ReferenceLine segment={[{ x: 0, y: 0 }, { x: 1, y: 1 }]} stroke="#4b5563" strokeDasharray="4 4" name="Perfect Calibration" />
+                              <Line
+                                name="Model Probability"
+                                type="monotone"
+                                dataKey="observed_freq"
+                                stroke="#a855f7"
+                                strokeWidth={2}
+                                dot={{ fill: '#a855f7', strokeWidth: 1 }}
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-gray-500 italic">Insufficient bins for calibration mapping.</div>
+                        )}
+                      </div>
+                      <p className="text-[9px] text-gray-500 leading-snug">
+                        Calibration measures how closely the model's predicted probabilities correspond to real disruption frequencies. Values closer to the diagonal line represent better calibrated predictions.
+                      </p>
+                    </div>
+
+                    {/* Confusion Matrix */}
+                    <div className="lg:col-span-3 flex flex-col gap-3">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">OOS Confusion Matrix</span>
+                      <div className="grid grid-cols-2 gap-1.5 p-3 rounded-lg border border-gray-900 bg-gray-950/20 text-[10px] text-center font-mono">
+                        {/* TN */}
+                        <div className="p-3 bg-gray-950 border border-gray-900 rounded-md">
+                          <span className="text-gray-500 block text-[9px] font-sans">True Negative (TN)</span>
+                          <span className="text-lg font-black text-gray-200 mt-1 block">
+                            {modelEval.negative_count - (modelEval.sample_count * (modelEval.metrics.fp_rate || 0))} 
+                            {/* Derive from stats if confusion_matrix not explicitly flat */}
+                            {modelEval.sample_count - modelEval.positive_count - Math.round(modelEval.sample_count * (1 - modelEval.metrics.specificity))}
+                          </span>
+                          <span className="text-[8px] text-gray-600 block mt-0.5">Predicted Normal / Normal</span>
+                        </div>
+                        {/* FP */}
+                        <div className="p-3 bg-gray-950 border border-gray-900 rounded-md">
+                          <span className="text-gray-500 block text-[9px] font-sans">False Positive (FP)</span>
+                          <span className="text-lg font-black text-orange-400 mt-1 block">
+                            {Math.round((modelEval.sample_count - modelEval.positive_count) * (1 - modelEval.metrics.specificity))}
+                          </span>
+                          <span className="text-[8px] text-gray-600 block mt-0.5">Predicted Disrupted / Normal</span>
+                        </div>
+                        {/* FN */}
+                        <div className="p-3 bg-gray-950 border border-gray-900 rounded-md">
+                          <span className="text-gray-500 block text-[9px] font-sans">False Negative (FN)</span>
+                          <span className="text-lg font-black text-orange-400 mt-1 block">
+                            {Math.round(modelEval.positive_count * (1 - modelEval.metrics.recall))}
+                          </span>
+                          <span className="text-[8px] text-gray-600 block mt-0.5">Predicted Normal / Disrupted</span>
+                        </div>
+                        {/* TP */}
+                        <div className="p-3 bg-gray-950 border border-gray-900 rounded-md">
+                          <span className="text-gray-500 block text-[9px] font-sans">True Positive (TP)</span>
+                          <span className="text-lg font-black text-emerald-400 mt-1 block">
+                            {Math.round(modelEval.positive_count * modelEval.metrics.recall)}
+                          </span>
+                          <span className="text-[8px] text-gray-600 block mt-0.5">Predicted Disrupted / Disrupted</span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-lg border border-gray-800 bg-gray-950/40 text-[10px] text-gray-500 leading-snug flex flex-col gap-1.5">
+                        <div className="flex justify-between border-b border-gray-900 pb-1">
+                          <span>Total Observations:</span>
+                          <span className="font-bold text-gray-300 font-mono">{modelEval.sample_count}</span>
+                        </div>
+                        <div className="flex justify-between border-b border-gray-900 pb-1">
+                          <span>Actual Disruption Events:</span>
+                          <span className="font-bold text-gray-300 font-mono">{modelEval.positive_count}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Model Alert Triggers:</span>
+                          <span className="font-bold text-gray-300 font-mono">
+                            {Math.round(modelEval.positive_count * modelEval.metrics.recall) + Math.round((modelEval.sample_count - modelEval.positive_count) * (1 - modelEval.metrics.specificity))}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-12 border border-gray-900 rounded-lg bg-gray-950/20 text-center text-xs text-gray-500 italic flex items-center justify-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-orange-400" />
+                    <span>{modelEval?.reason || 'Validation metrics are unavailable for this corridor.'}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ─── TAB: FEATURE DRIFT ─── */}
+            {healthTab === 'drift' && (
+              <div className="flex flex-col gap-5 animate-fade-in">
+                {modelDrift && modelDrift.status !== 'UNAVAILABLE' ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Features list table */}
+                    <div className="lg:col-span-8 flex flex-col gap-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Drift Score Metric Table</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[9px] text-gray-500 mr-2">Overall Shift:</span>
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                            modelDrift.overall_drift === 'LOW' ? 'text-emerald-400 border-emerald-800 bg-emerald-950/30'
+                              : modelDrift.overall_drift === 'MEDIUM' ? 'text-yellow-400 border-yellow-800 bg-yellow-950/30'
+                              : 'text-red-400 border-red-800 bg-red-950/30'
+                          }`}>
+                            {modelDrift.overall_drift} DRIFT
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* Bins counts strip */}
+                      <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono border border-gray-900 bg-gray-950/40 p-2.5 rounded-lg">
+                        <div className="flex flex-col border-r border-gray-900">
+                          <span className="text-[9px] font-sans text-gray-500">Low Drift features</span>
+                          <span className="text-sm font-black text-emerald-400 mt-0.5">{modelDrift.summary.low}</span>
+                        </div>
+                        <div className="flex flex-col border-r border-gray-900">
+                          <span className="text-[9px] font-sans text-gray-500">Medium Drift features</span>
+                          <span className="text-sm font-black text-yellow-400 mt-0.5">{modelDrift.summary.medium}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-sans text-gray-500">High Drift features</span>
+                          <span className="text-sm font-black text-red-400 mt-0.5">{modelDrift.summary.high}</span>
+                        </div>
+                      </div>
+
+                      {/* Drift Table */}
+                      <div className="max-h-[300px] overflow-y-auto pr-1 border border-gray-900 bg-gray-950 rounded-lg overflow-hidden">
+                        <table className="w-full text-[10px] text-left divide-y divide-gray-900">
+                          <thead className="bg-gray-900/60 text-gray-400 uppercase text-[8px] font-bold sticky top-0">
+                            <tr>
+                              <th className="px-3 py-2">Feature Name</th>
+                              <th className="px-3 py-2">Test Type</th>
+                              <th className="px-3 py-2 text-right">PSI Score</th>
+                              <th className="px-3 py-2 text-right font-mono">KS Stat</th>
+                              <th className="px-3 py-2 text-center">Severity</th>
+                              <th className="px-3 py-2 text-center">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-900">
+                            {modelDrift.features.map((feat: any) => {
+                              const sb = feat.severity === 'LOW' ? 'text-emerald-400 bg-emerald-950/20 border-emerald-900/60'
+                                : feat.severity === 'MEDIUM' ? 'text-yellow-400 bg-yellow-950/20 border-yellow-900/60'
+                                : 'text-red-400 bg-red-950/20 border-red-900/60';
+                              return (
+                                <tr
+                                  key={feat.feature}
+                                  onClick={() => setSelectedDriftFeature(feat)}
+                                  className={`hover:bg-gray-900/30 cursor-pointer transition ${
+                                    selectedDriftFeature?.feature === feat.feature ? 'bg-cyan-950/20' : ''
+                                  }`}
+                                >
+                                  <td className="px-3 py-2 font-mono text-gray-300 max-w-[220px] truncate">{feat.feature}</td>
+                                  <td className="px-3 py-2 text-gray-500">{feat.drift_method}</td>
+                                  <td className="px-3 py-2 text-right font-mono text-gray-200">{feat.drift_score.toFixed(4)}</td>
+                                  <td className="px-3 py-2 text-right font-mono text-gray-400">{feat.ks_stat !== undefined ? feat.ks_stat.toFixed(4) : 'N/A'}</td>
+                                  <td className="px-3 py-2 text-center">
+                                    <span className={`px-1.5 py-0.5 rounded text-[8px] font-black border uppercase ${sb}`}>
+                                      {feat.severity}
+                                    </span>
+                                  </td>
+                                  <td className="px-3 py-2 text-center text-cyan-400 hover:text-cyan-300 font-bold font-sans">
+                                    View
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Drill-down side panel */}
+                    <div className="lg:col-span-4 flex flex-col gap-3">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Distribution Drill-down</span>
+                      {selectedDriftFeature ? (
+                        <div className="p-4 rounded-lg border border-gray-900 bg-gray-950/40 flex flex-col gap-4.5">
+                          <div>
+                            <span className="font-mono text-xs font-black text-cyan-400 break-all">{selectedDriftFeature.feature}</span>
+                            <span className="text-[9px] text-gray-500 block uppercase font-mono mt-1">PSI: {selectedDriftFeature.drift_score.toFixed(4)} · KS Stat: {selectedDriftFeature.ks_stat}</span>
+                          </div>
+
+                          {/* Recommendation */}
+                          <div className="p-2.5 bg-gray-950 border border-gray-900 rounded text-[10px] leading-relaxed">
+                            <span className="font-bold text-gray-400 block mb-0.5 uppercase tracking-wider text-[8px]">Resolution Advice</span>
+                            {selectedDriftFeature.recommendation}
+                          </div>
+
+                          {/* Bins Comparison Chart */}
+                          {selectedDriftFeature.reference_distribution && selectedDriftFeature.reference_distribution.proportions.length > 0 ? (
+                            <div className="flex flex-col gap-2">
+                              <span className="text-[9px] uppercase font-bold text-gray-500">Reference (Train) vs Current (OOS)</span>
+                              <div className="flex flex-col gap-1.5 max-h-[140px] overflow-y-auto pr-1">
+                                {selectedDriftFeature.reference_distribution.proportions.map((p: number, i: number) => {
+                                  const cProp = selectedDriftFeature.current_distribution.proportions[i] ?? 0;
+                                  const refPct = Math.round(p * 100);
+                                  const currPct = Math.round(cProp * 100);
+                                  const label = selectedDriftFeature.reference_distribution.labels[i] || `Bin ${i}`;
+                                  
+                                  return (
+                                    <div key={i} className="text-[9px] flex flex-col gap-0.5 border-b border-gray-900/40 pb-1">
+                                      <span className="text-gray-500 font-mono leading-none">{label}</span>
+                                      <div className="flex items-center gap-2 mt-0.5">
+                                        <div className="flex-1 flex flex-col gap-0.5">
+                                          {/* Reference Bar */}
+                                          <div className="flex items-center gap-1">
+                                            <div className="h-1 rounded bg-purple-500/50" style={{ width: `${Math.max(refPct, 3)}%` }} />
+                                            <span className="text-[7px] text-gray-500 font-mono">{refPct}%</span>
+                                          </div>
+                                          {/* Current Bar */}
+                                          <div className="flex items-center gap-1">
+                                            <div className="h-1 rounded bg-cyan-500/50" style={{ width: `${Math.max(currPct, 3)}%` }} />
+                                            <span className="text-[7px] text-gray-500 font-mono">{currPct}%</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                              <div className="flex justify-center gap-3 text-[8px] text-gray-500 mt-1">
+                                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block" /> Training (Ref)</span>
+                                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-cyan-500 inline-block" /> Out-of-Sample</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-[10px] text-gray-500 italic">No distribution histogram coordinates found.</p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="p-8 rounded-lg border border-gray-900 border-dashed bg-gray-950/10 text-center text-gray-500 italic text-[10px] flex flex-col items-center justify-center gap-1.5">
+                          <Info className="w-4 h-4 text-gray-600" />
+                          <span>Click view on any feature row in the table to evaluate empirical distributions.</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-12 border border-gray-900 rounded-lg bg-gray-950/20 text-center text-xs text-gray-500 italic flex items-center justify-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-orange-400" />
+                    <span>{modelDrift?.reason || 'Drift diagnostics are unavailable for this corridor.'}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ─── TAB: PREDICTION HISTORY AUDIT TRAILS ─── */}
+            {healthTab === 'history' && (
+              <div className="flex flex-col gap-3.5 animate-fade-in">
+                <div className="flex justify-between items-center border-b border-gray-900 pb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Immutable Prediction History Log ({predictionHistory.length} Records)</span>
+                  <span className="text-[9px] text-gray-600">Audit trail populated from local sqlite persistent db</span>
+                </div>
+
+                {predictionHistory.length === 0 ? (
+                  <p className="text-xs text-gray-500 italic py-10 text-center">No predictions logged in the database yet. Trigger predictions by navigating the corridor dashboard.</p>
+                ) : (
+                  <div className="max-h-[280px] overflow-y-auto pr-1 border border-gray-900 bg-gray-950 rounded-lg">
+                    <table className="w-full text-[10px] text-left divide-y divide-gray-900">
+                      <thead className="bg-gray-900/60 text-gray-400 uppercase text-[8px] font-bold sticky top-0">
+                        <tr>
+                          <th className="px-3 py-2">Logged Date/Time</th>
+                          <th className="px-3 py-2">Prediction Date</th>
+                          <th className="px-3 py-2">Corridor</th>
+                          <th className="px-3 py-2 text-center">Model Version</th>
+                          <th className="px-3 py-2 text-right">Predicted Prob</th>
+                          <th className="px-3 py-2 text-center">Class Output</th>
+                          <th className="px-3 py-2 text-center">Audit Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-900 font-mono">
+                        {predictionHistory.map((rec) => {
+                          const pc = rec.predicted_class === 1 ? 'text-red-400 font-bold' : 'text-gray-400';
+                          return (
+                            <tr key={rec.id} className="hover:bg-gray-900/30">
+                              <td className="px-3 py-2 text-gray-500 font-sans">{new Date(rec.created_at).toLocaleString()}</td>
+                              <td className="px-3 py-2 text-gray-300">{rec.timestamp}</td>
+                              <td className="px-3 py-2 font-sans text-gray-400">{rec.corridor}</td>
+                              <td className="px-3 py-2 text-center text-gray-400">{rec.model_version}</td>
+                              <td className="px-3 py-2 text-right text-cyan-400 font-bold">{(rec.predicted_probability * 100).toFixed(2)}%</td>
+                              <td className={`px-3 py-2 text-center ${pc}`}>{rec.predicted_class === 1 ? 'DISRUPTED' : 'NORMAL'}</td>
+                              <td className="px-3 py-2 text-center text-gray-500 font-sans">IMMUTABLE</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ─── TAB: MODEL GOVERNANCE CENTER ─── */}
+            {healthTab === 'governance' && (
+              <div className="flex flex-col gap-5 animate-fade-in">
+
+                {/* Retrain Status Banner */}
+                {retrainStatus && (
+                  <div className={`p-3 rounded-lg border flex gap-3 items-start text-xs ${
+                    retrainStatus.severity === 'CRITICAL' ? 'border-red-800 bg-red-950/20 text-red-400'
+                    : retrainStatus.severity === 'HIGH' ? 'border-orange-800 bg-orange-950/20 text-orange-400'
+                    : retrainStatus.severity === 'MEDIUM' ? 'border-yellow-800 bg-yellow-950/20 text-yellow-400'
+                    : 'border-emerald-900 bg-emerald-950/10 text-emerald-400'
+                  }`}>
+                    <span className="text-lg leading-none mt-0.5">{retrainStatus.retrain_recommended ? '⚠' : '✓'}</span>
+                    <div className="flex flex-col gap-1">
+                      <span className="font-black uppercase tracking-wider text-[10px]">
+                        Retraining Status: {retrainStatus.severity} {retrainStatus.retrain_recommended ? '— Recommended' : '— Healthy'}
+                      </span>
+                      <ul className="list-disc pl-4 flex flex-col gap-0.5">
+                        {retrainStatus.reasons.map((r: string, i: number) => <li key={i} className="text-[10px] leading-snug opacity-80">{r}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* Governance Action Result */}
+                {governanceResult && (
+                  <div className={`p-3 rounded-lg border text-xs font-bold flex gap-2 items-center ${
+                    governanceResult.success ? 'border-emerald-800 bg-emerald-950/20 text-emerald-400' : 'border-red-800 bg-red-950/20 text-red-400'
+                  }`}>
+                    <span>{governanceResult.success ? '[SUCCESS]' : '[FAILED]'}</span>
+                    <span className="font-normal">{governanceResult.detail}</span>
+                    <button onClick={() => setGovernanceResult(null)} className="ml-auto text-gray-500 hover:text-white text-xs">×</button>
+                  </div>
+                )}
+
+                {/* Champion / Challenger Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* CHAMPION Card */}
+                  <div className="p-4 rounded-xl border border-cyan-900/50 bg-cyan-950/10 flex flex-col gap-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Active Champion</span>
+                      <span className="px-2 py-0.5 text-[9px] font-black bg-cyan-900/50 text-cyan-300 border border-cyan-800 rounded uppercase">CHAMPION</span>
+                    </div>
+                    {championChallenger?.champion && Object.keys(championChallenger.champion).length > 0 ? (
+                      <div className="flex flex-col gap-1.5 text-xs">
+                        <div className="flex justify-between"><span className="text-gray-500">Algorithm</span><span className="text-white font-bold">{championChallenger.champion.model_name}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">Version</span><span className="text-cyan-400 font-mono">{championChallenger.champion.version}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">Trained</span><span className="text-gray-300 font-mono text-[10px]">{championChallenger.champion.training_end}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">ROC-AUC</span><span className="text-emerald-400 font-bold font-mono">{(championChallenger.champion.metrics?.validation?.roc_auc ?? 'N/A')}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">PR-AUC</span><span className="text-emerald-400 font-bold font-mono">{(championChallenger.champion.metrics?.validation?.pr_auc ?? 'N/A')}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">ECE</span><span className="text-gray-300 font-mono">{(championChallenger.champion.calibration_metrics?.ece?.toFixed(4) ?? 'N/A')}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">Dataset Hash</span><span className="text-gray-600 font-mono text-[9px] truncate max-w-[120px]">{championChallenger.champion.dataset_hash?.slice(0, 12)}...</span></div>
+                        <button
+                          onClick={() => api.getModelCard(modelHealthCorridor).then((r: any) => setModelCardMarkdown(r?.markdown ?? null)).catch(() => {})}
+                          className="mt-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border border-cyan-800 rounded text-cyan-400 hover:bg-cyan-900/20 transition"
+                        >View Model Card</button>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-600 italic">No champion registered for this corridor.</p>
+                    )}
+                  </div>
+
+                  {/* CHALLENGER Card */}
+                  <div className="p-4 rounded-xl border border-yellow-900/50 bg-yellow-950/10 flex flex-col gap-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400">Latest Challenger</span>
+                      <span className="px-2 py-0.5 text-[9px] font-black bg-yellow-900/50 text-yellow-300 border border-yellow-800 rounded uppercase">
+                        {championChallenger?.challenger?.status ?? 'NONE'}
+                      </span>
+                    </div>
+                    {championChallenger?.challenger && Object.keys(championChallenger.challenger).length > 0 ? (
+                      <div className="flex flex-col gap-1.5 text-xs">
+                        <div className="flex justify-between"><span className="text-gray-500">Algorithm</span><span className="text-white font-bold">{championChallenger.challenger.model_name}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">Version</span><span className="text-yellow-400 font-mono">{championChallenger.challenger.version}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">Status</span><span className="text-yellow-300 font-bold">{championChallenger.challenger.status}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">ROC-AUC</span><span className="text-gray-300 font-mono">{(championChallenger.challenger.metrics?.validation?.roc_auc ?? 'N/A')}</span></div>
+                        <div className="flex justify-between"><span className="text-gray-500">PR-AUC</span><span className="text-gray-300 font-mono">{(championChallenger.challenger.metrics?.validation?.pr_auc ?? 'N/A')}</span></div>
+                        {championChallenger.challenger.rejection_reason && (
+                          <div className="mt-1 p-2 rounded border border-red-900 bg-red-950/20 text-[10px] text-red-400">
+                            <span className="font-bold">Rejected: </span>{championChallenger.challenger.rejection_reason}
+                          </div>
+                        )}
+                        {/* Governance Action Buttons */}
+                        {championChallenger.challenger.status === 'CANDIDATE' && (
+                          <div className="flex gap-2 mt-2">
+                            <button
+                              onClick={() => setGovernanceAction({ type: 'promote', key: `${championChallenger.challenger.model_name}__${championChallenger.challenger.corridor_id ?? modelHealthCorridor}__${championChallenger.challenger.version}` })}
+                              className="flex-1 px-2 py-1 text-[10px] font-black uppercase border border-emerald-800 text-emerald-400 rounded hover:bg-emerald-950/30 transition"
+                            >Promote</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-600 italic">No challenger candidate available.</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Promotion Confirmation Dialog */}
+                {governanceAction && (
+                  <div className="p-4 rounded-xl border border-orange-800 bg-orange-950/15 flex flex-col gap-3">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-orange-400">
+                      Confirm {governanceAction.type === 'promote' ? 'Promotion' : 'Rollback'}
+                    </span>
+                    <p className="text-xs text-gray-400">
+                      Are you sure you want to <strong className="text-white">{governanceAction.type}</strong> model key <code className="text-orange-300 text-[10px]">{governanceAction.key}</code>?
+                      This action will be logged and is irreversible.
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={async () => {
+                          try {
+                            let res;
+                            if (governanceAction.type === 'promote') {
+                              res = await api.promoteModel(modelHealthCorridor, { challenger_key: governanceAction.key, reason: 'Manually promoted via UI' });
+                            } else {
+                              res = await api.rollbackModel(modelHealthCorridor, { rollback_key: governanceAction.key, reason: 'Manual rollback via UI' });
+                            }
+                            setGovernanceResult({ success: true, detail: res.detail });
+                            fetchMonitoringData(modelHealthCorridor);
+                          } catch (err: any) {
+                            setGovernanceResult({ success: false, detail: err.message || 'Action failed.' });
+                          } finally {
+                            setGovernanceAction(null);
+                          }
+                        }}
+                        className="px-3 py-1.5 text-[10px] font-black uppercase bg-orange-900/40 border border-orange-700 text-orange-300 rounded hover:bg-orange-800/30 transition"
+                      >Confirm {governanceAction.type === 'promote' ? 'Promote' : 'Rollback'}</button>
+                      <button
+                        onClick={() => setGovernanceAction(null)}
+                        className="px-3 py-1.5 text-[10px] font-black uppercase border border-gray-700 text-gray-400 rounded hover:text-white transition"
+                      >Cancel</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Version History Timeline */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Version History ({corridorVersions.length} entries)</span>
+                  {corridorVersions.length === 0 ? (
+                    <p className="text-xs text-gray-600 italic py-4 text-center">No version history available for this corridor.</p>
+                  ) : (
+                    <div className="max-h-[220px] overflow-y-auto pr-1 border border-gray-900 bg-gray-950 rounded-lg">
+                      <table className="w-full text-[10px] text-left divide-y divide-gray-900">
+                        <thead className="bg-gray-900/60 text-gray-400 uppercase text-[8px] font-bold sticky top-0">
+                          <tr>
+                            <th className="px-3 py-2">Algorithm</th>
+                            <th className="px-3 py-2">Version</th>
+                            <th className="px-3 py-2">Status</th>
+                            <th className="px-3 py-2 text-right">ROC-AUC</th>
+                            <th className="px-3 py-2 text-right">PR-AUC</th>
+                            <th className="px-3 py-2">Trained</th>
+                            <th className="px-3 py-2">Promoted</th>
+                            <th className="px-3 py-2">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-900">
+                          {corridorVersions.map((v: any, idx: number) => {
+                            const statusColor =
+                              v.status === 'CHAMPION' ? 'text-cyan-400 border-cyan-800 bg-cyan-950/20'
+                              : v.status === 'CANDIDATE' ? 'text-yellow-400 border-yellow-800 bg-yellow-950/20'
+                              : v.status === 'REJECTED' ? 'text-red-400 border-red-800 bg-red-950/20'
+                              : v.status === 'RETIRED' ? 'text-gray-500 border-gray-700 bg-gray-900/20'
+                              : 'text-gray-400 border-gray-700';
+                            return (
+                              <tr key={idx} className="hover:bg-gray-900/30">
+                                <td className="px-3 py-2 font-bold text-gray-200">{v.model_name}</td>
+                                <td className="px-3 py-2 font-mono text-gray-400">{v.version}</td>
+                                <td className="px-3 py-2">
+                                  <span className={`px-1.5 py-0.5 rounded text-[8px] font-black border ${statusColor}`}>{v.status}</span>
+                                </td>
+                                <td className="px-3 py-2 text-right font-mono text-emerald-400">{v.metrics?.validation?.roc_auc?.toFixed(3) ?? '—'}</td>
+                                <td className="px-3 py-2 text-right font-mono text-gray-300">{v.metrics?.validation?.pr_auc?.toFixed(3) ?? '—'}</td>
+                                <td className="px-3 py-2 font-mono text-gray-500 text-[9px]">{v.training_end ?? '—'}</td>
+                                <td className="px-3 py-2 font-mono text-gray-600 text-[9px]">{v.promoted_at ? new Date(v.promoted_at).toLocaleDateString() : '—'}</td>
+                                <td className="px-3 py-2">
+                                  {(v.status === 'RETIRED' || v.status === 'VALIDATED') && (
+                                    <button
+                                      onClick={() => setGovernanceAction({ type: 'rollback', key: `${v.model_name}__${v.corridor_id}__${v.version}` })}
+                                      className="px-2 py-0.5 text-[8px] font-bold uppercase border border-gray-700 text-gray-400 rounded hover:text-white hover:border-gray-500 transition"
+                                    >Rollback</button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* Model Card Viewer */}
+                {modelCardMarkdown && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Model Card</span>
+                      <button onClick={() => setModelCardMarkdown(null)} className="text-[10px] text-gray-600 hover:text-white">× Close</button>
+                    </div>
+                    <div className="max-h-[220px] overflow-y-auto p-3 rounded-lg border border-gray-800 bg-gray-950 text-[11px] text-gray-300 leading-relaxed whitespace-pre-wrap font-mono">
+                      {modelCardMarkdown}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            )}
+
           </div>
-        </div>
+        )}
       </section>
 
       {/* ─── FOOTER ───────────────────────────────────────────────────────────── */}

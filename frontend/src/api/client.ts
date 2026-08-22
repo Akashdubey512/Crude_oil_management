@@ -9,7 +9,11 @@ import type {
   RiskHistoryEntry,
   CorridorComparisonResponse,
   ScenarioSimulationRequest,
-  ScenarioSimulationResponse
+  ScenarioSimulationResponse,
+  ModelEvaluationResponse,
+  DriftResponse,
+  ModelHealthResponse,
+  PredictionRecord,
 } from '../types';
 
 const API_BASE = 'http://127.0.0.1:8000';
@@ -30,7 +34,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getHealth: () => request<HealthResponse>('/health'),
+  getHealth: () => request<HealthResponse>('/api/health'),
   
   getCorridors: () => request<Corridor[]>('/api/corridors'),
   
@@ -98,4 +102,64 @@ export const api = {
       },
       body: JSON.stringify(req),
     }),
+
+  // --- Phase 9: Model Monitoring ---
+
+  getModelEvaluation: (corridor: string, split = 'all_oos', modelVersion = '1.0') =>
+    request<ModelEvaluationResponse>(
+      `/api/models/evaluation?corridor=${corridor.toUpperCase()}&split=${split}&model_version=${modelVersion}`
+    ),
+
+  getModelDrift: (corridor: string, currentPeriod = 'all_oos') =>
+    request<DriftResponse>(
+      `/api/models/drift?corridor=${corridor.toUpperCase()}&current_period=${currentPeriod}`
+    ),
+
+  getModelHealth: (corridor: string, modelVersion = '1.0') =>
+    request<ModelHealthResponse>(
+      `/api/models/health?corridor=${corridor.toUpperCase()}&model_version=${modelVersion}`
+    ),
+
+  getPredictionsHistory: (corridor: string, limit = 50, startDate?: string, endDate?: string, modelVersion?: string) => {
+    const params = new URLSearchParams();
+    params.append('limit', limit.toString());
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    if (modelVersion) params.append('model_version', modelVersion);
+    return request<PredictionRecord[]>(`/api/predictions/history/${corridor.toUpperCase()}?${params.toString()}`);
+  },
+
+  // --- Phase 11: MLOps & Governance ---
+  getCorridorVersions: (corridor: string) =>
+    request<any[]>(`/api/models/${corridor.toUpperCase()}/versions`),
+
+  getComparisonMetrics: (corridor: string) =>
+    request<any>(`/api/models/${corridor.toUpperCase()}/comparison`),
+
+  getRetrainStatus: (corridor: string) =>
+    request<any>(`/api/models/${corridor.toUpperCase()}/retrain-status`),
+
+  promoteModel: (corridor: string, req: { challenger_key: string; reason: string }) =>
+    request<any>(`/api/models/${corridor.toUpperCase()}/promote`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Role': 'admin',
+      },
+      body: JSON.stringify(req),
+    }),
+
+  rollbackModel: (corridor: string, req: { rollback_key: string; reason: string }) =>
+    request<any>(`/api/models/${corridor.toUpperCase()}/rollback`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Role': 'admin',
+      },
+      body: JSON.stringify(req),
+    }),
+
+  getModelCard: (corridor: string) =>
+    request<any>(`/api/models/${corridor.toUpperCase()}/model-card`),
 };
+
