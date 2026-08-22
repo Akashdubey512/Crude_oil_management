@@ -29,11 +29,11 @@ export default function SideNav({ currentTab, onTabChange }: SideNavProps) {
   ];
 
   return (
-    <aside className="w-full lg:w-64 shrink-0 bg-gray-950 border-r border-gray-900 flex flex-col justify-between py-6">
+    <aside className="w-full lg:w-60 shrink-0 bg-white border-r border-slate-200/90 flex flex-col justify-between py-6 select-none font-manrope shadow-2xs">
       <div className="space-y-6">
         {/* Navigation Section */}
         <div className="px-4">
-          <p className="text-[9px] font-mono font-bold tracking-widest text-gray-500 uppercase px-3 mb-3">
+          <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 mb-3 font-jakarta">
             COMMAND CHANNELS
           </p>
           <nav className="space-y-1">
@@ -44,13 +44,13 @@ export default function SideNav({ currentTab, onTabChange }: SideNavProps) {
                 <button
                   key={item.id}
                   onClick={() => onTabChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all duration-150 hover:cursor-pointer ${
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-cyan-950/40 border border-cyan-800/30 text-cyan-400'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-900/40 border border-transparent'
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-gray-500'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -60,9 +60,9 @@ export default function SideNav({ currentTab, onTabChange }: SideNavProps) {
       </div>
 
       {/* Sidebar Footer info */}
-      <div className="px-6 text-[9px] font-mono text-gray-600 space-y-1 leading-normal border-t border-gray-900/60 pt-4 mt-6">
-        <p>MARITIME THREAT MATRIX v2</p>
-        <p>© INDIA SECURE SUPPLY Twin</p>
+      <div className="px-6 text-[10px] text-slate-400 space-y-1 border-t border-slate-100 pt-4 mt-6 font-inter">
+        <p className="font-bold text-slate-700">MARITIME THREAT MATRIX v2.0</p>
+        <p>© INDIA SECURE SUPPLY TWIN</p>
       </div>
     </aside>
   );

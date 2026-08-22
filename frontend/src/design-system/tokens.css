@@ -1,37 +1,38 @@
 :root {
-  /* Color System */
-  --bg-primary: #030712;
-  --bg-secondary: #0b0f19;
-  --bg-tertiary: #111827;
-  --bg-surface: #1f2937;
+  /* Crisp White, Dark Blue & Orange Theme System */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-surface: #ffffff;
   
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
   
   /* Semantic Accents */
-  --accent-cyan: #06b6d4;
-  --accent-blue: #3b82f6;
+  --accent-blue: #1d4ed8;
+  --accent-navy: #1e3a8a;
+  --accent-orange: #f97316;
   --accent-amber: #f59e0b;
   --accent-emerald: #10b981;
-  --accent-rose: #f43f5e;
+  --accent-rose: #ef4444;
 
   /* Risk Semantics */
   --risk-low: #10b981;
   --risk-moderate: #f59e0b;
-  --risk-high: #ef4444;
-  --risk-critical: #b91c1c;
-  --risk-unknown: #6b7280;
-  --risk-unavailable: #4b5563;
+  --risk-high: #f97316;
+  --risk-critical: #ef4444;
+  --risk-unknown: #64748b;
+  --risk-unavailable: #94a3b8;
 
   /* Status Semantics */
   --status-success: #10b981;
-  --status-warning: #f59e0b;
+  --status-warning: #f97316;
   --status-danger: #ef4444;
-  --status-info: #3b82f6;
+  --status-info: #1d4ed8;
 
-  /* Glassmorphism Defaults */
-  --glass-bg: rgba(11, 15, 25, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.15);
+  /* Card & Glassmorphism Defaults */
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(226, 232, 240, 0.9);
+  --glass-border-hover: rgba(203, 213, 225, 1);
 }

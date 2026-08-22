@@ -19,11 +19,11 @@ export default function SHAPPanel({ explainability, corridorId }: SHAPPanelProps
 
   if (!explainability || !explainability.global_importance || explainability.global_importance.length === 0) {
     return (
-      <div className="glass-panel p-4 rounded-xl border border-gray-900/60 text-center select-none py-6">
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+      <div className="text-center py-6 select-none">
+        <p className="text-xs font-extrabold text-slate-400 uppercase tracking-widest font-space">
           No Verified Observations
         </p>
-        <p className="text-[10px] text-gray-600 mt-1">
+        <p className="text-[10px] text-slate-400 mt-1 font-inter">
           SHAP explainability vector is not indexed for this corridor.
         </p>
       </div>
@@ -47,45 +47,45 @@ export default function SHAPPanel({ explainability, corridorId }: SHAPPanelProps
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-        <h4 className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 uppercase">
+      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+        <h4 className="text-[10px] font-extrabold tracking-widest text-blue-700 uppercase font-space">
           ML Feature Importance (SHAP)
         </h4>
-        <span className="text-[9px] font-mono text-gray-500 uppercase">
+        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">
           METHOD: {explainability.method}
         </span>
       </div>
 
-      <div className="h-[240px] w-full font-mono text-[9px]">
+      <div className="h-[240px] w-full font-geist text-[9px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
             layout="vertical"
             margin={{ top: 5, right: 15, left: -25, bottom: 5 }}
           >
-            <XAxis type="number" stroke="#4b5563" />
-            <YAxis dataKey="feature" type="category" stroke="#9ca3af" width={110} />
+            <XAxis type="number" stroke="#cbd5e1" tick={{ fontSize: 9, fill: '#94a3b8' }} />
+            <YAxis dataKey="feature" type="category" stroke="#cbd5e1" width={110} tick={{ fontSize: 9, fill: '#64748b' }} />
             <ReChartsTooltip
-              cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+              cursor={{ fill: 'rgba(37, 99, 235, 0.06)' }}
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const item = payload[0].payload;
                   return (
-                    <div className="glass-panel px-2.5 py-1.5 rounded border border-gray-800 text-[10px] text-gray-300">
-                      <span className="font-bold text-white block mb-0.5">{item.feature}</span>
+                    <div className="bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-lg text-[10px] text-slate-700 font-geist">
+                      <span className="font-extrabold text-slate-900 block mb-0.5">{item.feature}</span>
                       <span>Mean |SHAP|: </span>
-                      <span className="font-black text-cyan-400">{item.importance.toFixed(4)}</span>
+                      <span className="font-black text-blue-700">{item.importance.toFixed(4)}</span>
                     </div>
                   );
                 }
                 return null;
               }}
             />
-            <Bar dataKey="importance" fill="#06b6d4" radius={[0, 4, 4, 0]} barSize={10}>
+            <Bar dataKey="importance" radius={[0, 4, 4, 0]} barSize={10}>
               {chartData.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={index % 2 === 0 ? 'var(--accent-cyan)' : 'var(--accent-blue)'}
+                  fill={index % 2 === 0 ? '#2563eb' : '#f97316'}
                 />
               ))}
             </Bar>
@@ -94,8 +94,8 @@ export default function SHAPPanel({ explainability, corridorId }: SHAPPanelProps
       </div>
 
       {isRedSea && (
-        <div className="bg-amber-950/20 border border-amber-900/40 rounded-lg p-2.5 text-[9px] leading-relaxed text-amber-500 font-mono">
-          <span className="font-extrabold uppercase block mb-0.5">⚠️ Bab el-Mandeb Proxy Mode</span>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-[10px] leading-relaxed text-amber-700 font-inter">
+          <span className="font-extrabold uppercase block mb-0.5 font-space">⚠️ Bab el-Mandeb Proxy Mode</span>
           SHAP attributions for the Red Sea are calculated using the Bab el-Mandeb proxy traffic sensor due to current GDELT observations and PortWatch restrictions.
         </div>
       )}

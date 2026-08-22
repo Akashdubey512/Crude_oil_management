@@ -188,16 +188,16 @@ export default function CommandCenter({
   // Skeleton screen if global state loading
   if (globalLoading) {
     return (
-      <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center text-gray-400 font-mono p-6 select-none">
-        <RefreshCw className="w-10 h-10 animate-spin text-cyan-500 mb-4" />
-        <p className="text-xs font-extrabold tracking-widest uppercase">SYNCHRONIZING OPERATIONAL COMMAND CENTER...</p>
-        <p className="text-[10px] opacity-40 mt-1">Connecting to FastAPI twin nodes</p>
+      <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center text-slate-600 font-geist p-6 select-none">
+        <RefreshCw className="w-10 h-10 animate-spin text-blue-600 mb-4" />
+        <p className="text-xs font-black font-space tracking-widest uppercase text-slate-900">SYNCHRONIZING OPERATIONAL COMMAND CENTER...</p>
+        <p className="text-[11px] text-slate-500 mt-1">Connecting to FastAPI twin nodes</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-manrope selection:bg-blue-600 selection:text-white">
       {/* 1. Header TopBar */}
       <TopBar
         health={health}
@@ -210,8 +210,8 @@ export default function CommandCenter({
 
       {/* Global Error Banner */}
       {globalError && (
-        <div className="bg-rose-950/20 border-b border-rose-900/40 p-3 text-center text-[10px] font-mono text-rose-400 flex items-center justify-center gap-2 select-none">
-          <AlertOctagon className="w-4 h-4" />
+        <div className="bg-rose-50 border-b border-rose-200 p-3 text-center text-xs font-geist text-rose-700 flex items-center justify-center gap-2 select-none font-bold">
+          <AlertOctagon className="w-4 h-4 text-rose-600" />
           <span>{globalError}</span>
         </div>
       )}
@@ -258,11 +258,11 @@ export default function CommandCenter({
                     </div>
 
                     {/* Quick selector side card */}
-                    <div className="lg:col-span-4 flex flex-col justify-between glass-panel p-4 rounded-xl border border-gray-900/60 font-mono text-[10px]">
+                    <div className="lg:col-span-4 flex flex-col justify-between bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs font-manrope">
                       <div>
-                        <div className="flex items-center gap-2 border-b border-gray-900 pb-2 mb-3">
-                          <Compass className="w-4 h-4 text-cyan-400" />
-                          <h3 className="text-xs font-black tracking-wider text-white uppercase">Sector Inventory</h3>
+                        <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3 mb-3">
+                          <Compass className="w-4 h-4 text-blue-600" />
+                          <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase font-space">Sector Inventory</h3>
                         </div>
 
                         <div className="space-y-2.5">
@@ -272,25 +272,25 @@ export default function CommandCenter({
                               <button
                                 key={c.corridor_id}
                                 onClick={() => handleSelectCorridor(c.corridor_id)}
-                                className={`w-full text-left p-2.5 rounded-lg border transition hover:cursor-pointer ${
+                                className={`w-full text-left p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
                                   selectedCorridor === c.corridor_id
-                                    ? 'bg-cyan-950/20 border-cyan-800/40 text-cyan-400'
-                                    : 'bg-gray-900/40 border-gray-900/45 text-gray-300 hover:bg-gray-900/80'
+                                    ? 'bg-blue-50/90 border-blue-300 text-blue-800 shadow-2xs'
+                                    : 'bg-slate-50/80 border-slate-200/80 text-slate-700 hover:bg-slate-100'
                                 }`}
                               >
-                                <div className="flex justify-between items-center font-bold">
+                                <div className="flex justify-between items-center font-bold text-xs">
                                   <span>{c.name}</span>
-                                  <span className={`text-[8px] px-1 rounded border uppercase ${
+                                  <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded border uppercase ${
                                     cr?.risk_level === 'LOW' 
-                                      ? 'text-emerald-400 bg-emerald-950/20 border-emerald-900/30' 
+                                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
                                       : cr?.risk_level === 'MODERATE' 
-                                      ? 'text-amber-400 bg-amber-950/20 border-amber-800/30' 
-                                      : 'text-rose-400 bg-rose-950/20 border-rose-900/30'
+                                      ? 'text-amber-700 bg-amber-50 border-amber-200' 
+                                      : 'text-rose-700 bg-rose-50 border-rose-200'
                                   }`}>
                                     {cr?.risk_level || 'UNKNOWN'}
                                   </span>
                                 </div>
-                                <p className="text-[8px] text-gray-500 mt-1 leading-normal">
+                                <p className="text-[10px] text-slate-500 mt-1 leading-relaxed font-inter">
                                   {c.description}
                                 </p>
                               </button>
@@ -299,7 +299,7 @@ export default function CommandCenter({
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-900 pt-3 mt-4 text-[8px] text-gray-500 leading-normal">
+                      <div className="border-t border-slate-100 pt-3 mt-4 text-[10px] text-slate-400 font-inter">
                         <span>Click a sector above or select nodes on the map layer to expand deep SHAP explanation diagnostics.</span>
                       </div>
                     </div>
@@ -308,10 +308,10 @@ export default function CommandCenter({
                   {/* Below-map charts shelf */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Risk History */}
-                    <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-                      <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                        <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Risk History Index</span>
-                        <span className="text-[8px] text-gray-500 uppercase">30d inference</span>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider font-space">Risk History Index</span>
+                        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">30d inference</span>
                       </div>
                       <div className="h-[180px] w-full">
                         <RiskHistoryChart data={monitorHistory} />
@@ -319,10 +319,10 @@ export default function CommandCenter({
                     </div>
 
                     {/* Traffic Flow */}
-                    <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-                      <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                        <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Traffic Flow Sensor</span>
-                        <span className="text-[8px] text-gray-500 uppercase">observed vessels</span>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider font-space">Traffic Flow Sensor</span>
+                        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">observed vessels</span>
                       </div>
                       <div className="h-[180px] w-full">
                         <TrafficTrendChart data={activeTraffic} />
@@ -330,10 +330,10 @@ export default function CommandCenter({
                     </div>
 
                     {/* Brent Prices */}
-                    <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-                      <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                        <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Brent Crude Spot</span>
-                        <span className="text-[8px] text-gray-500 uppercase">Fred Data Stream</span>
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider font-space">Brent Crude Spot</span>
+                        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">Fred Data Stream</span>
                       </div>
                       <div className="h-[180px] w-full">
                         <BrentChart brentPrices={brentPrices} />

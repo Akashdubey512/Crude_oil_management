@@ -17,8 +17,8 @@ interface TrafficTrendChartProps {
 export default function TrafficTrendChart({ data }: TrafficTrendChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center text-xs text-gray-500 font-mono">
-        NO ROUTE OBSERVATIONS RECORDED FOR SENSOR SEGMENT
+      <div className="h-full flex items-center justify-center text-xs text-slate-400 font-space uppercase tracking-wider">
+        No Route Observations Recorded For Sensor Segment
       </div>
     );
   }
@@ -35,23 +35,23 @@ export default function TrafficTrendChart({ data }: TrafficTrendChartProps) {
     }));
 
   return (
-    <div className="w-full h-full font-mono text-[9px]">
+    <div className="w-full h-full font-geist text-[9px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={formattedData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-          <CartesianGrid stroke="#1f2937" strokeDasharray="3 3" opacity={0.4} />
-          <XAxis dataKey="date" stroke="#4b5563" />
-          <YAxis stroke="#4b5563" />
+          <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" opacity={0.7} />
+          <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 9, fill: '#94a3b8' }} />
+          <YAxis stroke="#94a3b8" tick={{ fontSize: 9, fill: '#94a3b8' }} />
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const item = payload[0].payload;
                 return (
-                  <div className="glass-panel px-3 py-2 rounded-lg border border-gray-800 text-[10px] text-gray-300 leading-normal">
-                    <p className="font-bold text-white mb-0.5">{item.date}</p>
-                    <p>TOTAL VESSEL: <span className="font-bold text-white">{item.vesselCount}</span></p>
-                    <p>TANKERS: <span className="font-bold text-cyan-400">{item.tankerCount}</span></p>
+                  <div className="bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-lg text-[10px] text-slate-700 leading-normal font-geist">
+                    <p className="font-extrabold text-slate-900 mb-0.5">{item.date}</p>
+                    <p>TOTAL VESSEL: <span className="font-bold text-slate-900">{item.vesselCount}</span></p>
+                    <p>TANKERS: <span className="font-bold text-blue-700">{item.tankerCount}</span></p>
                     {item.isAnomaly && (
-                      <p className="text-rose-500 font-bold mt-1">⚠️ TRAFFIC ANOMALY DETECTED</p>
+                      <p className="text-rose-600 font-bold mt-1">⚠️ TRAFFIC ANOMALY DETECTED</p>
                     )}
                   </div>
                 );
@@ -59,21 +59,21 @@ export default function TrafficTrendChart({ data }: TrafficTrendChartProps) {
               return null;
             }}
           />
-          <Legend wrapperStyle={{ fontSize: '8px', color: '#9ca3af' }} />
+          <Legend wrapperStyle={{ fontSize: '9px', color: '#64748b' }} />
           <Line
             name="Vessel Flow Count"
             type="monotone"
             dataKey="vesselCount"
-            stroke="#3b82f6"
-            strokeWidth={1.8}
+            stroke="#1d4ed8"
+            strokeWidth={2}
             dot={false}
           />
           <Line
             name="Tanker Flow Count"
             type="monotone"
             dataKey="tankerCount"
-            stroke="#06b6d4"
-            strokeWidth={1.8}
+            stroke="#f97316"
+            strokeWidth={2}
             dot={false}
           />
           <Line
@@ -82,7 +82,7 @@ export default function TrafficTrendChart({ data }: TrafficTrendChartProps) {
             dataKey="anomalyVal"
             stroke="#ef4444"
             strokeWidth={0}
-            dot={{ r: 4, fill: '#ef4444', stroke: '#ffffff', strokeWidth: 1 }}
+            dot={{ r: 4, fill: '#ef4444', stroke: '#ffffff', strokeWidth: 1.5 }}
           />
         </LineChart>
       </ResponsiveContainer>

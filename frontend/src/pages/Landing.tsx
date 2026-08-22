@@ -230,7 +230,7 @@ export default function Landing({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]"
+            className="text-4xl md:text-5xl font-black font-space tracking-tight text-slate-900 leading-[1.15]"
           >
             Energy Resilience Intelligence for Maritime Supply Chains
           </motion.h1>
@@ -240,7 +240,7 @@ export default function Landing({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="text-base text-slate-600 leading-relaxed font-normal max-w-xl"
+            className="text-base font-inter text-slate-600 leading-relaxed font-normal max-w-xl"
           >
             Monitor maritime corridors, detect emerging disruption risk, and evaluate energy supply-chain resilience through real-world data and predictive intelligence.
           </motion.p>
@@ -250,7 +250,7 @@ export default function Landing({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.45 }}
-            className="flex flex-wrap items-center gap-3.5 pt-2"
+            className="flex flex-wrap items-center gap-3.5 pt-2 font-manrope"
           >
             {/* Primary CTA */}
             <button
@@ -277,7 +277,7 @@ export default function Landing({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.55 }}
-            className="flex items-center gap-2 text-xs font-medium text-slate-500 pt-1"
+            className="flex items-center gap-2 text-xs font-medium font-inter text-slate-500 pt-1"
           >
             <Target className="w-4 h-4 text-blue-500" />
             <span>Real-time monitoring across critical energy maritime corridors</span>
@@ -371,7 +371,7 @@ export default function Landing({
               </g>
             </svg>
 
-            {/* Interactive Chokepoint Map Overlay Cards (Matches reference image) */}
+            {/* Interactive Chokepoint Map Overlay Cards */}
             {MAP_CHOKEPOINTS.map((cp) => {
               const riskInfo = getCorridorRiskInfo(cp.id, cp.defaultRisk);
               const badgeStyle = getRiskBadgeStyle(riskInfo.text);
@@ -395,8 +395,8 @@ export default function Landing({
                   </div>
 
                   {/* Floating Tooltip Card */}
-                  <div className="mt-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-xl group-hover:scale-105 group-hover:shadow-2xl transition-all duration-200 whitespace-nowrap select-none">
-                    <div className="text-[10px] font-black text-slate-900 tracking-wider uppercase">
+                  <div className="mt-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-xl group-hover:scale-105 group-hover:shadow-2xl transition-all duration-200 whitespace-nowrap select-none font-manrope">
+                    <div className="text-[10px] font-black text-slate-900 tracking-wider uppercase font-jakarta">
                       {cp.name}
                     </div>
                     <div className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded border inline-block mt-0.5 ${badgeStyle}`}>
@@ -407,8 +407,8 @@ export default function Landing({
               );
             })}
 
-            {/* ── RIGHT FLOATING CARD: LIVE CORRIDOR RISK (Matches reference image) ───── */}
-            <div className="absolute top-6 right-6 z-20 w-72 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-xl select-none">
+            {/* ── RIGHT FLOATING CARD: LIVE CORRIDOR RISK (Higher & Compact Position) ───── */}
+            <div className="absolute top-3 right-3 z-20 w-64 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-slate-200/90 shadow-lg select-none font-manrope">
               
               {/* Header */}
               <div className="flex justify-between items-center pb-3 mb-3 border-b border-slate-100">

@@ -31,19 +31,17 @@ export default function CorridorDrawer({
   const probPercent = activeRisk && activeRisk.probability !== null ? `${(activeRisk.probability * 100).toFixed(0)}%` : '---';
   const riskLevel = activeRisk ? activeRisk.risk_level : 'UNKNOWN';
 
-  let riskColorClass = 'text-emerald-400 bg-emerald-950/40 border-emerald-800/30';
+  let riskColorClass = 'text-emerald-700 bg-emerald-50 border-emerald-200';
   let badgeIcon = CheckCircle2;
   if (riskLevel === 'MODERATE') {
-    riskColorClass = 'text-amber-400 bg-amber-950/40 border-amber-800/30';
+    riskColorClass = 'text-amber-700 bg-amber-50 border-amber-200';
     badgeIcon = AlertTriangle;
   } else if (riskLevel === 'HIGH' || riskLevel === 'CRITICAL') {
-    riskColorClass = 'text-rose-400 bg-rose-950/40 border-rose-800/30';
+    riskColorClass = 'text-rose-700 bg-rose-50 border-rose-200';
     badgeIcon = AlertCircle;
   }
 
   const BadgeIcon = badgeIcon;
-
-  // Find latest observed traffic
   const latestTraffic = activeTraffic.length > 0 ? activeTraffic[0] : null;
 
   return (
@@ -52,19 +50,19 @@ export default function CorridorDrawer({
       initial="initial"
       animate="animate"
       exit="exit"
-      className="fixed right-0 top-[60px] bottom-0 w-full md:w-[460px] bg-gray-950 border-l border-gray-900 shadow-2xl z-[1500] flex flex-col justify-between select-none"
+      className="fixed right-0 top-[60px] bottom-0 w-full md:w-[480px] bg-white border-l border-slate-200/90 shadow-2xl z-[1500] flex flex-col justify-between select-none font-manrope"
     >
       {/* Header Area */}
-      <div className="p-5 border-b border-gray-900 flex justify-between items-center bg-gray-950/90 backdrop-blur">
+      <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur">
         <div>
           <div className="flex items-center gap-2">
-            <Compass className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-sm font-black tracking-wider text-white uppercase">
+            <Compass className="w-5 h-5 text-blue-600" />
+            <h3 className="text-base font-black text-slate-900 uppercase font-space tracking-tight">
               {corridorName}
             </h3>
           </div>
           {isRedSea && (
-            <span className="text-[9px] font-mono text-amber-500 font-bold block mt-0.5 uppercase tracking-wide">
+            <span className="text-[10px] font-bold text-orange-600 block mt-0.5 uppercase tracking-wide font-inter">
               * Bab el-Mandeb traffic proxy
             </span>
           )}
@@ -72,21 +70,21 @@ export default function CorridorDrawer({
         <button
           onClick={onClose}
           aria-label="close"
-          className="p-1.5 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 hover:text-white transition hover:cursor-pointer"
+          className="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-900 transition cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Drawer Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar">
+      <div className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar">
         {/* Risk Badge and Probability Bar */}
-        <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
+        <div className="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-[9px] font-mono font-bold text-gray-500 uppercase">
+            <span className="text-[10px] font-bold text-slate-400 uppercase font-jakarta">
               Operational Risk Level
             </span>
-            <div className={`flex items-center gap-1 px-2.5 py-0.5 rounded border text-[10px] font-mono font-extrabold uppercase ${riskColorClass}`}>
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-extrabold uppercase ${riskColorClass}`}>
               <BadgeIcon className="w-3.5 h-3.5" />
               <span>{riskLevel}</span>
             </div>
@@ -94,19 +92,19 @@ export default function CorridorDrawer({
 
           <div className="flex items-end justify-between">
             <div>
-              <span className="text-gray-400 text-xs">Risk Index:</span>
-              <span className="text-3xl font-black tracking-tight text-white block">
+              <span className="text-slate-500 text-xs font-inter font-medium">Risk Index:</span>
+              <span className="text-3xl font-black font-space text-slate-900 block leading-none mt-1">
                 {score.toFixed(2)}
               </span>
             </div>
             <div className="text-right">
-              <span className="text-gray-400 text-xs">Probability:</span>
-              <span className="text-xl font-bold text-cyan-400 block">{probPercent}</span>
+              <span className="text-slate-500 text-xs font-inter font-medium">Probability:</span>
+              <span className="text-2xl font-bold font-geist text-blue-600 block leading-none mt-1">{probPercent}</span>
             </div>
           </div>
 
           {/* Simple horizontal progress indicator */}
-          <div className="w-full bg-gray-900 h-1.5 rounded-full overflow-hidden border border-gray-800">
+          <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full ${
                 riskLevel === 'LOW'
@@ -122,83 +120,83 @@ export default function CorridorDrawer({
 
         {/* 5-Vector Decomposition */}
         {activeRisk?.risk_decomposition && (
-          <div className="glass-panel p-4 rounded-xl border border-gray-900/60">
+          <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs">
             <RiskDecomposition decomposition={activeRisk.risk_decomposition} />
           </div>
         )}
 
         {/* Traffic Intelligence Card */}
-        <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-          <div className="flex justify-between items-center border-b border-gray-900 pb-2">
+        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
             <div className="flex items-center gap-2">
-              <Ship className="w-3.5 h-3.5 text-cyan-400" />
-              <h4 className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 uppercase">
+              <Ship className="w-4 h-4 text-blue-600" />
+              <h4 className="text-xs font-black tracking-wider text-slate-900 uppercase font-space">
                 AIS TRAFFIC INTEL
               </h4>
             </div>
-            <span className="text-[8px] font-mono text-gray-500 uppercase">PORTWATCH FEED</span>
+            <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">PORTWATCH FEED</span>
           </div>
 
           {latestTraffic ? (
-            <div className="grid grid-cols-2 gap-4 text-[10px] font-mono">
+            <div className="grid grid-cols-2 gap-4 text-xs font-geist">
               <div>
-                <span className="text-gray-500 block">TOTAL VESSELS</span>
-                <span className="text-sm font-bold text-white">{latestTraffic.vessel_count} / day</span>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">TOTAL VESSELS</span>
+                <span className="text-base font-extrabold text-slate-900">{latestTraffic.vessel_count} / day</span>
               </div>
               <div>
-                <span className="text-gray-500 block">TANKERS (OIL/LNG)</span>
-                <span className="text-sm font-bold text-cyan-400">{latestTraffic.tanker_count} / day</span>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">TANKERS (OIL/LNG)</span>
+                <span className="text-base font-extrabold text-blue-600">{latestTraffic.tanker_count} / day</span>
               </div>
               <div>
-                <span className="text-gray-500 block">ANOMALY STATUS</span>
-                <span className={`font-bold ${latestTraffic.anomaly_flag ? 'text-rose-500' : 'text-emerald-500'}`}>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">ANOMALY STATUS</span>
+                <span className={`font-extrabold text-xs ${latestTraffic.anomaly_flag ? 'text-rose-600' : 'text-emerald-600'}`}>
                   {latestTraffic.anomaly_type}
                 </span>
               </div>
               <div>
-                <span className="text-gray-500 block">LAST RECORDED</span>
-                <span className="text-gray-400">{latestTraffic.date}</span>
+                <span className="text-slate-400 block text-[10px] font-bold uppercase">LAST RECORDED</span>
+                <span className="text-slate-700 font-bold">{latestTraffic.date}</span>
               </div>
             </div>
           ) : (
-            <div className="text-center py-2 text-[10px] text-gray-500 font-mono">
+            <div className="text-center py-2 text-xs text-slate-400 font-inter">
               AIS traffic data unavailable from PortWatch API for this region.
             </div>
           )}
         </div>
 
         {/* SHAP explanation */}
-        <div className="glass-panel p-4 rounded-xl border border-gray-900/60">
+        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs">
           <SHAPPanel explainability={activeExplainability} corridorId={corridorId} />
         </div>
 
         {/* Geopolitical Events List */}
-        <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-          <div className="flex justify-between items-center border-b border-gray-900 pb-2">
+        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
             <div className="flex items-center gap-2">
-              <ShieldAlert className="w-3.5 h-3.5 text-cyan-400" />
-              <h4 className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 uppercase">
+              <ShieldAlert className="w-4 h-4 text-orange-600" />
+              <h4 className="text-xs font-black tracking-wider text-slate-900 uppercase font-space">
                 GEOPOLITICAL INCIDENTS
               </h4>
             </div>
-            <span className="text-[8px] font-mono text-gray-500 uppercase">GDELT REPOSITORY</span>
+            <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">GDELT REPOSITORY</span>
           </div>
 
-          <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 scrollbar">
+          <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1 scrollbar">
             {activeEvents.length > 0 ? (
               activeEvents.map((evt, idx) => (
-                <div key={idx} className="border-b border-gray-900/60 last:border-0 pb-2 mb-2 last:pb-0 last:mb-0">
-                  <div className="flex justify-between items-center text-[9px] font-mono text-gray-500">
-                    <span>SRC: {evt.source.toUpperCase()}</span>
+                <div key={idx} className="border-b border-slate-100 last:border-0 pb-2.5 mb-2.5 last:pb-0 last:mb-0">
+                  <div className="flex justify-between items-center text-[10px] font-geist text-slate-400">
+                    <span className="font-bold text-blue-600">SRC: {evt.source.toUpperCase()}</span>
                     <span>{evt.event_date}</span>
                   </div>
-                  <p className="text-[10px] text-gray-300 mt-1 leading-normal">
+                  <p className="text-xs text-slate-700 mt-1 leading-relaxed font-inter">
                     {evt.text_reference}
                   </p>
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-[10px] text-gray-500 font-mono">
+              <div className="text-center py-4 text-xs text-slate-400 font-inter">
                 No recent geopolitical alerts recorded for this sector.
               </div>
             )}
@@ -207,9 +205,9 @@ export default function CorridorDrawer({
       </div>
 
       {/* Footer Provenance Info */}
-      <div className="p-4 border-t border-gray-900 bg-gray-950 text-[8px] font-mono text-gray-600 flex justify-between items-center select-none">
+      <div className="p-4 border-t border-slate-200 bg-slate-50 text-[10px] font-geist text-slate-500 flex justify-between items-center select-none font-bold">
         <span>MODEL INFERENCE TARGET: V1.0</span>
-        <span>SECURITY PROMPT ACCESS: ACTIVE</span>
+        <span className="text-emerald-700">SECURITY PROMPT ACCESS: ACTIVE</span>
       </div>
     </motion.div>
   );

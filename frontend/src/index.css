@@ -2,126 +2,77 @@
 @import "./design-system/tokens.css";
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color-scheme: dark;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  color-scheme: light;
   background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
-/* Custom Scrollbar for Sleek Intelligence look */
+/* Font Family Utility Classes */
+.font-space { font-family: 'Space Grotesk', sans-serif; }
+.font-manrope { font-family: 'Manrope', sans-serif; }
+.font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+.font-sora { font-family: 'Sora', sans-serif; }
+.font-bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+.font-geist { font-family: 'Geist', monospace, sans-serif; }
+.font-inter { font-family: 'Inter', sans-serif; }
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f2937;
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: #94a3b8;
 }
 
-/* Premium Dark Styling for Leaflet Map Tiles */
+/* Leaflet Map Tiles Light/Dark Custom Styling */
 .leaflet-container {
-  background: var(--bg-primary) !important;
-  font-family: inherit;
-}
-.leaflet-tile {
-  filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(95%);
+  background: #e2e8f0 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 .leaflet-bar {
-  border: 1px solid var(--glass-border) !important;
-  background-color: var(--bg-secondary) !important;
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
 }
 .leaflet-bar a {
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-secondary) !important;
-  border-bottom: 1px solid var(--glass-border) !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0 !important;
 }
 .leaflet-bar a:hover {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-primary) !important;
+  background-color: #f8fafc !important;
+  color: #1d4ed8 !important;
 }
 .leaflet-popup-content-wrapper {
-  background: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--glass-border);
-  border-radius: 8px !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
 }
 .leaflet-popup-tip {
-  background: var(--bg-secondary) !important;
-  border: 1px solid var(--glass-border);
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0;
 }
 
-/* Glassmorphism utility */
+/* Clean White / Dark Blue / Orange Glass Panel Utility */
 .glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
 }
-
 .glass-panel-hover {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-panel-hover:hover {
-  border-color: var(--glass-border-hover);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-  transform: translateY(-1px);
-}
-
-/* Interactive elements */
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-  color: var(--text-primary);
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease-in-out;
 }
-.btn-primary:hover {
-  opacity: 0.95;
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
-}
-
-.kpi-card {
-  position: relative;
-  overflow: hidden;
-}
-.kpi-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.5s ease;
-}
-.kpi-card:hover::after {
-  transform: translateX(100%);
-}
-
-/* Skeleton Loading Animation */
-.skeleton-loader {
-  background: linear-gradient(
-    90deg,
-    rgba(31, 41, 55, 0.4) 25%,
-    rgba(55, 65, 81, 0.6) 37%,
-    rgba(31, 41, 55, 0.4) 63%
-  );
-  background-size: 400% 100%;
-  animation: skeleton-shimmer 1.4s ease infinite;
-}
-
-@keyframes skeleton-shimmer {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.glass-panel-hover:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
 }

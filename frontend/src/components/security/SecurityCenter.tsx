@@ -72,36 +72,36 @@ export default function SecurityCenter({
   const isAdmin = currentRole === 'ADMIN';
 
   return (
-    <div className="space-y-6 font-mono select-none text-[10px]">
+    <div className="space-y-6 font-manrope select-none">
       {/* Configuration status header */}
-      <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-4">
-        <h3 className="text-xs font-black tracking-wider text-white uppercase border-b border-gray-900 pb-2 flex items-center gap-2">
-          <Shield className="w-4 h-4 text-cyan-400" />
+      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+        <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 flex items-center gap-2 font-space">
+          <Shield className="w-4 h-4 text-blue-600" />
           Active Security Credentials Configuration
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[10px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
           {/* Left panel: configure key */}
           <div className="space-y-3">
             <div>
-              <label className="text-[9px] text-gray-500 uppercase font-bold block mb-1">Set Session Authorization Token</label>
+              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1.5 font-jakarta">Set Session Authorization Token</label>
               <div className="flex gap-2">
                 <input
                   type="password"
                   placeholder="Enter erp_ public_secret Bearer Token"
                   value={activeApiKey}
                   onChange={(e) => onApiKeyChange(e.target.value)}
-                  className="flex-1 bg-gray-900 border border-gray-800 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500"
+                  className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-geist"
                 />
               </div>
-              <p className="text-[8px] text-gray-500 mt-1 leading-normal">
+              <p className="text-[10px] text-slate-400 mt-1.5 leading-relaxed font-inter">
                 Credentials are saved to browser local session storage. Requests to governance or key management routes require scoped tokens.
               </p>
             </div>
 
             {securityError && (
-              <div className="bg-rose-950/20 border border-rose-500/20 text-rose-400 p-2.5 rounded flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
+              <div className="bg-rose-50 border border-rose-200 text-rose-700 p-2.5 rounded-xl flex items-center gap-2 text-xs font-inter">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
                 <span>{securityError}</span>
               </div>
             )}
@@ -109,18 +109,18 @@ export default function SecurityCenter({
 
           {/* Right panel: current status metadata */}
           {securityStatus && (
-            <div className="space-y-2 border-l border-gray-900/60 pl-6">
-              <div className="flex justify-between border-b border-gray-900/30 py-0.5">
-                <span className="text-gray-500">AUTHORIZATION ROLE</span>
-                <span className="font-bold text-cyan-400 uppercase tracking-widest">{currentRole}</span>
+            <div className="space-y-2 border-l border-slate-200 pl-6 font-geist">
+              <div className="flex justify-between border-b border-slate-100 py-1.5">
+                <span className="text-slate-500 font-bold text-[10px] uppercase">AUTHORIZATION ROLE</span>
+                <span className="font-extrabold text-blue-700 uppercase tracking-widest">{currentRole}</span>
               </div>
-              <div className="flex justify-between border-b border-gray-900/30 py-0.5">
-                <span className="text-gray-500">CLIENT ENCRYPTION</span>
-                <span className="font-bold text-white">HMAC-SHA256 (SECURE)</span>
+              <div className="flex justify-between border-b border-slate-100 py-1.5">
+                <span className="text-slate-500 font-bold text-[10px] uppercase">CLIENT ENCRYPTION</span>
+                <span className="font-extrabold text-slate-900">HMAC-SHA256 (SECURE)</span>
               </div>
-              <div className="flex justify-between border-b border-gray-900/30 py-0.5">
-                <span className="text-gray-500">SSRF PROTECTION CLIENT</span>
-                <span className="font-bold text-emerald-400">ACTIVE</span>
+              <div className="flex justify-between border-b border-slate-100 py-1.5">
+                <span className="text-slate-500 font-bold text-[10px] uppercase">SSRF PROTECTION CLIENT</span>
+                <span className="font-extrabold text-emerald-700">ACTIVE</span>
               </div>
             </div>
           )}
@@ -129,21 +129,21 @@ export default function SecurityCenter({
 
       {/* Generated key display modal block */}
       {generatedPlaintextKey && (
-        <div className="bg-cyan-950/20 border border-cyan-800/40 rounded-xl p-4 space-y-3">
-          <div className="flex justify-between items-center text-cyan-400 border-b border-cyan-900/40 pb-2">
-            <span className="font-extrabold uppercase">API Key Successfully Provisioned</span>
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 space-y-3">
+          <div className="flex justify-between items-center text-blue-700 border-b border-blue-200 pb-2.5">
+            <span className="font-extrabold uppercase font-space text-xs">API Key Successfully Provisioned</span>
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1 text-[9px] hover:text-white hover:cursor-pointer font-bold"
+              className="flex items-center gap-1.5 text-[10px] hover:text-blue-900 cursor-pointer font-bold font-inter"
             >
-              {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Clipboard className="w-3 h-3" />}
+              {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Clipboard className="w-3 h-3" />}
               <span>{copied ? 'COPIED TO CLIPBOARD' : 'COPY SECRET'}</span>
             </button>
           </div>
-          <div className="bg-gray-950 border border-gray-900 rounded p-2.5 select-all font-bold text-xs text-white text-center break-all select-text font-mono">
+          <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 select-all font-bold text-xs text-emerald-400 text-center break-all select-text font-geist">
             {generatedPlaintextKey}
           </div>
-          <p className="text-[8px] text-amber-500 leading-normal font-bold">
+          <p className="text-[10px] text-amber-600 leading-relaxed font-bold font-inter">
             ⚠️ IMPORTANT: Save this secret key now. It will not be shown again.
           </p>
         </div>
@@ -155,51 +155,51 @@ export default function SecurityCenter({
         {/* Left Column: API key inventory & generation */}
         <div className="lg:col-span-7 space-y-5">
           {/* Key list table */}
-          <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-4">
-            <h3 className="text-xs font-black tracking-wider text-white uppercase border-b border-gray-900 pb-2 flex items-center gap-2">
-              <Key className="w-4 h-4 text-cyan-400" />
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+            <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 flex items-center gap-2 font-space">
+              <Key className="w-4 h-4 text-orange-600" />
               API Credentials Inventory
             </h3>
 
             <div className="overflow-x-auto max-h-[200px] overflow-y-auto pr-1 scrollbar">
-              <table className="w-full text-left">
+              <table className="w-full text-left text-xs font-geist">
                 <thead>
-                  <tr className="border-b border-gray-900 text-gray-500 uppercase text-[8px]">
-                    <th className="pb-1.5">PUBLIC ID</th>
-                    <th className="pb-1.5">ACTOR</th>
-                    <th className="pb-1.5">SCOPE</th>
-                    <th className="pb-1.5">EXPIRES</th>
-                    <th className="pb-1.5 text-right">STATUS</th>
+                  <tr className="border-b border-slate-100 text-slate-400 uppercase text-[9px]">
+                    <th className="pb-2">PUBLIC ID</th>
+                    <th className="pb-2">ACTOR</th>
+                    <th className="pb-2">SCOPE</th>
+                    <th className="pb-2">EXPIRES</th>
+                    <th className="pb-2 text-right">STATUS</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-900/40 text-gray-300">
+                <tbody className="divide-y divide-slate-100 text-slate-700">
                   {securityKeys.map((key: any) => (
                     <tr key={key.public_id}>
-                      <td className="py-2 font-bold">{key.public_id}</td>
+                      <td className="py-2 font-bold text-slate-900">{key.public_id}</td>
                       <td className="py-2 uppercase">{key.actor_id}</td>
-                      <td className="py-2 uppercase text-cyan-400">{key.actor_role}</td>
-                      <td className="py-2 text-gray-500">{key.expires_at ? key.expires_at.split('T')[0] : 'NEVER'}</td>
+                      <td className="py-2 uppercase text-blue-700 font-bold">{key.actor_role}</td>
+                      <td className="py-2 text-slate-500">{key.expires_at ? key.expires_at.split('T')[0] : 'NEVER'}</td>
                       <td className="py-2 text-right">
                         {key.is_active ? (
                           isAdmin ? (
                             <button
                               onClick={() => handleRevoke(key.public_id)}
-                              className="px-1.5 py-0.5 rounded bg-rose-950/40 text-rose-400 border border-rose-900/30 hover:bg-rose-900 hover:text-white transition hover:cursor-pointer font-bold"
+                              className="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-600 hover:text-white transition cursor-pointer font-extrabold text-[9px]"
                             >
                               REVOKE
                             </button>
                           ) : (
-                            <span className="text-emerald-400 font-bold uppercase">ACTIVE</span>
+                            <span className="text-emerald-700 font-extrabold uppercase">ACTIVE</span>
                           )
                         ) : (
-                          <span className="text-gray-500 uppercase">REVOKED</span>
+                          <span className="text-slate-400 uppercase font-bold">REVOKED</span>
                         )}
                       </td>
                     </tr>
                   ))}
                   {securityKeys.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="text-center py-6 text-gray-500">No active keys registered.</td>
+                      <td colSpan={5} className="text-center py-6 text-slate-400 font-inter">No active keys registered.</td>
                     </tr>
                   )}
                 </tbody>
@@ -209,36 +209,36 @@ export default function SecurityCenter({
 
           {/* Provision Key control */}
           {isAdmin && (
-            <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-4">
-              <h3 className="text-xs font-black tracking-wider text-white uppercase border-b border-gray-900 pb-2">
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+              <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 font-space">
                 Provision New API Key
               </h3>
 
               {actionError && (
-                <div className="bg-rose-950/20 border border-rose-500/20 text-rose-500 p-2.5 rounded text-[9px]">
+                <div className="bg-rose-50 border border-rose-200 text-rose-700 p-2.5 rounded-xl text-xs font-inter">
                   {actionError}
                 </div>
               )}
 
               <form onSubmit={handleGenerate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div className="space-y-1">
-                  <label className="text-[8px] text-gray-500 uppercase font-bold">ACTOR ID</label>
+                  <label className="text-[10px] text-slate-400 uppercase font-bold font-jakarta">ACTOR ID</label>
                   <input
                     type="text"
                     placeholder="e.g. system_cron"
                     value={newKeyActorId}
                     onChange={(e) => setNewKeyActorId(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-geist"
                     required
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[8px] text-gray-500 uppercase font-bold">SCOPE ROLE</label>
+                  <label className="text-[10px] text-slate-400 uppercase font-bold font-jakarta">SCOPE ROLE</label>
                   <select
                     value={newKeyActorRole}
                     onChange={(e) => setNewKeyActorRole(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-geist cursor-pointer"
                   >
                     <option value="VIEWER">VIEWER</option>
                     <option value="ANALYST">ANALYST</option>
@@ -248,14 +248,14 @@ export default function SecurityCenter({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[8px] text-gray-500 uppercase font-bold">EXPIRY DAYS</label>
+                  <label className="text-[10px] text-slate-400 uppercase font-bold font-jakarta">EXPIRY DAYS</label>
                   <input
                     type="number"
                     min="1"
                     max="365"
                     value={newKeyExpiryDays}
                     onChange={(e) => setNewKeyExpiryDays(parseInt(e.target.value))}
-                    className="w-full bg-gray-900 border border-gray-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-geist"
                     required
                   />
                 </div>
@@ -263,7 +263,7 @@ export default function SecurityCenter({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 text-white font-bold py-1.5 rounded transition uppercase tracking-wider text-[9px] hover:cursor-pointer"
+                  className="bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white font-extrabold py-1.5 rounded-xl transition uppercase tracking-wider text-[10px] shadow-md shadow-orange-500/20 cursor-pointer font-space"
                 >
                   PROVISION KEY
                 </button>
@@ -274,32 +274,32 @@ export default function SecurityCenter({
 
         {/* Right Column: Audit Logs timeline */}
         <div className="lg:col-span-5 space-y-5">
-          <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-4">
-            <h3 className="text-xs font-black tracking-wider text-white uppercase border-b border-gray-900 pb-2 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-cyan-400" />
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+            <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 flex items-center gap-2 font-space">
+              <FileText className="w-4 h-4 text-blue-600" />
               Security Audit Stream Logs
             </h3>
 
             <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar">
               {securityAudits.map((log: any, idx: number) => (
-                <div key={idx} className="border-b border-gray-900/60 last:border-0 pb-2 mb-2 last:pb-0 last:mb-0">
-                  <div className="flex justify-between items-center text-[8px] font-mono text-gray-500">
-                    <span>IP: {log.ip_address || '127.0.0.1'}</span>
+                <div key={idx} className="border-b border-slate-100 last:border-0 pb-2.5 mb-2.5 last:pb-0 last:mb-0">
+                  <div className="flex justify-between items-center text-[10px] font-geist text-slate-400">
+                    <span className="font-bold text-blue-600">IP: {log.ip_address || '127.0.0.1'}</span>
                     <span>{log.timestamp ? log.timestamp.split('T')[0] : 'N/A'}</span>
                   </div>
-                  <p className="text-[10px] text-gray-300 mt-1 leading-normal font-bold">
+                  <p className="text-xs text-slate-800 mt-1 leading-relaxed font-bold font-inter">
                     {log.action}
                   </p>
-                  <div className="flex justify-between text-[8px] text-gray-500 mt-0.5">
+                  <div className="flex justify-between text-[10px] text-slate-400 mt-0.5 font-geist">
                     <span>ACTOR: {log.actor_id || 'UNKNOWN'}</span>
-                    <span className={log.status === 'success' ? 'text-emerald-400 font-bold' : 'text-rose-500 font-bold'}>
+                    <span className={log.status === 'success' ? 'text-emerald-700 font-extrabold' : 'text-rose-600 font-extrabold'}>
                       {log.status.toUpperCase()}
                     </span>
                   </div>
                 </div>
               ))}
               {securityAudits.length === 0 && (
-                <div className="text-center py-8 text-gray-500">No security logs recorded.</div>
+                <div className="text-center py-8 text-slate-400 font-inter text-xs">No security logs recorded.</div>
               )}
             </div>
           </div>
