@@ -17,8 +17,11 @@ Key responsibilities:
 import os
 import json
 import datetime
+import logging
 import pandas as pd
 from typing import Dict, Any, List, Optional
+
+logger = logging.getLogger(__name__)
 
 DATA_DIR = os.getenv("DATA_DIR", r"D:\hackathon project\energy-resilience\data")
 STAGING_DIR = os.path.join(DATA_DIR, "staging")
@@ -149,8 +152,12 @@ def get_risk_snapshot(corridor_id: str, prediction_date: Optional[str] = None) -
 
     # Load risk via Phase 4 service
     from src.risk.service import get_corridor_risk_with_explanation
+    import time
+    from src.api.metrics import PREDICTION_LATENCY
+    t_start = time.time()
     try:
         risk_rec = get_corridor_risk_with_explanation(corridor_id.upper(), target_date)
+        PREDICTION_LATENCY.labels(corridor=corridor_id.upper()).observe(time.time() - t_start)
     except Exception as e:
         raise RuntimeError(f"Risk engine error for {corridor_id}: {e}")
 
@@ -179,6 +186,31 @@ def get_risk_snapshot(corridor_id: str, prediction_date: Optional[str] = None) -
         "top_factors": top_factors,
         "limitations": corridor_limitations,
     }
+
+    # Phase 12: Record metrics and structured logs
+    import time
+    from src.api.metrics import PREDICTIONS, PREDICTION_LATENCY, ML_CHAMPION_PREDICTIONS
+    
+    # Scale/log metrics
+    PREDICTIONS.labels(
+        corridor=corridor_id.upper(),
+        model_version=snapshot["model_version"],
+        risk_level=snapshot["risk_level"]
+    ).inc()
+    
+    if risk_rec.get("is_champion", False):
+        ML_CHAMPION_PREDICTIONS.labels(corridor=corridor_id.upper()).inc()
+
+    logger.info(
+        f"Prediction calculated for corridor {corridor_id.upper()} on {target_date}: {snapshot['risk_level']} (prob={prob:.4f})",
+        extra={
+            "corridor": corridor_id.upper(),
+            "model_version": snapshot["model_version"],
+            "risk_level": snapshot["risk_level"],
+            "prediction_probability": prob,
+            "data_freshness_status": str(snapshot["data_freshness"].get("traffic", "UNAVAILABLE"))
+        }
+    )
 
     # Phase 9: Log this prediction to the persistent audit database (fire-and-forget)
     try:

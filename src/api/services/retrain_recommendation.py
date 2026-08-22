@@ -62,6 +62,10 @@ def check_retrain_status(corridor_id: str) -> Dict[str, Any]:
     if not reasons:
         reasons.append("Model performance is stable. No retraining triggers met.")
 
+    # Phase 12: Record metrics
+    from src.api.metrics import ML_RETRAIN_RECOMMENDATIONS
+    ML_RETRAIN_RECOMMENDATIONS.labels(corridor=corridor_upper, severity=severity).inc()
+
     return {
         "corridor": corridor_upper,
         "retrain_recommended": retrain_recommended,

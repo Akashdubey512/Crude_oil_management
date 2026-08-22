@@ -366,3 +366,23 @@ def get_corridor_monitoring(corridor: str):
     if corridor_upper not in MODELED_CORRIDORS:
         raise HTTPException(status_code=404, detail=f"Corridor '{corridor}' is not modeled.")
     return get_production_monitoring_diagnostics(corridor_upper)
+
+@router.get("/observability/metrics", tags=["MLOps"])
+def get_json_observability_metrics():
+    """Returns a parsed JSON summary of Prometheus metrics for the frontend observability tab."""
+    from prometheus_client import REGISTRY
+    metrics_data = {}
+    try:
+        for metric in REGISTRY.collect():
+            name = metric.name
+            samples = []
+            for sample in metric.samples:
+                samples.append({
+                    "name": sample.name,
+                    "labels": sample.labels,
+                    "value": sample.value
+                })
+            metrics_data[name] = samples
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to collect metrics: {e}")
+    return metrics_data

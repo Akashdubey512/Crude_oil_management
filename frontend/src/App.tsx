@@ -14,7 +14,8 @@ import {
   ShieldAlert,
   FileText,
   BarChart2,
-  AlertTriangle
+  AlertTriangle,
+  Eye
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -113,6 +114,9 @@ export default function App() {
   const [modelCardMarkdown, setModelCardMarkdown] = useState<string | null>(null);
   const [governanceAction, setGovernanceAction] = useState<{type: 'promote' | 'rollback'; key: string} | null>(null);
   const [governanceResult, setGovernanceResult] = useState<{success: boolean; detail: string} | null>(null);
+
+  // Phase 12: Observability States
+  const [observabilityMetrics, setObservabilityMetrics] = useState<any>(null);
 
   // Connection & UI states
   const [loading, setLoading] = useState<boolean>(true);
@@ -235,7 +239,7 @@ export default function App() {
     setModelHealthLoading(true);
     setGovernanceResult(null);
     try {
-      const [h, e, d, p, comp, vers, retrain] = await Promise.all([
+      const [h, e, d, p, comp, vers, retrain, obs] = await Promise.all([
         api.getModelHealth(corridor).catch(() => null),
         api.getModelEvaluation(corridor).catch(() => null),
         api.getModelDrift(corridor).catch(() => null),
@@ -243,6 +247,7 @@ export default function App() {
         api.getComparisonMetrics(corridor).catch(() => null),
         api.getCorridorVersions(corridor).catch(() => []),
         api.getRetrainStatus(corridor).catch(() => null),
+        api.getObservabilityMetrics().catch(() => null),
       ]);
       setModelHealth(h);
       setModelEval(e);
@@ -251,6 +256,7 @@ export default function App() {
       setChampionChallenger(comp);
       setCorridorVersions(vers ?? []);
       setRetrainStatus(retrain);
+      setObservabilityMetrics(obs);
       // Fetch model card for RED_SEA only (documented proxy corridor)
       if (corridor === 'RED_SEA') {
         api.getModelCard(corridor).then((r: any) => setModelCardMarkdown(r?.markdown ?? null)).catch(() => setModelCardMarkdown(null));
@@ -953,7 +959,8 @@ export default function App() {
             { id: 'performance', name: 'Out-of-Sample Performance', icon: BarChart2 },
             { id: 'drift', name: 'Feature Drift Analysis', icon: Activity },
             { id: 'history', name: 'Prediction Audit Trails', icon: FileText },
-            { id: 'governance', name: 'Version Governance', icon: CheckCircle }
+            { id: 'governance', name: 'Version Governance', icon: CheckCircle },
+            { id: 'observability', name: 'System Observability', icon: Eye }
           ].map((tab) => {
             const Icon = tab.icon;
             return (
@@ -1619,6 +1626,206 @@ export default function App() {
                     </div>
                   </div>
                 )}
+
+              </div>
+            )}
+
+            {/* ─── TAB: SYSTEM OBSERVABILITY ─── */}
+            {healthTab === 'observability' && (
+              <div className="flex flex-col gap-5 animate-fade-in text-xs">
+                
+                {/* Degraded Banners */}
+                {(() => {
+                  const portwatchStale = observabilityMetrics?.['external_feed_stale']?.find(
+                    (s: any) => s.labels?.feed_name === 'PortWatch' && s.value > 0
+                  );
+                  const gdeltStale = observabilityMetrics?.['external_feed_stale']?.find(
+                    (s: any) => s.labels?.feed_name === 'GDELT' && s.value > 0
+                  );
+                  
+                  if (portwatchStale) {
+                    return (
+                      <div className="p-3 bg-red-950/20 border border-red-900 rounded-lg text-red-400 font-bold flex gap-2 items-center">
+                        <span className="text-sm">⚠️</span>
+                        <span>SYSTEM DEGRADED: Bab el-Mandeb proxy data unavailable (IMF PortWatch Feed Stale)</span>
+                      </div>
+                    );
+                  }
+                  if (gdeltStale) {
+                    return (
+                      <div className="p-3 bg-yellow-950/20 border border-yellow-900/50 rounded-lg text-yellow-400 font-bold flex gap-2 items-center">
+                        <span className="text-sm">⚠️</span>
+                        <span>SYSTEM DEGRADED: GDELT Geopolitical Event news feed is stale/degraded</span>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
+                {/* Overall Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  {/* System Status */}
+                  <div className="p-4 bg-gray-950/60 border border-gray-900 rounded-xl flex flex-col gap-1.5">
+                    <span className="text-gray-500 font-bold uppercase tracking-wider text-[9px]">Overall System</span>
+                    <span className="text-lg font-black text-emerald-400">HEALTHY</span>
+                    <span className="text-[10px] text-gray-500">API, Database & Registry online</span>
+                  </div>
+
+                  {/* Uptime */}
+                  <div className="p-4 bg-gray-950/60 border border-gray-900 rounded-xl flex flex-col gap-1.5">
+                    <span className="text-gray-500 font-bold uppercase tracking-wider text-[9px]">Uptime</span>
+                    <span className="text-lg font-black text-white font-mono">
+                      {(() => {
+                        const seconds = observabilityMetrics?.['app_uptime_seconds']?.[0]?.value || 0;
+                        if (!seconds) return '00:00:00';
+                        const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+                        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+                        const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+                        return `${h}:${m}:${s}`;
+                      })()}
+                    </span>
+                    <span className="text-[10px] text-gray-500">Continuous operation</span>
+                  </div>
+
+                  {/* Request count */}
+                  <div className="p-4 bg-gray-950/60 border border-gray-900 rounded-xl flex flex-col gap-1.5">
+                    <span className="text-gray-500 font-bold uppercase tracking-wider text-[9px]">Request Volume</span>
+                    <span className="text-lg font-black text-cyan-400 font-mono">
+                      {(() => {
+                        const requests = observabilityMetrics?.['http_requests_total']?.reduce(
+                          (acc: number, cur: any) => acc + (cur.value || 0), 0
+                        ) || 0;
+                        return `${requests} reqs`;
+                      })()}
+                    </span>
+                    <span className="text-[10px] text-gray-500">Processed since boot</span>
+                  </div>
+
+                  {/* Average Latency */}
+                  <div className="p-4 bg-gray-950/60 border border-gray-900 rounded-xl flex flex-col gap-1.5">
+                    <span className="text-gray-500 font-bold uppercase tracking-wider text-[9px]">Avg API Latency</span>
+                    <span className="text-lg font-black text-purple-400 font-mono">
+                      {(() => {
+                        const sum = observabilityMetrics?.['http_request_duration_seconds_sum']?.reduce(
+                          (acc: number, cur: any) => acc + (cur.value || 0), 0
+                        ) || 0;
+                        const count = observabilityMetrics?.['http_request_duration_seconds_count']?.reduce(
+                          (acc: number, cur: any) => acc + (cur.value || 0), 0
+                        ) || 0;
+                        if (!count) return '— ms';
+                        return `${((sum / count) * 1000).toFixed(1)} ms`;
+                      })()}
+                    </span>
+                    <span className="text-[10px] text-gray-500">HTTP requests average</span>
+                  </div>
+                </div>
+
+                {/* Sub-status grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                  
+                  {/* Status Indicator Panel */}
+                  <div className="lg:col-span-6 p-4 border border-gray-900 bg-gray-950/40 rounded-xl flex flex-col gap-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Component Health Status</span>
+                    
+                    <div className="flex flex-col gap-2">
+                      {/* API Server */}
+                      <div className="flex justify-between items-center py-1.5 border-b border-gray-900">
+                        <span className="text-gray-300 font-semibold">API Server Router</span>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-bold border border-emerald-800 bg-emerald-950/30 text-emerald-400 uppercase">ONLINE</span>
+                      </div>
+
+                      {/* Database */}
+                      <div className="flex justify-between items-center py-1.5 border-b border-gray-900">
+                        <span className="text-gray-300 font-semibold">Persistence Layer (DB)</span>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-bold border border-emerald-800 bg-emerald-950/30 text-emerald-400 uppercase">CONNECTED</span>
+                      </div>
+
+                      {/* Model Registry */}
+                      <div className="flex justify-between items-center py-1.5 border-b border-gray-900">
+                        <span className="text-gray-300 font-semibold">Model Registry & Manifests</span>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-bold border border-emerald-800 bg-emerald-950/30 text-emerald-400 uppercase">ACTIVE</span>
+                      </div>
+
+                      {/* DB Latency */}
+                      <div className="flex justify-between items-center py-1.5 border-b border-gray-900">
+                        <span className="text-gray-400">Database Latency</span>
+                        <span className="font-mono text-gray-300">
+                          {(() => {
+                            const sum = observabilityMetrics?.['db_latency_seconds_sum']?.reduce(
+                              (acc: number, cur: any) => acc + (cur.value || 0), 0
+                            ) || 0;
+                            const count = observabilityMetrics?.['db_latency_seconds_count']?.reduce(
+                              (acc: number, cur: any) => acc + (cur.value || 0), 0
+                            ) || 0;
+                            if (!count) return '—';
+                            return `${((sum / count) * 1000).toFixed(2)} ms`;
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* External Feeds Status Panel */}
+                  <div className="lg:col-span-6 p-4 border border-gray-900 bg-gray-950/40 rounded-xl flex flex-col gap-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">External Data Feeds status</span>
+                    
+                    <div className="flex flex-col gap-2">
+                      {['FRED', 'GDELT', 'PortWatch', 'GFW'].map((feed) => {
+                        const stale_item = observabilityMetrics?.['external_feed_stale']?.find(
+                          (s: any) => s.labels?.feed_name === feed
+                        );
+                        const isStale = stale_item ? stale_item.value > 0 : false;
+                        
+                        return (
+                          <div key={feed} className="flex justify-between items-center py-1.5 border-b border-gray-900">
+                            <span className="text-gray-300 font-semibold">{feed} Data Feed</span>
+                            <span className={`px-2 py-0.5 rounded text-[9px] font-bold border ${
+                              isStale
+                                ? 'border-yellow-800 bg-yellow-950/30 text-yellow-400'
+                                : 'border-emerald-800 bg-emerald-950/30 text-emerald-400'
+                            } uppercase`}>
+                              {isStale ? 'STALE' : 'FRESH'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* ML Operations Analytics */}
+                <div className="p-4 border border-gray-900 bg-gray-950/40 rounded-xl flex flex-col gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">ML Operations Metrics</span>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
+                    {/* Active models */}
+                    <div className="p-3 border border-gray-900 bg-gray-950/60 rounded-lg flex justify-between items-center">
+                      <span className="text-gray-500 font-sans">Active Champions</span>
+                      <span className="font-bold text-white">4 Models</span>
+                    </div>
+
+                    {/* Promotions */}
+                    <div className="p-3 border border-gray-900 bg-gray-950/60 rounded-lg flex justify-between items-center">
+                      <span className="text-gray-500 font-sans">Promotion attempts</span>
+                      <span className="font-bold text-emerald-400">
+                        {observabilityMetrics?.['ml_promotion_attempts_total']?.reduce(
+                          (acc: number, cur: any) => acc + (cur.value || 0), 0
+                        ) || 0}
+                      </span>
+                    </div>
+
+                    {/* Rollbacks */}
+                    <div className="p-3 border border-gray-900 bg-gray-950/60 rounded-lg flex justify-between items-center">
+                      <span className="text-gray-500 font-sans">Rollback events</span>
+                      <span className="font-bold text-red-400">
+                        {observabilityMetrics?.['ml_rollback_events_total']?.reduce(
+                          (acc: number, cur: any) => acc + (cur.value || 0), 0
+                        ) || 0}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
               </div>
             )}

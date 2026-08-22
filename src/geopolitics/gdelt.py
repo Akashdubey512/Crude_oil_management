@@ -29,11 +29,16 @@ def fetch_gdelt_articles(query, max_rows=250):
     Returns the raw parsed JSON payload, or None if all attempts fail.
     """
     import time
+    from src.api.config import settings
     
     # Try HTTPS first, then fallback to HTTP if connection reset
+    base_url_config = settings.gdelt_base_url if settings.gdelt_base_url else "https://api.gdeltproject.org/api/v2/doc/doc"
+    if "/doc/doc" not in base_url_config:
+        base_url_config = base_url_config.rstrip("/") + "/doc/doc"
+        
     urls = [
-        "https://api.gdeltproject.org/api/v2/doc/doc",
-        "http://api.gdeltproject.org/api/v2/doc/doc"
+        base_url_config,
+        base_url_config.replace("https://", "http://")
     ]
     
     params = {
@@ -58,7 +63,8 @@ def fetch_gdelt_articles(query, max_rows=250):
             
             try:
                 req = urllib.request.Request(final_url, headers=headers)
-                with urllib.request.urlopen(req, timeout=15) as response:
+                # Enforce request timeout from configuration
+                with urllib.request.urlopen(req, timeout=int(settings.request_timeout)) as response:
                     content = response.read().decode('utf-8')
                     return json.loads(content)
             except Exception as e:

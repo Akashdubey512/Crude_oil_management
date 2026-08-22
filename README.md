@@ -111,20 +111,20 @@ Open your browser and navigate to: http://localhost:5173
 | Phase 8 | Decision Intelligence: Scenario Simulator, Trend Analyzer, Cross-Comparison | COMPLETE |
 | Phase 9 | Production ML Validation, Model Governance & Data-Drift Monitoring | COMPLETE |
 
-**Backend:** 225 tests passing. **Frontend:** 16 tests passing.
+| Phase 10 | RED_SEA modeling, Bab el-Mandeb proxy, data limitations | COMPLETE |
+| Phase 11 | Challenger-vs-Champion, Promotion, Rollback, Retraining | COMPLETE |
+| Phase 12 | Observability, Postgres, Rate Limiting, Lifespan Probes | COMPLETE |
 
-## Phase 8 — Decision Intelligence Features
+**Backend:** 262 tests passing. **Frontend:** 16 tests passing.
 
-- **Scenario Simulator** (`POST /api/scenarios/simulate`) — Simulate macro shocks using real trained models. Controls: tanker traffic, GPR index, Brent price, Brent volatility, infrastructure disruption.
-- **Historical Trend Analyzer** (`GET /api/risk/{corridor_id}/history`) — Out-of-time model inference time-series for each corridor.
-- **Cross-Corridor Comparison** (`GET /api/risk/comparison`) — Normalized side-by-side comparison of all corridors with risk level, primary driver, vessel flow status, and data freshness.
+## Phase 12 — Observability & Reliability Engineering
 
-## Phase 9 — Production ML Validation & Governance Features
+- **Structured JSON Logging** — Outputs logs as unified JSON lines, scrubs secrets automatically, and propagates correlation IDs.
+- **Prometheus Metrics Endpoint** (`GET /metrics`) — Exposes request latencies, predictions, promotion attempts, and database queries.
+- **Proactive Health Probes** (`/api/health/live` & `/api/health/ready`) — Lightweight liveness check and database/registry readiness probe.
+- **Database Connection Pooling** — Automatic PostgreSQL threaded pooling in production withSQLite fallback.
+- **API Rate Limiting** — Sliding-window IP rate limiter to protect resources from concurrency exhaust.
+- **Serving Safety Guardrails** — Enforces model deserialization, schema matching, and prediction check validations before loading registry champion.
 
-- **Out-of-Sample Performance Evaluation** (`GET /api/models/evaluation`) — Validates metrics (ROC-AUC, PR-AUC, accuracy, Brier score, ECE) and computes calibration curves.
-- **Feature Data Drift Detection** (`GET /api/models/drift`) — Calculates PSI and KS-test distributions.
-- **Unified Model Health Index** (`GET /api/models/health`) — Rules-based health statuses and resolutions.
-- **Persistent Prediction Audit Trail** (`GET /api/predictions/history/{corridor}`) — Immutable SQLite logging.
-- **Model Health Center Dashboard UI** — Interactive tabbed center for feeds status, validation curves, drift tables, prediction logs, and model governance registry.
+See full documentation in `docs/phase-12-production.md`, `docs/observability.md`, and `docs/deployment-runbook.md`.
 
-See full documentation in `docs/phase-9-ml-validation.md` and `docs/api.md`.

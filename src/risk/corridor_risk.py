@@ -55,19 +55,59 @@ def _classify_risk(prob: float) -> str:
         return "CRITICAL"
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+def validate_champion_model(champ: dict) -> bool:
+    """
+    Validates the registry champion model artifact before loading it. (Step 15 Serving Safety)
+    """
+    mpath = champ.get("artifact_path")
+    if not mpath or not os.path.exists(mpath):
+        logger.error(f"Serving Safety: Model path does not exist for {champ.get('corridor_id')}: {mpath}")
+        return False
+    try:
+        with open(mpath, "rb") as f:
+            artifact = pickle.load(f)
+        
+        if "model" not in artifact or "feature_medians" not in artifact:
+            logger.error("Serving Safety: Missing model or feature_medians in pickle")
+            return False
+            
+        # Verify inference works
+        model = artifact["model"]
+        dummy_data = {col: [0.0] for col in FEATURE_COLS}
+        df_dummy = pd.DataFrame(dummy_data)
+        
+        if hasattr(model, "predict_proba"):
+            model.predict_proba(df_dummy)
+        else:
+            model.predict(df_dummy)
+            
+        return True
+    except Exception as e:
+        logger.error(f"Serving Safety: Validation failed for model {mpath}: {e}")
+        return False
+
 def _load_best_model(corridor_id: str) -> tuple:
-    """Loads the best available model artifact for a corridor, prioritizing the registry CHAMPION."""
+    """Loads best model artifact, prioritizing CHAMPION and enforcing safety validations."""
     try:
         from src.models.model_registry import get_champion_model
         champ = get_champion_model(corridor_id)
         if champ and champ.get("artifact_path"):
+            if not validate_champion_model(champ):
+                raise RuntimeError(f"Registry CHAMPION model failed validation for {corridor_id}")
+            
             mpath = champ["artifact_path"]
-            if os.path.exists(mpath):
-                with open(mpath, "rb") as f:
-                    artifact = pickle.load(f)
-                return artifact, champ.get("model_name", "XGBoost")
+            with open(mpath, "rb") as f:
+                artifact = pickle.load(f)
+            return artifact, champ.get("model_name", "XGBoost"), champ.get("version", "1.0"), True
     except Exception as e:
-        # Fallback if registry fails or is not initialized yet
+        if "failed validation" in str(e).lower():
+            # Enforce: DO NOT silently load fallback if champion fails validation
+            raise e
+        # Fallback if no registry champion is set yet
         pass
 
     for prefix, mname in [("xgb", "XGBoost"), ("rf", "RandomForest"), ("lr", "LogisticRegression")]:
@@ -75,8 +115,8 @@ def _load_best_model(corridor_id: str) -> tuple:
         if os.path.exists(mpath):
             with open(mpath, "rb") as f:
                 artifact = pickle.load(f)
-            return artifact, mname
-    return None, None
+            return artifact, mname, MODEL_VERSION, False
+    return None, None, None, False
 
 
 def get_corridor_risk(corridor_id: str, timestamp: datetime.date) -> dict:
@@ -84,7 +124,7 @@ def get_corridor_risk(corridor_id: str, timestamp: datetime.date) -> dict:
     Computes the corridor-level risk record for a single corridor on a given date.
     Returns a structured risk record dict.
     """
-    artifact, model_name = _load_best_model(corridor_id)
+    artifact, model_name, model_version, is_champion = _load_best_model(corridor_id)
     if artifact is None:
         return {
             "corridor": corridor_id,
@@ -92,6 +132,8 @@ def get_corridor_risk(corridor_id: str, timestamp: datetime.date) -> dict:
             "status": "NO_MODEL",
             "risk_probability": None,
             "risk_level": "UNKNOWN",
+            "model_version": "unknown",
+            "is_champion": False,
         }
 
     model = artifact["model"]
@@ -158,7 +200,8 @@ def get_corridor_risk(corridor_id: str, timestamp: datetime.date) -> dict:
         "sanctions_signal": "ELEVATED" if (row_data.get("corridor_sanctions_28d", 0) or 0) > 0 else "NORMAL",
         "market_signal": "VOLATILE" if (row_data.get("brent_volatility_28d", 0) or 0) > 0.02 else "NORMAL",
         "supply_signal": "NORMAL",
-        "model_version": MODEL_VERSION,
+        "model_version": model_version,
+        "is_champion": is_champion,
         "feature_version": "1.0",
         "data_timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
@@ -191,7 +234,7 @@ def get_historical_risk(
     if df_corr.empty:
         return pd.DataFrame()
 
-    artifact, model_name = _load_best_model(corridor_id)
+    artifact, model_name, model_version, is_champion = _load_best_model(corridor_id)
     if artifact is None:
         return pd.DataFrame()
 

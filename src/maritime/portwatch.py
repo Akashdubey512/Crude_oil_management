@@ -2,6 +2,7 @@ import os
 import urllib.request
 import urllib.parse
 import json
+import time
 import pandas as pd
 import datetime
 
@@ -21,6 +22,8 @@ def fetch_portwatch_data(portid, max_records=2000):
     """
     Queries IMF PortWatch ArcGIS service for a specific chokepoint portid.
     """
+    from src.api.config import settings
+    
     params = {
         "where": f"portid = '{portid}'",
         "outFields": "date,year,month,day,portid,portname,n_tanker,n_cargo,n_total,capacity_tanker,capacity",
@@ -34,19 +37,28 @@ def fetch_portwatch_data(portid, max_records=2000):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
     
-    url_parts = list(urllib.parse.urlparse(PORTWATCH_QUERY_URL))
+    # Allow URL overrides from env if configured
+    url_base = os.getenv("PORTWATCH_QUERY_URL", PORTWATCH_QUERY_URL)
+    url_parts = list(urllib.parse.urlparse(url_base))
     url_parts[4] = urllib.parse.urlencode(params)
     final_url = urllib.parse.urlunparse(url_parts)
     
     req = urllib.request.Request(final_url, headers=headers)
-    try:
-        print(f"Querying IMF PortWatch Live for {portid}...")
-        with urllib.request.urlopen(req, timeout=20) as response:
-            content = response.read().decode('utf-8')
-            return json.loads(content)
-    except Exception as e:
-        print(f"IMF PortWatch request failed for {portid}: {e}")
-        return None
+    timeout = int(settings.request_timeout)
+    
+    # Retry loop for resilience
+    for attempt in range(3):
+        try:
+            print(f"Querying IMF PortWatch Live for {portid} (attempt {attempt+1}/3)...")
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                content = response.read().decode('utf-8')
+                return json.loads(content)
+        except Exception as e:
+            print(f"IMF PortWatch attempt {attempt+1}/3 failed for {portid}: {e}")
+            if attempt < 2:
+                time.sleep(2 ** attempt)
+            else:
+                return None
 
 def ingest_portwatch_pipeline(force_live=True):
     """

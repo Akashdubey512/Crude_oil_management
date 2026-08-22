@@ -22,6 +22,9 @@ def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
 
     challenger = registry[challenger_key]
     corridor = challenger["corridor_id"]
+    
+    from src.api.metrics import ML_CHALLENGER_EVALUATIONS
+    ML_CHALLENGER_EVALUATIONS.labels(corridor=corridor).inc()
     metrics = challenger.get("metrics", {})
     calibration = challenger.get("calibration_metrics", {})
     drift = challenger.get("drift_metrics", {})
@@ -115,16 +118,20 @@ def promote_challenger_to_champion(challenger_key: str, reason: str) -> Tuple[bo
 
     # 4. Check policy rules
     passes_policy, policy_reason = evaluate_promotion_policy(challenger_key)
+    from src.api.metrics import ML_PROMOTION_ATTEMPTS
     if not passes_policy:
         update_model_status(challenger_key, "REJECTED", reason=policy_reason)
+        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor, status="REJECTED").inc()
         return False, f"Promotion blocked by policy: {policy_reason}"
 
     # 5. Perform atomic status update
     try:
         update_model_status(challenger_key, "CHAMPION", reason=reason)
         logger.info(f"Model {challenger_key} promoted to CHAMPION for {corridor}.")
+        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor, status="SUCCESS").inc()
         return True, "Model successfully promoted to CHAMPION."
     except Exception as e:
+        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor, status="FAILED").inc()
         return False, f"Promotion transaction failed: {e}"
 
 def rollback_to_version(corridor_id: str, rollback_key: str, reason: str) -> Tuple[bool, str]:
@@ -152,6 +159,8 @@ def rollback_to_version(corridor_id: str, rollback_key: str, reason: str) -> Tup
     # Execute atomic promotion rollback
     try:
         update_model_status(rollback_key, "CHAMPION", reason=f"Rollback: {reason}")
+        from src.api.metrics import ML_ROLLBACK_EVENTS
+        ML_ROLLBACK_EVENTS.labels(corridor=corridor_id.upper()).inc()
         return True, f"Successfully rolled back {corridor_id.upper()} to {rollback_key}."
     except Exception as e:
         return False, f"Rollback failed: {e}"

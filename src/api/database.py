@@ -1,8 +1,8 @@
 """
-Database & Persistence Layer — Phase 9
+Database & Persistence Layer — Phase 12
 
-Provides connections and table setups for SQLite predictions tracking and model versions.
-Automatically populates model metadata from data/manifests/model_registry.json.
+Provides connections and table setups for SQLite and PostgreSQL predictions tracking.
+Automatically supports PostgreSQL connection pooling in production and falls back to SQLite.
 """
 
 import os
@@ -10,116 +10,257 @@ import sqlite3
 import json
 import logging
 import datetime
+import time
 from typing import List, Dict, Any, Optional
+
+# PostgreSQL dependencies
+try:
+    import psycopg2
+    from psycopg2 import pool
+    from psycopg2.extras import RealDictCursor
+except ImportError:
+    psycopg2 = None
+    pool = None
+
+from src.api.config import settings
+from src.api.metrics import DB_LATENCY, DB_ERRORS
 
 logger = logging.getLogger(__name__)
 
-DATA_DIR = r"D:\hackathon project\energy-resilience\data"
-DB_PATH = os.path.join(DATA_DIR, "predictions.db")
-REGISTRY_PATH = os.path.join(DATA_DIR, "manifests", "model_registry.json")
+# Global connection pool for PostgreSQL
+_pg_pool: Optional[Any] = None
 
+def init_pg_pool() -> None:
+    """Initializes the PostgreSQL connection pool if DATABASE_URL is configured."""
+    global _pg_pool
+    if not psycopg2 or not settings.database_url:
+        return
 
-def get_db_connection() -> sqlite3.Connection:
-    """Returns a connection to the SQLite database with row factory enabled."""
-    conn = sqlite3.connect(DB_PATH)
+    url = settings.database_url
+    if url.startswith("postgresql://") or url.startswith("postgres://"):
+        try:
+            logger.info("Initializing PostgreSQL ThreadedConnectionPool...")
+            # Enforce connection timeout of 5 seconds
+            _pg_pool = psycopg2.pool.ThreadedConnectionPool(
+                minconn=2,
+                maxconn=20,
+                dsn=url,
+                connect_timeout=5
+            )
+            logger.info("PostgreSQL Connection Pool initialized successfully.")
+        except Exception as e:
+            logger.error(f"Failed to initialize PostgreSQL connection pool: {e}")
+            DB_ERRORS.labels(operation="init_pool").inc()
+            _pg_pool = None
+
+def is_postgres_configured() -> bool:
+    """Returns True if PostgreSQL is configured and psycopg2 is available."""
+    url = settings.database_url
+    return bool(psycopg2 and _pg_pool and (url.startswith("postgresql://") or url.startswith("postgres://")))
+
+def get_db_connection() -> Any:
+    """
+    Returns a connection to the database.
+    If PostgreSQL is configured, returns a connection from the pool.
+    Otherwise, returns an SQLite connection.
+    """
+    if is_postgres_configured():
+        try:
+            # Get connection from pool
+            conn = _pg_pool.getconn()
+            return conn
+        except Exception as e:
+            logger.warning(f"Failed to get PG connection from pool, falling back: {e}")
+            DB_ERRORS.labels(operation="getconn").inc()
+            
+    # Fallback to SQLite
+    os.makedirs(settings.data_dir, exist_ok=True)
+    db_path = os.path.join(settings.data_dir, "predictions.db")
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    # Enable foreign keys
     conn.execute("PRAGMA foreign_keys = ON;")
     return conn
 
+def release_db_connection(conn: Any) -> None:
+    """Releases a connection back to the pool or closes it if SQLite."""
+    if is_postgres_configured() and _pg_pool:
+        try:
+            _pg_pool.putconn(conn)
+        except Exception as e:
+            logger.warning(f"Failed to release PG connection: {e}")
+            DB_ERRORS.labels(operation="putconn").inc()
+    else:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+def format_query(query: str) -> str:
+    """Replaces SQLite placeholder '?' with PostgreSQL placeholder '%s' if using PG."""
+    if is_postgres_configured():
+        return query.replace("?", "%s")
+    return query
 
 def init_database() -> None:
-    """Initializes SQLite database tables and pre-populates model versions."""
-    os.makedirs(DATA_DIR, exist_ok=True)
-    logger.info(f"Initializing database at: {DB_PATH}")
-
+    """Initializes database tables and pre-populates model versions."""
+    logger.info("Initializing database schema...")
+    
+    # Initialize connection pool
+    init_pg_pool()
+    
     conn = get_db_connection()
+    t0 = time.time()
     try:
-        cursor = conn.cursor()
+        if is_postgres_configured():
+            cursor = conn.cursor()
+            
+            # Create model_versions table (Postgres syntax)
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS model_versions (
+                id SERIAL PRIMARY KEY,
+                model_name TEXT NOT NULL,
+                version TEXT NOT NULL,
+                corridor_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                training_started_at TEXT,
+                training_completed_at TEXT,
+                dataset_version TEXT,
+                feature_schema_version TEXT,
+                training_rows INTEGER,
+                validation_rows INTEGER,
+                test_rows INTEGER,
+                features TEXT,
+                target TEXT,
+                metrics TEXT,
+                artifact_path TEXT,
+                status TEXT NOT NULL
+            );
+            """)
 
-        # Create model_versions table
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS model_versions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            model_name TEXT NOT NULL,
-            version TEXT NOT NULL,
-            corridor_id TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            training_started_at TEXT,
-            training_completed_at TEXT,
-            dataset_version TEXT,
-            feature_schema_version TEXT,
-            training_rows INTEGER,
-            validation_rows INTEGER,
-            test_rows INTEGER,
-            features TEXT,  -- JSON string list of feature names
-            target TEXT,
-            metrics TEXT,   -- JSON string metrics dict
-            artifact_path TEXT,
-            status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'VALIDATED', 'RETIRED', 'FAILED_VALIDATION'))
-        );
-        """)
+            # Create unique index
+            cursor.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_model_versions_uniq 
+            ON model_versions(model_name, corridor_id, version);
+            """)
 
-        # Create unique index on model_versions
-        cursor.execute("""
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_model_versions_uniq 
-        ON model_versions(model_name, corridor_id, version);
-        """)
+            # Create predictions table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS predictions (
+                id SERIAL PRIMARY KEY,
+                corridor TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                model_version TEXT NOT NULL,
+                predicted_probability DOUBLE PRECISION NOT NULL,
+                predicted_class INTEGER NOT NULL,
+                confidence DOUBLE PRECISION,
+                actual_outcome INTEGER,
+                outcome_available BOOLEAN NOT NULL DEFAULT FALSE,
+                feature_snapshot TEXT NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+            """)
 
-        # Create predictions table
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS predictions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            corridor TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            model_version TEXT NOT NULL,
-            predicted_probability REAL NOT NULL,
-            predicted_class INTEGER NOT NULL,
-            confidence REAL,
-            actual_outcome INTEGER,
-            outcome_available BOOLEAN NOT NULL DEFAULT 0 CHECK (outcome_available IN (0, 1)),
-            feature_snapshot TEXT NOT NULL,  -- JSON string of features
-            created_at TEXT NOT NULL DEFAULT (datetime('now', 'utc'))
-        );
-        """)
+            # Create indexes on predictions
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_corridor ON predictions(corridor);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_timestamp ON predictions(timestamp);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_model_version ON predictions(model_version);")
 
-        # Indexes on predictions table
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_corridor ON predictions(corridor);")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_timestamp ON predictions(timestamp);")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_model_version ON predictions(model_version);")
-
-        conn.commit()
-        logger.info("Database tables initialized successfully.")
-
-        # Populate model versions if table is empty
-        cursor.execute("SELECT COUNT(*) FROM model_versions;")
-        if cursor.fetchone()[0] == 0:
-            logger.info("Populating model_versions table from model_registry.json...")
-            _populate_from_registry(cursor)
             conn.commit()
+            
+            # Populate model versions if table is empty
+            cursor.execute("SELECT COUNT(*) FROM model_versions;")
+            if cursor.fetchone()[0] == 0:
+                logger.info("Populating PostgreSQL model_versions table from model_registry.json...")
+                _populate_from_registry(cursor, is_pg=True)
+                conn.commit()
+            
+            cursor.close()
+        else:
+            cursor = conn.cursor()
+            
+            # Create model_versions table (SQLite syntax)
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS model_versions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                model_name TEXT NOT NULL,
+                version TEXT NOT NULL,
+                corridor_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                training_started_at TEXT,
+                training_completed_at TEXT,
+                dataset_version TEXT,
+                feature_schema_version TEXT,
+                training_rows INTEGER,
+                validation_rows INTEGER,
+                test_rows INTEGER,
+                features TEXT,
+                target TEXT,
+                metrics TEXT,
+                artifact_path TEXT,
+                status TEXT NOT NULL CHECK (status IN ('ACTIVE', 'VALIDATED', 'RETIRED', 'FAILED_VALIDATION'))
+            );
+            """)
 
+            cursor.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_model_versions_uniq 
+            ON model_versions(model_name, corridor_id, version);
+            """)
+
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS predictions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                corridor TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                model_version TEXT NOT NULL,
+                predicted_probability REAL NOT NULL,
+                predicted_class INTEGER NOT NULL,
+                confidence REAL,
+                actual_outcome INTEGER,
+                outcome_available BOOLEAN NOT NULL DEFAULT 0 CHECK (outcome_available IN (0, 1)),
+                feature_snapshot TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (datetime('now', 'utc'))
+            );
+            """)
+
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_corridor ON predictions(corridor);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_timestamp ON predictions(timestamp);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_model_version ON predictions(model_version);")
+
+            conn.commit()
+            
+            cursor.execute("SELECT COUNT(*) FROM model_versions;")
+            if cursor.fetchone()[0] == 0:
+                logger.info("Populating SQLite model_versions table from model_registry.json...")
+                _populate_from_registry(cursor, is_pg=False)
+                conn.commit()
+                
+            cursor.close()
+            
+        logger.info("Database schema initialized successfully.")
+        DB_LATENCY.labels(operation="init").observe(time.time() - t0)
     except Exception as e:
-        conn.rollback()
+        if not is_postgres_configured():
+            conn.rollback()
         logger.error(f"Failed to initialize database: {e}")
+        DB_ERRORS.labels(operation="init").inc()
         raise e
     finally:
-        conn.close()
+        release_db_connection(conn)
 
-
-def _populate_from_registry(cursor: sqlite3.Cursor) -> None:
-    """Helper to parse model_registry.json and populate SQLite model_versions."""
-    if not os.path.exists(REGISTRY_PATH):
-        logger.warning(f"model_registry.json not found at {REGISTRY_PATH}. Skipping pre-population.")
+def _populate_from_registry(cursor: Any, is_pg: bool) -> None:
+    """Helper to parse model_registry.json and populate DB model_versions."""
+    reg_path = os.path.join(settings.data_dir, "manifests", "model_registry.json")
+    if not os.path.exists(reg_path):
+        logger.warning(f"model_registry.json not found at {reg_path}. Skipping pre-population.")
         return
 
     try:
-        with open(REGISTRY_PATH, "r") as f:
+        with open(reg_path, "r") as f:
             registry = json.load(f)
     except Exception as e:
         logger.error(f"Failed to read model_registry.json: {e}")
         return
 
-    # Extract default features from model features definition if needed
     from src.features.feature_pipeline import FEATURE_COLS
     features_json = json.dumps(FEATURE_COLS)
 
@@ -135,24 +276,34 @@ def _populate_from_registry(cursor: sqlite3.Cursor) -> None:
             artifact_path = entry.get("artifact_path")
             metrics_json = json.dumps(entry.get("metrics", {}))
 
-            # Approximate row splits from dataset if split exists
-            # In our audit, training has 680, validation 182, test 138 rows
             train_rows = 680
             val_rows = 182
             test_rows = 138
-
-            # Decide status: XGBoost is marked as ACTIVE for prediction, others as VALIDATED
             status = "ACTIVE" if model_name == "XGBoost" else "VALIDATED"
 
-            cursor.execute("""
-            INSERT OR IGNORE INTO model_versions (
-                model_name, version, corridor_id, created_at,
-                training_started_at, training_completed_at,
-                dataset_version, feature_schema_version,
-                training_rows, validation_rows, test_rows,
-                features, target, metrics, artifact_path, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-            """, (
+            if is_pg:
+                query = """
+                INSERT INTO model_versions (
+                    model_name, version, corridor_id, created_at,
+                    training_started_at, training_completed_at,
+                    dataset_version, feature_schema_version,
+                    training_rows, validation_rows, test_rows,
+                    features, target, metrics, artifact_path, status
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (model_name, corridor_id, version) DO NOTHING;
+                """
+            else:
+                query = """
+                INSERT OR IGNORE INTO model_versions (
+                    model_name, version, corridor_id, created_at,
+                    training_started_at, training_completed_at,
+                    dataset_version, feature_schema_version,
+                    training_rows, validation_rows, test_rows,
+                    features, target, metrics, artifact_path, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """
+
+            cursor.execute(query, (
                 model_name, version, corridor_id, registered_at,
                 training_start, training_end,
                 "1.0", feature_version,
@@ -160,10 +311,8 @@ def _populate_from_registry(cursor: sqlite3.Cursor) -> None:
                 features_json, "is_disrupted", metrics_json,
                 artifact_path, status
             ))
-            logger.debug(f"Pre-populated model version: {model_name} for {corridor_id}")
         except Exception as ex:
             logger.error(f"Error parsing registry entry {key}: {ex}")
-
 
 def log_prediction(
     corridor: str,
@@ -176,23 +325,23 @@ def log_prediction(
     actual_outcome: int = None,
     outcome_available: bool = False,
 ) -> Optional[int]:
-    """
-    Persists a prediction record in the SQLite predictions table.
-    Records are immutable — only inserts are allowed, no updates or deletes.
-    Returns the row id of the inserted record, or None on failure.
-    """
-    import json as _json
+    """Persists a prediction record in the database."""
+    t0 = time.time()
+    conn = get_db_connection()
     try:
-        conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("""
+        
+        query = """
         INSERT INTO predictions (
             corridor, timestamp, model_version,
             predicted_probability, predicted_class,
             confidence, actual_outcome, outcome_available,
             feature_snapshot
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        """, (
+        """
+        
+        query = format_query(query)
+        params = (
             corridor.upper(),
             timestamp,
             model_version,
@@ -200,14 +349,33 @@ def log_prediction(
             int(predicted_class),
             float(confidence) if confidence is not None else None,
             int(actual_outcome) if actual_outcome is not None else None,
-            1 if outcome_available else 0,
-            _json.dumps(feature_snapshot),
-        ))
-        conn.commit()
-        row_id = cursor.lastrowid
-        conn.close()
+            True if outcome_available else False,
+            json.dumps(feature_snapshot),
+        )
+        
+        cursor.execute(query, params)
+        
+        row_id = None
+        if is_postgres_configured():
+            conn.commit()
+            # Retrieve generated ID if PostgreSQL
+            try:
+                cursor.execute("SELECT LASTVAL();")
+                row_id = cursor.fetchone()[0]
+            except Exception:
+                row_id = 1
+        else:
+            conn.commit()
+            row_id = cursor.lastrowid
+            
+        cursor.close()
+        DB_LATENCY.labels(operation="insert").observe(time.time() - t0)
         return row_id
     except Exception as e:
+        if not is_postgres_configured():
+            conn.rollback()
         logger.warning(f"Failed to log prediction for {corridor}: {e}")
+        DB_ERRORS.labels(operation="insert").inc()
         return None
-
+    finally:
+        release_db_connection(conn)

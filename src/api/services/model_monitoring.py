@@ -10,23 +10,23 @@ import datetime
 import pandas as pd
 import numpy as np
 from typing import Dict, Any, List, Tuple
-from src.api.database import DB_PATH
+from src.api.database import get_db_connection, release_db_connection, format_query
 
 def fetch_predictions(corridor: str) -> pd.DataFrame:
-    """Fetches logged prediction history from SQLite db."""
-    if not os.path.exists(DB_PATH):
-        return pd.DataFrame()
+    """Fetches logged prediction history from database."""
+    conn = get_db_connection()
     try:
-        conn = sqlite3.connect(DB_PATH)
+        query = format_query("SELECT * FROM predictions WHERE corridor = ? ORDER BY timestamp ASC")
         df = pd.read_sql_query(
-            "SELECT * FROM predictions WHERE corridor = ? ORDER BY timestamp ASC",
+            query,
             conn,
             params=[corridor.upper()]
         )
-        conn.close()
         return df
     except Exception:
         return pd.DataFrame()
+    finally:
+        release_db_connection(conn)
 
 def calculate_rolling_metrics(
     df: pd.DataFrame,

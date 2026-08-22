@@ -58,7 +58,7 @@ def run_scenario_simulation(
     baseline_row = row.iloc[0]
 
     # Load model
-    artifact, model_name = _load_best_model(corridor_upper)
+    artifact, model_name, model_version, is_champion = _load_best_model(corridor_upper)
     if not artifact:
         raise RuntimeError(f"No trained model artifact found for corridor: {corridor_upper}")
 
