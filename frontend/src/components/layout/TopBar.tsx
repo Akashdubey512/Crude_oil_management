@@ -8,9 +8,10 @@ interface TopBarProps {
   onRefresh: () => void;
   error: string | null;
   userRole: string;
+  onReturnToLanding?: () => void;
 }
 
-export default function TopBar({ health, refreshing, onRefresh, error, userRole }: TopBarProps) {
+export default function TopBar({ health, refreshing, onRefresh, error, userRole, onReturnToLanding }: TopBarProps) {
   const [utcTime, setUtcTime] = useState<string>('');
 
   useEffect(() => {
@@ -28,7 +29,11 @@ export default function TopBar({ health, refreshing, onRefresh, error, userRole 
   return (
     <header className="border-b border-gray-900 bg-gray-950/80 backdrop-blur-md px-6 py-3.5 flex flex-col lg:flex-row justify-between items-center gap-4 sticky top-0 z-[1000] select-none">
       {/* Brand Logo */}
-      <div className="flex items-center gap-3">
+      <div
+        onClick={onReturnToLanding}
+        className={`flex items-center gap-3 ${onReturnToLanding ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
+        title={onReturnToLanding ? 'Click to return to Landing Page' : undefined}
+      >
         <div className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-cyan-950 border border-cyan-800/50">
           <Globe className="w-5 h-5 text-cyan-400" />
           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-gray-950 animate-pulse" />

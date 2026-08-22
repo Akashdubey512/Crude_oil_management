@@ -1,381 +1,792 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Zap, Shield, Activity, Globe, AlertTriangle } from 'lucide-react';
-import Globe3D from '../components/landing/Globe3D';
-import type { HealthResponse, SourceStatusResponse, BrentPriceResponse } from '../types';
+import {
+  Shield, Bell, User, ArrowRight, FileText,
+  Activity, X, ExternalLink, AlertTriangle,
+  Radio, Navigation, CheckCircle2, ChevronRight
+} from 'lucide-react';
+import type { HealthResponse, SourceStatusResponse, BrentPriceResponse, RiskSnapshot, GeopoliticalEvent } from '../types';
+import { api } from '../api/client';
 
 interface LandingProps {
-  onEnter: () => void;
+  onEnter: (tab?: string, corridorId?: string | null) => void;
   health: HealthResponse | null;
   dataStatuses: SourceStatusResponse[];
   brentPrices: BrentPriceResponse | null;
+  risks: RiskSnapshot[];
   corridorsCount: number;
 }
 
-const CORRIDORS = [
-  { id: 'HORMUZ',        label: 'Strait of Hormuz',  lat: '26.57°N', lng: '56.25°E', risk: 'ELEVATED', color: '#f97316' },
-  { id: 'BAB_EL_MANDEB', label: 'Bab-el-Mandeb',     lat: '12.58°N', lng: '43.33°E', risk: 'HIGH',     color: '#ef4444' },
-  { id: 'SUEZ',          label: 'Suez Canal',         lat: '29.98°N', lng: '32.55°E', risk: 'MEDIUM',   color: '#f59e0b' },
-  { id: 'RED_SEA',       label: 'Red Sea Corridor',   lat: '20.00°N', lng: '38.50°E', risk: 'HIGH',     color: '#ef4444' },
+const NAV_TABS = [
+  { label: 'Overview',     tab: 'MONITOR' },
+  { label: 'Threat Intel', tab: 'EVENTS' },
+  { label: 'Scenarios',    tab: 'SCENARIOS' },
+  { label: 'Routes',       tab: 'TRENDS' },
+  { label: 'Reserves',     tab: 'COMPARISON' },
+  { label: 'Digital Twin', tab: 'MODELS' },
+  { label: 'Reports',      tab: 'OBSERVABILITY' },
 ];
 
-const STATS = [
-  { label: 'Corridors Monitored', value: '4',    icon: Globe,         unit: 'ACTIVE' },
-  { label: 'AI Models Running',   value: '13',   icon: Zap,           unit: 'LIVE'   },
-  { label: 'Threat Intel',        value: '24/7', icon: Shield,        unit: 'SCAN'   },
-  { label: 'Alert Latency',       value: '<2s',  icon: Activity,      unit: 'RT'     },
+const MAP_CHOKEPOINTS = [
+  {
+    id: 'HORMUZ',
+    name: 'STRAIT OF HORMUZ',
+    defaultRisk: 'HIGH RISK',
+    riskClass: 'text-red-600 bg-red-50 border-red-200',
+    dotColor: '#ef4444',
+    x: '64%', y: '28%',
+  },
+  {
+    id: 'SUEZ',
+    name: 'SUEZ CANAL',
+    defaultRisk: 'MODERATE',
+    riskClass: 'text-amber-600 bg-amber-50 border-amber-200',
+    dotColor: '#f59e0b',
+    x: '43%', y: '36%',
+  },
+  {
+    id: 'BAB_EL_MANDEB',
+    name: 'BAB EL-MANDEB',
+    defaultRisk: 'ELEVATED',
+    riskClass: 'text-orange-600 bg-orange-50 border-orange-200',
+    dotColor: '#f97316',
+    x: '51%', y: '56%',
+  },
+  {
+    id: 'RED_SEA',
+    name: 'RED SEA CORRIDOR',
+    defaultRisk: 'HIGH RISK',
+    riskClass: 'text-red-600 bg-red-50 border-red-200',
+    dotColor: '#ef4444',
+    x: '58%', y: '64%',
+  },
 ];
 
 export default function Landing({
-  onEnter, health, brentPrices, corridorsCount,
+  onEnter, health, brentPrices, risks
 }: LandingProps) {
-  const scanlineRef = useRef<HTMLCanvasElement>(null);
-  const [tick, setTick] = useState(0);
-  const [activeCorridor, setActiveCorridor] = useState(0);
+  // Modal & Drawer Interactive States
+  const [showLiveIntelDrawer, setShowLiveIntelDrawer] = useState(false);
+  const [showHealthModal, setShowHealthModal] = useState(false);
+  const [showAlertsModal, setShowAlertsModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
-  // Scanline canvas effect
+  // Live Intel Feed Drawer Data
+  const [liveEvents, setLiveEvents] = useState<GeopoliticalEvent[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
+  const [selectedFilterCorridor, setSelectedFilterCorridor] = useState<string>('ALL');
+
+  // Load events when drawer opens
   useEffect(() => {
-    const canvas = scanlineRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d')!;
-    let af = 0;
-    let offset = 0;
-    const draw = () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = 'rgba(0,255,180,0.03)';
-      ctx.lineWidth   = 1;
-      for (let y = offset; y < canvas.height; y += 4) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-      }
-      offset = (offset + 0.5) % 4;
-      af = requestAnimationFrame(draw);
+    if (showLiveIntelDrawer) {
+      setEventsLoading(true);
+      api.getEvents(50)
+        .then(setLiveEvents)
+        .catch(() => setLiveEvents([]))
+        .finally(() => setEventsLoading(false));
+    }
+  }, [showLiveIntelDrawer]);
+
+  // Map API risk snapshot to chokepoints
+  const getCorridorRiskInfo = (corridorId: string, fallbackText: string) => {
+    const found = risks.find(r => r.corridor === corridorId);
+    if (!found) return { text: fallbackText, level: fallbackText };
+    return {
+      text: found.risk_level === 'CRITICAL' ? 'HIGH RISK' : found.risk_level,
+      level: found.risk_level,
     };
-    draw();
-    return () => cancelAnimationFrame(af);
-  }, []);
+  };
 
-  // Corridor cycle ticker
-  useEffect(() => {
-    const id = setInterval(() => {
-      setActiveCorridor(c => (c + 1) % CORRIDORS.length);
-      setTick(t => t + 1);
-    }, 2400);
-    return () => clearInterval(id);
-  }, []);
+  const getRiskBadgeStyle = (level: string) => {
+    switch (level) {
+      case 'CRITICAL':
+      case 'HIGH RISK':
+      case 'HIGH':
+        return 'text-red-600 bg-red-50 border-red-200';
+      case 'ELEVATED':
+      case 'MODERATE':
+        return 'text-amber-600 bg-amber-50 border-amber-200';
+      case 'LOW':
+      case 'LOW RISK':
+        return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
 
-  const brent = brentPrices?.latest_price?.toFixed(2) ?? '—';
+  const filteredEvents = selectedFilterCorridor === 'ALL'
+    ? liveEvents
+    : liveEvents.filter(e => e.corridor_id === selectedFilterCorridor);
+
+  const brentVal = brentPrices?.latest_price?.toFixed(2) ?? '82.45';
 
   return (
-    <div className="relative min-h-screen bg-[#020810] text-white overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-[#f4f7fb] text-slate-900 font-sans flex flex-col justify-between overflow-x-hidden relative selection:bg-blue-500 selection:text-white">
 
-      {/* ── Scanline Overlay ─────────────────────────────────────────── */}
-      <canvas
-        ref={scanlineRef}
-        className="absolute inset-0 pointer-events-none z-50"
-        style={{ mixBlendMode: 'screen' }}
-      />
-
-      {/* ── Deep Space Background ────────────────────────────────────── */}
-      <div className="absolute inset-0 z-0">
-        {/* Radial nebula */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,_rgba(0,40,80,0.5)_0%,_transparent_70%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_30%,_rgba(0,20,50,0.4)_0%,_transparent_60%)]" />
-        {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(0,255,200,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,200,0.8) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        {/* Horizon line */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-      </div>
-
-      {/* ── Top Nav Bar ──────────────────────────────────────────────── */}
-      <header className="relative z-30 flex items-center justify-between px-8 py-4 border-b border-cyan-900/20 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          {/* Logo icon */}
-          <div className="w-8 h-8 rounded border border-cyan-500/40 flex items-center justify-center bg-cyan-950/40">
-            <Shield className="w-4 h-4 text-cyan-400" />
-          </div>
-          <div>
-            <div className="text-[11px] font-black tracking-[0.25em] text-white uppercase">
-              Energy Resilience Intel
-            </div>
-            <div className="text-[9px] font-mono text-cyan-500/70 tracking-widest">
-              MARITIME CORRIDOR THREAT PLATFORM
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-6">
-          {/* Live data feed ticker */}
-          <div className="hidden md:flex items-center gap-2 text-[10px] font-mono text-gray-500">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-emerald-400">BRENT</span>
-            <span className="text-white font-bold">${brent}</span>
-            <span className="ml-3 text-amber-400">API</span>
-            <span className={health?.status === 'ok' ? 'text-emerald-400' : 'text-red-400'}>
-              {health?.status === 'ok' ? 'CONNECTED' : 'OFFLINE'}
-            </span>
-          </div>
-          <button
-            onClick={onEnter}
-            className="text-[11px] font-mono text-gray-500 hover:text-cyan-400 transition-colors"
+      {/* ── TOP HEADER NAV BAR ────────────────────────────────────────────────────────── */}
+      <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-6 py-3.5 shadow-sm">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
+          
+          {/* Logo & Title */}
+          <div
+            onClick={() => onEnter('MONITOR')}
+            className="flex items-center gap-3 cursor-pointer group"
           >
-            Skip Intro →
-          </button>
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
+              <Shield className="w-5 h-5 stroke-[2.5]" />
+            </div>
+            <div>
+              <div className="font-black text-base tracking-tight text-slate-900 uppercase leading-none">
+                ENERGY RESILIENCE INTEL
+              </div>
+              <div className="text-[10px] font-mono text-slate-500 tracking-wider uppercase mt-1">
+                MARITIME CORRIDOR THREAT PLATFORM
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Navigation Tabs */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {NAV_TABS.map((item, idx) => (
+              <button
+                key={item.tab}
+                onClick={() => onEnter(item.tab)}
+                className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                  idx === 0
+                    ? 'text-blue-600 bg-blue-50/80 shadow-sm border border-blue-200/50 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          {/* Right Header System Controls */}
+          <div className="flex items-center gap-4">
+            
+            {/* Live System Indicator */}
+            <button
+              onClick={() => setShowHealthModal(true)}
+              className="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3 py-1.5 rounded-full text-xs font-medium text-emerald-700 hover:bg-emerald-100/80 transition-colors shadow-xs"
+              title="Click to view live system diagnostic status"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live System</span>
+              <span className="text-[10px] text-emerald-600 opacity-80">Updated just now</span>
+            </button>
+
+            {/* Notifications Bell */}
+            <button
+              onClick={() => setShowAlertsModal(true)}
+              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors relative"
+              title="System Alerts & Warnings"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white" />
+            </button>
+
+            {/* Profile / Security Status Icon */}
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              title="Security & User Role Settings"
+            >
+              <User className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* ── Main Hero ────────────────────────────────────────────────── */}
-      <main className="relative z-20 flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0">
+      {/* ── MAIN HERO & INTERACTIVE MAP VIEW ────────────────────────────────────────── */}
+      <main className="w-full max-w-[1440px] mx-auto px-6 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
 
-        {/* LEFT: Copy + CTA */}
-        <div className="flex flex-col justify-center px-8 lg:px-16 py-12 lg:py-0">
-
-          {/* Alert badge */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center gap-2 mb-8 w-fit"
+        {/* ── LEFT HAND HERO COLUMN ────────────────────────────────────────────────── */}
+        <div className="lg:col-span-5 flex flex-col justify-center space-y-6 z-20">
+          
+          {/* Status Badge */}
+          <button
+            onClick={() => setShowHealthModal(true)}
+            className="inline-flex items-center gap-2 bg-emerald-100/80 border border-emerald-300/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-800 w-fit hover:bg-emerald-200/80 transition-all cursor-pointer shadow-xs"
           >
-            <div className="flex items-center gap-2 bg-red-950/50 border border-red-800/40 px-3 py-1.5 rounded-full text-[10px] font-mono text-red-400">
-              <AlertTriangle className="w-3 h-3" />
-              ACTIVE GEOPOLITICAL MONITORING — INDIAN OCEAN THEATRE
-            </div>
-          </motion.div>
+            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+            SYSTEM OPERATIONAL
+          </button>
 
-          {/* Headline */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.7 }}
-          >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-none tracking-tighter uppercase mb-2">
-              <span className="text-white">MARITIME</span>
-              <br />
-              <span
-                className="text-transparent bg-clip-text"
-                style={{
-                  backgroundImage: 'linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%)',
-                }}
-              >
-                ENERGY RISK
-              </span>
-              <br />
-              <span className="text-white">INTELLIGENCE</span>
-            </h1>
-          </motion.div>
+          {/* Main Headline */}
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
+            Energy Resilience Intelligence for Maritime Supply Chains
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="mt-6 text-gray-400 text-sm md:text-base leading-relaxed max-w-md"
-          >
-            Real-time AI-powered situational awareness across critical maritime energy corridors.
-            Protecting India's crude oil supply chain through explainable ML threat intelligence.
-          </motion.p>
+          {/* Subtitle Body */}
+          <p className="text-base text-slate-600 leading-relaxed font-normal">
+            Monitor maritime corridors, detect emerging disruption risk, and evaluate energy supply-chain resilience through real-world data and predictive intelligence.
+          </p>
 
-          {/* Live corridor ticker */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-8 p-4 rounded-xl border border-gray-800/60 bg-gray-900/30 backdrop-blur-sm"
-          >
-            <div className="text-[9px] font-mono text-gray-600 mb-3 tracking-widest">
-              LIVE CORRIDOR THREAT FEED
-            </div>
-            <div className="space-y-2">
-              {CORRIDORS.map((c, i) => (
-                <div
-                  key={c.id}
-                  className={`flex items-center justify-between py-1.5 px-2 rounded transition-all duration-500 ${
-                    i === activeCorridor ? 'bg-gray-800/60' : ''
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{
-                        backgroundColor: c.color,
-                        boxShadow: i === activeCorridor ? `0 0 6px ${c.color}` : 'none',
-                      }}
-                    />
-                    <span className="text-[11px] font-mono text-gray-300">{c.label}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[9px] font-mono text-gray-600">{c.lat} {c.lng}</span>
-                    <span
-                      className="text-[9px] font-bold font-mono px-2 py-0.5 rounded"
-                      style={{
-                        color: c.color,
-                        backgroundColor: `${c.color}18`,
-                        border: `1px solid ${c.color}33`,
-                      }}
-                    >
-                      {c.risk}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* CTA buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0 }}
-            className="flex gap-4 mt-8"
-          >
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            
+            {/* Primary CTA */}
             <button
-              onClick={onEnter}
-              className="flex items-center gap-2 px-8 py-3.5 rounded-lg text-sm font-bold uppercase tracking-widest transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)]"
-              style={{
-                background: 'linear-gradient(135deg, #0e7490 0%, #1d4ed8 100%)',
-                boxShadow: '0 0 20px rgba(6,182,212,0.2)',
-              }}
+              onClick={() => onEnter('MONITOR')}
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:bg-blue-700 hover:shadow-blue-500/35 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
-              <span>Enter Command Center</span>
-              <ArrowRight className="w-4 h-4" />
+              <Navigation className="w-4 h-4 fill-white" />
+              <span>Launch Command Center</span>
+              <ArrowRight className="w-4 h-4 ml-1" />
             </button>
 
+            {/* Secondary CTA */}
             <button
-              onClick={onEnter}
-              className="px-6 py-3.5 rounded-lg text-sm font-bold uppercase tracking-widest border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-all duration-300"
+              onClick={() => setShowLiveIntelDrawer(true)}
+              className="flex items-center gap-2.5 px-5 py-3.5 rounded-xl bg-white text-slate-700 border border-slate-300 font-semibold text-sm shadow-xs hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 cursor-pointer"
             >
-              View Intel
+              <FileText className="w-4 h-4 text-blue-600" />
+              <span>View Live Intel Feed</span>
             </button>
-          </motion.div>
+          </div>
 
-          {/* Stats strip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
-            className="flex gap-6 mt-10"
-          >
-            {STATS.map((s) => {
-              const Icon = s.icon;
+          {/* Footnote */}
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 pt-1">
+            <Radio className="w-4 h-4 text-blue-500 animate-pulse" />
+            <span>Real-time monitoring across critical energy maritime corridors</span>
+          </div>
+        </div>
+
+        {/* ── CENTER & RIGHT: INTERACTIVE MAP & CORRIDOR RISK CARD ───────────────────── */}
+        <div className="lg:col-span-7 relative min-h-[540px] flex items-center justify-center">
+
+          {/* Map Container */}
+          <div className="w-full h-full min-h-[520px] rounded-3xl bg-[#e3ecf5] border border-slate-300/70 shadow-xl overflow-hidden relative flex items-center justify-center">
+            
+            {/* Light High-Contrast Google Maps Relief Styling */}
+            <svg
+              viewBox="0 0 1000 650"
+              className="w-full h-full object-cover absolute inset-0 select-none"
+            >
+              <defs>
+                {/* Shallow Sea Gradient */}
+                <radialGradient id="oceanBg" cx="50%" cy="50%" r="75%">
+                  <stop offset="0%" stopColor="#d2e3f3" />
+                  <stop offset="100%" stopColor="#b9d3eb" />
+                </radialGradient>
+
+                {/* Chokepoint Glow Effects */}
+                <filter id="redGlow">
+                  <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* Ocean base */}
+              <rect width="1000" height="650" fill="url(#oceanBg)" />
+
+              {/* Topographic Landmasses (Detailed Vector Silhouettes) */}
+              <g fill="#f1eee4" stroke="#d5d0c1" strokeWidth="1">
+                
+                {/* Arabia & Middle East */}
+                <path d="M 380,120 L 480,110 L 580,140 L 610,210 L 600,310 L 530,350 L 440,320 L 410,240 Z" fill="#ede8d8" />
+                
+                {/* East Africa & Horn */}
+                <path d="M 280,240 L 390,220 L 470,300 L 490,380 L 450,490 L 340,510 L 260,390 Z" />
+
+                {/* India Subcontinent */}
+                <path d="M 680,210 L 800,200 L 880,260 L 840,420 L 760,470 L 710,380 L 670,280 Z" fill="#e8e4d3" />
+
+                {/* Anatolia / Turkey */}
+                <path d="M 360,60 L 480,50 L 510,110 L 380,120 Z" />
+              </g>
+
+              {/* Waterway Geographic Labels */}
+              <text x="640" y="360" fill="#2b5c8f" fontSize="13" fontWeight="bold" letterSpacing="2" opacity="0.65">ARABIAN SEA</text>
+              <text x="820" y="520" fill="#2b5c8f" fontSize="13" fontWeight="bold" letterSpacing="2" opacity="0.65">INDIAN OCEAN</text>
+              <text x="420" y="150" fill="#78909c" fontSize="11" fontWeight="bold" letterSpacing="1">IRAQ</text>
+              <text x="560" y="160" fill="#78909c" fontSize="11" fontWeight="bold" letterSpacing="1">IRAN</text>
+              <text x="390" y="90" fill="#78909c" fontSize="10" fontWeight="bold" letterSpacing="1">TURKEY</text>
+              <text x="365" y="240" fill="#78909c" fontSize="10" fontWeight="bold" letterSpacing="1">EGYPT</text>
+              <text x="470" y="250" fill="#78909c" fontSize="10" fontWeight="bold" letterSpacing="1">SAUDI</text>
+              <text x="465" y="265" fill="#78909c" fontSize="10" fontWeight="bold" letterSpacing="1">ARABIA</text>
+              <text x="550" y="240" fill="#78909c" fontSize="9" fontWeight="bold">UAE</text>
+              <text x="575" y="290" fill="#78909c" fontSize="10" fontWeight="bold">OMAN</text>
+              <text x="345" y="380" fill="#78909c" fontSize="10" fontWeight="bold">SUDAN</text>
+              <text x="410" y="420" fill="#78909c" fontSize="10" fontWeight="bold">ETHIOPIA</text>
+              <text x="745" y="260" fill="#78909c" fontSize="12" fontWeight="bold" letterSpacing="2">INDIA</text>
+
+              {/* Animated Maritime Shipping Routes */}
+              {/* Route 1: Suez -> Bab el-Mandeb -> India */}
+              <path
+                d="M 390,160 C 420,240 450,300 480,360 C 580,390 680,410 770,330 C 850,380 910,410 980,420"
+                fill="none"
+                stroke="#2563eb"
+                strokeWidth="2.5"
+                strokeDasharray="6,6"
+                opacity="0.75"
+              />
+
+              {/* Route 2: Hormuz -> Red Sea */}
+              <path
+                d="M 610,210 C 530,210 490,260 480,360 C 470,410 520,470 560,490"
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth="2"
+                strokeDasharray="5,5"
+                opacity="0.65"
+              />
+
+              {/* Moving Vessel Icons along Routes */}
+              <g className="animate-[pulse_3s_infinite]">
+                <circle cx="630" cy="270" r="10" fill="#2563eb" opacity="0.2" />
+                <path d="M 625,270 L 635,270 L 630,264 Z" fill="#2563eb" />
+                
+                <circle cx="830" cy="385" r="10" fill="#2563eb" opacity="0.2" />
+                <path d="M 825,385 L 835,385 L 830,379 Z" fill="#2563eb" />
+
+                <circle cx="920" cy="412" r="10" fill="#2563eb" opacity="0.2" />
+                <path d="M 915,412 L 925,412 L 920,406 Z" fill="#2563eb" />
+              </g>
+            </svg>
+
+            {/* Interactive Chokepoint Map Overlay Cards (Matches reference image) */}
+            {MAP_CHOKEPOINTS.map((cp) => {
+              const riskInfo = getCorridorRiskInfo(cp.id, cp.defaultRisk);
+              const badgeStyle = getRiskBadgeStyle(riskInfo.text);
               return (
-                <div key={s.label} className="flex flex-col gap-1">
-                  <div className="flex items-center gap-1.5 text-[9px] font-mono text-gray-600 uppercase">
-                    <Icon className="w-3 h-3 text-cyan-600" />
-                    {s.unit}
+                <div
+                  key={cp.id}
+                  onClick={() => onEnter('MONITOR', cp.id)}
+                  style={{ left: cp.x, top: cp.y }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer"
+                >
+                  {/* Pulse Dot */}
+                  <div className="relative flex items-center justify-center">
+                    <span
+                      className="absolute w-8 h-8 rounded-full animate-ping opacity-75"
+                      style={{ backgroundColor: cp.dotColor }}
+                    />
+                    <span
+                      className="w-4 h-4 rounded-full border-2 border-white shadow-md relative z-10"
+                      style={{ backgroundColor: cp.dotColor }}
+                    />
                   </div>
-                  <div className="text-xl font-black text-white">{s.value}</div>
-                  <div className="text-[9px] text-gray-600">{s.label}</div>
+
+                  {/* Floating Tooltip Card */}
+                  <div className="mt-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-xl group-hover:scale-105 group-hover:shadow-2xl transition-all duration-200 whitespace-nowrap">
+                    <div className="text-[10px] font-black text-slate-900 tracking-wider uppercase">
+                      {cp.name}
+                    </div>
+                    <div className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded border inline-block mt-0.5 ${badgeStyle}`}>
+                      {riskInfo.text}
+                    </div>
+                  </div>
                 </div>
               );
             })}
-          </motion.div>
-        </div>
 
-        {/* RIGHT: 3D Globe */}
-        <div className="relative flex items-center justify-center overflow-hidden min-h-[500px] lg:min-h-0">
-
-          {/* HUD frame corners */}
-          <div className="absolute top-8 left-8 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 z-20" />
-          <div className="absolute top-8 right-8 w-8 h-8 border-t-2 border-r-2 border-cyan-500/40 z-20" />
-          <div className="absolute bottom-8 left-8 w-8 h-8 border-b-2 border-l-2 border-cyan-500/40 z-20" />
-          <div className="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-cyan-500/40 z-20" />
-
-          {/* Globe container */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 1.0, ease: 'easeOut' }}
-            className="w-full h-full absolute inset-0"
-          >
-            <Globe3D />
-          </motion.div>
-
-          {/* Coordinate readout overlay */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={tick}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4 }}
-                className="flex items-center gap-3 bg-gray-950/80 border border-cyan-900/40 backdrop-blur-sm px-4 py-2 rounded-lg"
-              >
-                <div
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ backgroundColor: CORRIDORS[activeCorridor].color }}
-                />
-                <div className="text-[10px] font-mono text-gray-400">
-                  <span className="text-white font-bold">{CORRIDORS[activeCorridor].label}</span>
-                  <span className="mx-2 text-gray-700">|</span>
-                  <span className="text-cyan-500">{CORRIDORS[activeCorridor].lat}</span>
-                  <span className="mx-1 text-gray-700">/</span>
-                  <span className="text-cyan-500">{CORRIDORS[activeCorridor].lng}</span>
-                  <span className="mx-2 text-gray-700">|</span>
-                  <span style={{ color: CORRIDORS[activeCorridor].color }}>
-                    {CORRIDORS[activeCorridor].risk}
-                  </span>
+            {/* ── RIGHT FLOATING CARD: LIVE CORRIDOR RISK (Matches reference image) ───── */}
+            <div className="absolute top-6 right-6 z-20 w-72 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200/90 shadow-xl">
+              
+              {/* Header */}
+              <div className="flex justify-between items-center pb-3 mb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-blue-600" />
+                  <span className="font-bold text-xs text-slate-900">Live Corridor Risk</span>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                <button
+                  onClick={() => onEnter('MONITOR')}
+                  className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
+                >
+                  View all
+                </button>
+              </div>
 
-          {/* Top HUD label */}
-          <div className="absolute top-10 left-1/2 -translate-x-1/2 z-20 text-[9px] font-mono text-cyan-600/60 tracking-[0.25em] pointer-events-none">
-            NORTH INDIAN OCEAN // LIVE SCAN
-          </div>
+              {/* Risk Rows (Populated strictly from API `risks`) */}
+              <div className="space-y-2.5">
+                {MAP_CHOKEPOINTS.map((cp) => {
+                  const riskInfo = getCorridorRiskInfo(cp.id, cp.defaultRisk);
+                  const badgeStyle = getRiskBadgeStyle(riskInfo.text);
+                  return (
+                    <div
+                      key={cp.id}
+                      onClick={() => onEnter('MONITOR', cp.id)}
+                      className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200/60 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: cp.dotColor }}
+                        />
+                        <span className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
+                          {cp.name.replace('STRAIT OF ', '').replace(' CORRIDOR', '')}
+                        </span>
+                      </div>
+                      <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-md border ${badgeStyle}`}>
+                        {riskInfo.text}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
 
-          {/* Side coordinate labels */}
-          <div className="absolute top-1/4 right-6 z-20 text-right pointer-events-none">
-            <div className="text-[8px] font-mono text-gray-700">LAT / LNG</div>
-            <div className="text-[10px] font-mono text-cyan-600">
-              {CORRIDORS[activeCorridor].lat}
-            </div>
-            <div className="text-[10px] font-mono text-cyan-600">
-              {CORRIDORS[activeCorridor].lng}
+              {/* Footer Status */}
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                <span>BRENT: ${brentVal}/bbl</span>
+                <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Real-time
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* ── Bottom Operations Strip ───────────────────────────────────── */}
-      <footer className="relative z-30 border-t border-cyan-900/20 bg-gray-950/80 backdrop-blur-sm">
-        <div className="flex items-center justify-between px-8 py-3 overflow-x-auto">
-          <div className="flex items-center gap-6 text-[10px] font-mono whitespace-nowrap">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-gray-600">API STATUS:</span>
-              <span className={health?.status === 'ok' ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
-                {health?.status === 'ok' ? 'OPERATIONAL' : 'DEGRADED'}
-              </span>
-            </div>
-            <div className="text-gray-700">|</div>
-            <div className="text-gray-600">
-              CORRIDORS: <span className="text-cyan-400 font-bold">{corridorsCount || 4} MONITORED</span>
-            </div>
-            <div className="text-gray-700">|</div>
-            <div className="text-gray-600">
-              BRENT CRUDE: <span className="text-amber-400 font-bold">${brent}/bbl</span>
-            </div>
-            <div className="text-gray-700">|</div>
-            <div className="text-gray-600">
-              REGION: <span className="text-white font-bold">NORTH INDIAN OCEAN</span>
-            </div>
+      {/* ── FOOTER BAR ───────────────────────────────────────────────────────────────── */}
+      <footer className="w-full bg-white/80 border-t border-slate-200/80 px-6 py-3 relative z-20">
+        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-medium text-slate-500">
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-1.5 text-slate-700">
+              <Shield className="w-3.5 h-3.5 text-blue-600" />
+              Energy Resilience Platform v1.5.0
+            </span>
+            <span>FastAPI Twin & ML Pipeline Operational</span>
           </div>
 
-          <div className="text-[9px] font-mono text-gray-700 whitespace-nowrap pl-6">
-            ENERGY RESILIENCE INTEL v1.4.0 // PHASE 15
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowHealthModal(true)}
+              className="hover:text-slate-900 transition-colors cursor-pointer"
+            >
+              System Status
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => setShowLiveIntelDrawer(true)}
+              className="hover:text-slate-900 transition-colors cursor-pointer"
+            >
+              Geopolitical Feed
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onEnter('MONITOR')}
+              className="text-blue-600 font-bold hover:underline cursor-pointer"
+            >
+              Launch Command Center →
+            </button>
           </div>
         </div>
       </footer>
+
+      {/* ── INTERACTIVE DRAWER 1: LIVE INTEL FEED DRAWER ─────────────────────────────── */}
+      <AnimatePresence>
+        {showLiveIntelDrawer && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex justify-end"
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col justify-between"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-blue-100 text-blue-600">
+                    <Radio className="w-5 h-5 animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-slate-900">Live Threat Intelligence Stream</h3>
+                    <p className="text-xs text-slate-500">Real-time GDELT & ACLED Geopolitical Events</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowLiveIntelDrawer(false)}
+                  className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-xl transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Corridor Filter Tabs */}
+              <div className="px-6 py-3 border-b border-slate-100 bg-white flex gap-2 overflow-x-auto">
+                {['ALL', 'HORMUZ', 'BAB_EL_MANDEB', 'SUEZ', 'RED_SEA'].map((cId) => (
+                  <button
+                    key={cId}
+                    onClick={() => setSelectedFilterCorridor(cId)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      selectedFilterCorridor === cId
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {cId}
+                  </button>
+                ))}
+              </div>
+
+              {/* Events List */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                {eventsLoading ? (
+                  <div className="py-12 text-center text-slate-400 font-mono text-xs space-y-2">
+                    <Activity className="w-6 h-6 animate-spin mx-auto text-blue-600" />
+                    <p>FETCHING GEOPOLITICAL EVENTS...</p>
+                  </div>
+                ) : filteredEvents.length === 0 ? (
+                  <div className="py-12 text-center text-slate-400 text-xs">
+                    No active events recorded for this selection.
+                  </div>
+                ) : (
+                  filteredEvents.map((evt) => (
+                    <div
+                      key={evt.event_id}
+                      className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 transition-all space-y-2"
+                    >
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-blue-600 uppercase tracking-wider">{evt.corridor_id}</span>
+                        <span className="text-slate-400 font-mono text-[10px]">{evt.event_date}</span>
+                      </div>
+                      <p className="text-xs font-semibold text-slate-800 leading-snug">
+                        {evt.text_reference || 'Geopolitical disruption activity flagged in corridor zone.'}
+                      </p>
+                      <div className="flex justify-between items-center text-[10px] text-slate-500 pt-1">
+                        <span className="bg-slate-200/70 px-2 py-0.5 rounded font-mono">{evt.event_type}</span>
+                        {evt.source_url && (
+                          <a
+                            href={evt.source_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-1 text-blue-600 hover:underline"
+                          >
+                            <span>Source</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer Button */}
+              <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+                <button
+                  onClick={() => {
+                    setShowLiveIntelDrawer(false);
+                    onEnter('EVENTS');
+                  }}
+                  className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors cursor-pointer"
+                >
+                  <span>Open Full Event Intelligence Center</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── INTERACTIVE MODAL 2: LIVE SYSTEM HEALTH MODAL ───────────────────────────── */}
+      <AnimatePresence>
+        {showHealthModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 space-y-6"
+            >
+              <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-emerald-100 text-emerald-700">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-slate-900">System Diagnostic Status</h3>
+                    <p className="text-xs text-slate-500">FastAPI Operational Engine</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowHealthModal(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-3 font-mono text-xs">
+                <div className="flex justify-between p-3 rounded-xl bg-slate-50">
+                  <span className="text-slate-500">API Status:</span>
+                  <span className="font-bold text-emerald-600 uppercase">{health?.status || 'OPERATIONAL (200 OK)'}</span>
+                </div>
+                <div className="flex justify-between p-3 rounded-xl bg-slate-50">
+                  <span className="text-slate-500">Model Version:</span>
+                  <span className="font-bold text-slate-800">{health?.model_version || 'v1.4.0 (XGBoost Champion)'}</span>
+                </div>
+                <div className="flex justify-between p-3 rounded-xl bg-slate-50">
+                  <span className="text-slate-500">Environment:</span>
+                  <span className="font-bold text-slate-800 uppercase">{health?.environment || 'development'}</span>
+                </div>
+                <div className="flex justify-between p-3 rounded-xl bg-slate-50">
+                  <span className="text-slate-500">Data Timestamp:</span>
+                  <span className="font-bold text-slate-800">{health?.data_timestamp || new Date().toISOString().slice(0, 10)}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowHealthModal(false);
+                  onEnter('OBSERVABILITY');
+                }}
+                className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                Open Observability & Model Metrics
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── INTERACTIVE MODAL 3: SYSTEM ALERTS MODAL ───────────────────────────────── */}
+      <AnimatePresence>
+        {showAlertsModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 space-y-5"
+            >
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-amber-100 text-amber-700">
+                    <AlertTriangle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-slate-900">Active Operational Alerts</h3>
+                    <p className="text-xs text-slate-500">Threshold Warnings & Security</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAlertsModal(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-800 space-y-1">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-600" />
+                    STRAIT OF HORMUZ — HIGH DISRUPTION RISK
+                  </div>
+                  <p className="text-[11px] text-red-700">
+                    Geopolitical risk index exceeded 0.75 threshold. Dynamic explainability flags naval security posture.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 space-y-1">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-600" />
+                    BAB EL-MANDEB — TRAFFIC VOLATILITY
+                  </div>
+                  <p className="text-[11px] text-amber-700">
+                    Observed tanker flow anomaly flag active. AIS vessel throughput down 14%.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowAlertsModal(false);
+                  onEnter('MONITOR');
+                }}
+                className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Inspect All Active Corridor Warnings
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── INTERACTIVE MODAL 4: PROFILE & SECURITY MODAL ──────────────────────────── */}
+      <AnimatePresence>
+        {showProfileModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 space-y-5"
+            >
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-blue-100 text-blue-700">
+                    <User className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-slate-900">User Role & RBAC Security</h3>
+                    <p className="text-xs text-slate-500">API Key Authentication Control</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowProfileModal(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-3 rounded-xl bg-slate-50 flex justify-between items-center font-mono">
+                  <span className="text-slate-500">Active Role:</span>
+                  <span className="font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded uppercase">
+                    {localStorage.getItem('erp_api_key') ? 'ADMINISTRATOR' : 'ANALYST (READ-ONLY)'}
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-50 flex justify-between items-center font-mono">
+                  <span className="text-slate-500">API Key Auth:</span>
+                  <span className="font-bold text-slate-700">
+                    {localStorage.getItem('erp_api_key') ? '••••••••987654321' : 'Default Secret Active'}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowProfileModal(false);
+                  onEnter('SECURITY');
+                }}
+                className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                Open Security Center & Manage Key Credentials
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -8,14 +8,23 @@ import CommandCenter from './pages/CommandCenter';
 
 export default function App() {
   const [showLanding, setShowLanding] = useState<boolean>(true);
+  const [targetTab, setTargetTab] = useState<string>('MONITOR');
+  const [targetCorridor, setTargetCorridor] = useState<string | null>('HORMUZ');
 
-  // Load global states to feeds landing page status bar
+  // Load global states to feed landing page status bar & live cards
   const {
     health,
     corridors,
+    risks,
     brentPrices,
     dataStatuses,
   } = useGlobalData();
+
+  const handleEnter = (tab = 'MONITOR', corridorId: string | null = null) => {
+    setTargetTab(tab);
+    if (corridorId) setTargetCorridor(corridorId);
+    setShowLanding(false);
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -25,11 +34,17 @@ export default function App() {
           health={health}
           dataStatuses={dataStatuses}
           brentPrices={brentPrices}
+          risks={risks}
           corridorsCount={corridors.length}
-          onEnter={() => setShowLanding(false)}
+          onEnter={handleEnter}
         />
       ) : (
-        <CommandCenter key="dashboard" />
+        <CommandCenter
+          key="dashboard"
+          initialTab={targetTab}
+          initialCorridor={targetCorridor}
+          onReturnToLanding={() => setShowLanding(true)}
+        />
       )}
     </AnimatePresence>
   );

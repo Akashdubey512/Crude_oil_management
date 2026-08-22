@@ -28,9 +28,19 @@ import SecurityCenter from '../components/security/SecurityCenter';
 import { api } from '../api/client';
 import type { RiskHistoryEntry, CorridorComparisonResponse } from '../types';
 
-export default function CommandCenter() {
+interface CommandCenterProps {
+  initialTab?: string;
+  initialCorridor?: string | null;
+  onReturnToLanding?: () => void;
+}
+
+export default function CommandCenter({
+  initialTab = 'MONITOR',
+  initialCorridor = 'HORMUZ',
+  onReturnToLanding,
+}: CommandCenterProps = {}) {
   // 1. Navigation state
-  const [dashboardMode, setDashboardMode] = useState<string>('MONITOR');
+  const [dashboardMode, setDashboardMode] = useState<string>(initialTab);
 
   // 2. Global state hook
   const {
@@ -47,7 +57,7 @@ export default function CommandCenter() {
   } = useGlobalData();
 
   // 3. Selected corridor states
-  const [selectedCorridor, setSelectedCorridor] = useState<string | null>('HORMUZ');
+  const [selectedCorridor, setSelectedCorridor] = useState<string | null>(initialCorridor || 'HORMUZ');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
   const selectedCorridorObj = corridors.find((c) => c.corridor_id === selectedCorridor);
@@ -195,6 +205,7 @@ export default function CommandCenter() {
         onRefresh={handleRefresh}
         error={globalError}
         userRole={userRole}
+        onReturnToLanding={onReturnToLanding}
       />
 
       {/* Global Error Banner */}
