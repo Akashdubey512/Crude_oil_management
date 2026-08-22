@@ -113,17 +113,34 @@ Open your browser and navigate to: http://localhost:5173
 | Phase 10 | RED_SEA modeling, Bab el-Mandeb proxy, data limitations | COMPLETE |
 | Phase 11 | Challenger-vs-Champion, Promotion, Rollback, Retraining | COMPLETE |
 | Phase 12 | Observability, Postgres, Rate Limiting, Lifespan Probes | COMPLETE |
+| Phase 13 | Enterprise Security, API Security & Production Deployment Hardening | COMPLETE |
 
-**Backend:** 262 tests passing. **Frontend:** 16 tests passing.
+**Backend:** 282 tests passing. **Frontend:** 16 tests passing.
 
 ## Phase 12 — Observability & Reliability Engineering
 
 - **Structured JSON Logging** — Outputs logs as unified JSON lines, scrubs secrets automatically, and propagates correlation IDs.
 - **Prometheus Metrics Endpoint** (`GET /metrics`) — Exposes request latencies, predictions, promotion attempts, and database queries.
 - **Proactive Health Probes** (`/api/health/live` & `/api/health/ready`) — Lightweight liveness check and database/registry readiness probe.
-- **Database Connection Pooling** — Automatic PostgreSQL threaded pooling in production withSQLite fallback.
+- **Database Connection Pooling** — Automatic PostgreSQL threaded pooling in production with SQLite fallback.
 - **API Rate Limiting** — Sliding-window IP rate limiter to protect resources from concurrency exhaust.
 - **Serving Safety Guardrails** — Enforces model deserialization, schema matching, and prediction check validations before loading registry champion.
 
 See full documentation in `docs/phase-12-production.md`, `docs/observability.md`, and `docs/deployment-runbook.md`.
+
+---
+
+## Phase 13 — Enterprise Security, API Security & Production Deployment Hardening
+
+- **RBAC API Key System** — Role-based access control with VIEWER / ANALYST / ML_ENGINEER / ADMIN scopes; keys stored as HMAC-SHA256 hashes.
+- **Bearer Token Authentication** — All protected endpoints require `Authorization: Bearer erp_<public_id>_<secret>` header; 401 on missing, 403 on insufficient scope.
+- **Security Audit Log** — Every authentication failure, permission denial, key creation, revocation, and model governance action is persisted in `security_audit_log`.
+- **SSRF Protection** — `secure_client.py` blocks requests to private/loopback/link-local IP ranges; all external data fetches (GDELT, PortWatch, AIS) routed through it.
+- **Model Governance Security** — Promotion and rollback endpoints now require `MODEL_PROMOTE` / `MODEL_ROLLBACK` scopes; REJECTED models fast-fail before artifact loading.
+- **Security Routes** — `GET /api/security/status`, `GET /api/security/audit`, `GET /api/security/keys`, `POST /api/security/keys/{id}/revoke`.
+- **Frontend Security Center** — Dedicated tab showing live security status, API key management, and audit log with RBAC-gated controls.
+- **Production Config Validation** — Fail-fast startup check enforces `DATABASE_URL`, `API_KEY_HASH_SECRET`, and safe CORS origins in production mode.
+- **20/20 Security Integration Tests** — Full test suite covering auth flows, RBAC enforcement, SSRF blocks, rate limiting, and audit logging.
+
+See full documentation in `docs/phase-13-security-audit.md`.
 

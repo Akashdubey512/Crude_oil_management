@@ -318,6 +318,41 @@ def init_database() -> None:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON security_audit_log(timestamp);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_action ON security_audit_log(action);")
 
+            # Phase 14: Alert rules and active alerts tables
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS alert_rules (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                corridor_id TEXT NOT NULL,
+                metric TEXT NOT NULL CHECK (metric IN ('risk_score', 'probability')),
+                operator TEXT NOT NULL CHECK (operator IN ('>', '>=')),
+                threshold REAL NOT NULL,
+                severity TEXT NOT NULL CHECK (severity IN ('WARNING', 'CRITICAL')),
+                enabled INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT (datetime('now', 'utc')),
+                created_by TEXT
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_alert_rules_corridor ON alert_rules(corridor_id);")
+
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS active_alerts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                rule_id INTEGER NOT NULL,
+                corridor_id TEXT NOT NULL,
+                severity TEXT NOT NULL,
+                metric TEXT NOT NULL,
+                threshold REAL NOT NULL,
+                observed_value REAL NOT NULL,
+                status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'RESOLVED', 'ACKNOWLEDGED')),
+                triggered_at TEXT NOT NULL DEFAULT (datetime('now', 'utc')),
+                resolved_at TEXT,
+                acknowledged_by TEXT,
+                message TEXT
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_active_alerts_corridor ON active_alerts(corridor_id);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_active_alerts_status ON active_alerts(status);")
+
             conn.commit()
             
             cursor.execute("SELECT COUNT(*) FROM model_versions;")

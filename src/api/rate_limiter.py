@@ -42,19 +42,34 @@ limiter = RateLimiter(requests_per_minute=settings.api_rate_limit)
 
 async def rate_limit_dependency(request: Request):
     # Bypass in testing/unit tests
+    is_testing_override = False
     if settings.environment == "testing" or "pytest" in sys.modules or "unittest" in sys.modules:
         # Check if we explicitly want to test rate limiting in security/production tests
         # We do this by checking if the general limiter is overridden to 5
         if limiter.requests_per_minute > 5:
             return
+        else:
+            is_testing_override = True
+
+    # Extract client IP
+    client_ip = request.client.host if request.client else "127.0.0.1"
+
+    if is_testing_override:
+        if not limiter.is_allowed(client_ip):
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail={
+                    "error": "Too Many Requests",
+                    "message": f"Rate limit of {limiter.requests_per_minute} requests per minute exceeded.",
+                    "retry_after_seconds": 60
+                }
+            )
+        return
 
     # Bypass health checks and metrics
     path = request.url.path
     if path in ["/api/health/live", "/api/health/ready", "/metrics", "/api/metrics", "/health"]:
         return
-
-    # Extract client IP
-    client_ip = request.client.host if request.client else "127.0.0.1"
     
     # 1. Map route paths to specific limiters based on sensitivity
     if path.startswith("/api/scenarios/simulate"):

@@ -18,7 +18,11 @@ from src.api.database import init_database, _pg_pool
 from src.api.rate_limiter import rate_limit_dependency
 from src.api.metrics import HTTP_REQUESTS, HTTP_LATENCY, get_metrics_response
 from src.api.auth import authenticate_key
-from src.api.routes import health, corridors, risk, events, prices, data_status, explainability, scenarios, monitoring, security
+from src.api.routes import (
+    health, corridors, risk, events, prices, data_status,
+    explainability, scenarios, monitoring, security,
+    alerts, forecast, portfolio, reports
+)
 
 # Initialize structured logging first so all subsequent logs are JSON lines
 setup_logging(log_level=settings.log_level, environment=settings.environment)
@@ -76,9 +80,10 @@ app = FastAPI(
         "Production-deployable, observable REST API exposing AI-driven corridor risk intelligence, "
         "geopolitical event tracking, maritime traffic observations, and India's "
         "crude-oil supply chain infrastructure data.\n\n"
+        "**Phase 14**: Alerting, 7-day Forecasts, Portfolio Risk & Reporting.\n"
         "**Observability**: Prometheus metrics enabled at /metrics. JSON structured logging and request-tracing active."
     ),
-    version="1.1.0",
+    version="1.4.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -192,3 +197,9 @@ app.include_router(scenarios.router, prefix="/api", dependencies=[Security(authe
 # Routers with endpoint-level scope checks
 app.include_router(monitoring.router, prefix="/api")
 app.include_router(security.router)
+
+# Phase 14: Alerting, Forecast, Portfolio, Reports (READ scope)
+app.include_router(alerts.router,    prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(forecast.router,  prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(portfolio.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(reports.router,   prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])

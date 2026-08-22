@@ -52,7 +52,7 @@ def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
             return False, f"Rejection: Severe data drift detected in feature '{feat_name}' (PSI={psi_val:.4f} > 0.50)."
 
     # Rule 4: No severe target leakage registered in config/metadata
-    if "Target leakage warning" in challenger.get("rejection_reason", ""):
+    if "Target leakage warning" in (challenger.get("rejection_reason") or ""):
         return False, "Rejection: Target leakage detected."
 
     # Compare against current CHAMPION (if one exists)
