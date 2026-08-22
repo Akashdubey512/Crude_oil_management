@@ -46,12 +46,12 @@ def fetch_gfw_vessels(token, query="cargo OR tanker"):
     url_parts[4] = urllib.parse.urlencode(params)
     final_url = urllib.parse.urlunparse(url_parts)
     
-    req = urllib.request.Request(final_url, headers=headers)
     try:
         print(f"Querying GFW API at {GFW_API_URL}...")
-        with urllib.request.urlopen(req, timeout=15) as response:
-            content = response.read().decode('utf-8')
-            return json.loads(content)
+        from src.api.secure_client import secure_urlopen
+        content_bytes = secure_urlopen(final_url, timeout=15.0, headers=headers)
+        content = content_bytes.decode('utf-8')
+        return json.loads(content)
     except Exception as e:
         print(f"GFW API network request failed: {e}")
         return None

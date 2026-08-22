@@ -8,7 +8,7 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -17,7 +17,8 @@ from src.api.logging_config import setup_logging, request_id_var
 from src.api.database import init_database, _pg_pool
 from src.api.rate_limiter import rate_limit_dependency
 from src.api.metrics import HTTP_REQUESTS, HTTP_LATENCY, get_metrics_response
-from src.api.routes import health, corridors, risk, events, prices, data_status, explainability, scenarios, monitoring
+from src.api.auth import authenticate_key
+from src.api.routes import health, corridors, risk, events, prices, data_status, explainability, scenarios, monitoring, security
 
 # Initialize structured logging first so all subsequent logs are JSON lines
 setup_logging(log_level=settings.log_level, environment=settings.environment)
@@ -176,11 +177,18 @@ def get_metrics():
 
 # ─── Routers ──────────────────────────────────────────────────────────────────
 app.include_router(health.router, prefix="/api")
-app.include_router(corridors.router, prefix="/api")
-app.include_router(events.router, prefix="/api")
-app.include_router(risk.router, prefix="/api")
-app.include_router(prices.router, prefix="/api")
-app.include_router(data_status.router, prefix="/api")
-app.include_router(explainability.router, prefix="/api")
-app.include_router(scenarios.router, prefix="/api")
+
+# READ scope routes
+app.include_router(corridors.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(events.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(risk.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(prices.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(data_status.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+app.include_router(explainability.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+
+# WRITE scope routes
+app.include_router(scenarios.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["WRITE"])])
+
+# Routers with endpoint-level scope checks
 app.include_router(monitoring.router, prefix="/api")
+app.include_router(security.router)

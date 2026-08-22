@@ -76,9 +76,11 @@ def get_db_connection() -> Any:
     # Fallback to SQLite
     os.makedirs(settings.data_dir, exist_ok=True)
     db_path = os.path.join(settings.data_dir, "predictions.db")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=15, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
+    conn.execute("PRAGMA journal_mode=WAL;")
+    conn.execute("PRAGMA busy_timeout=10000;")
     return conn
 
 def release_db_connection(conn: Any) -> None:
@@ -165,6 +167,45 @@ def init_database() -> None:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_timestamp ON predictions(timestamp);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_model_version ON predictions(model_version);")
 
+            # Phase 13: Create api_keys table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS api_keys (
+                id SERIAL PRIMARY KEY,
+                public_id VARCHAR(50) NOT NULL UNIQUE,
+                hashed_key VARCHAR(255) NOT NULL,
+                actor_id VARCHAR(50) NOT NULL,
+                actor_role VARCHAR(50) NOT NULL,
+                scopes TEXT NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                expires_at VARCHAR(100),
+                revoked BOOLEAN NOT NULL DEFAULT FALSE
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_api_keys_public_id ON api_keys(public_id);")
+
+            # Phase 13: Create security_audit_log table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS security_audit_log (
+                id SERIAL PRIMARY KEY,
+                timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                request_id VARCHAR(100),
+                actor_id VARCHAR(50),
+                actor_role VARCHAR(50),
+                action VARCHAR(100) NOT NULL,
+                resource VARCHAR(100) NOT NULL,
+                resource_id VARCHAR(100),
+                corridor VARCHAR(50),
+                model_version VARCHAR(50),
+                status VARCHAR(50) NOT NULL,
+                ip_address VARCHAR(50),
+                user_agent TEXT,
+                reason TEXT,
+                metadata TEXT
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON security_audit_log(timestamp);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_action ON security_audit_log(action);")
+
             conn.commit()
             
             # Populate model versions if table is empty
@@ -172,6 +213,18 @@ def init_database() -> None:
             if cursor.fetchone()[0] == 0:
                 logger.info("Populating PostgreSQL model_versions table from model_registry.json...")
                 _populate_from_registry(cursor, is_pg=True)
+                conn.commit()
+            
+            # Phase 13: Seed default admin API key if table is empty
+            cursor.execute("SELECT COUNT(*) FROM api_keys;")
+            if cursor.fetchone()[0] == 0:
+                logger.info("Seeding default admin API key in PostgreSQL api_keys table...")
+                from src.api.auth import hash_secret_key, ROLE_SCOPES
+                hashed_key = hash_secret_key("defaultadminsecretkey987654321")
+                cursor.execute("""
+                INSERT INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
+                VALUES (%s, %s, %s, %s, %s, %s);
+                """, ("pubadmin", hashed_key, "default_admin", "ADMIN", json.dumps(ROLE_SCOPES["ADMIN"]), False))
                 conn.commit()
             
             cursor.close()
@@ -226,12 +279,63 @@ def init_database() -> None:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_timestamp ON predictions(timestamp);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_predictions_model_version ON predictions(model_version);")
 
+            # Phase 13: Create api_keys table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS api_keys (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                public_id TEXT NOT NULL UNIQUE,
+                hashed_key TEXT NOT NULL,
+                actor_id TEXT NOT NULL,
+                actor_role TEXT NOT NULL,
+                scopes TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (datetime('now', 'utc')),
+                expires_at TEXT,
+                revoked INTEGER NOT NULL DEFAULT 0
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_api_keys_public_id ON api_keys(public_id);")
+
+            # Phase 13: Create security_audit_log table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS security_audit_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL DEFAULT (datetime('now', 'utc')),
+                request_id TEXT,
+                actor_id TEXT,
+                actor_role TEXT,
+                action TEXT NOT NULL,
+                resource TEXT NOT NULL,
+                resource_id TEXT,
+                corridor TEXT,
+                model_version TEXT,
+                status TEXT NOT NULL,
+                ip_address TEXT,
+                user_agent TEXT,
+                reason TEXT,
+                metadata TEXT
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON security_audit_log(timestamp);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_audit_action ON security_audit_log(action);")
+
             conn.commit()
             
             cursor.execute("SELECT COUNT(*) FROM model_versions;")
             if cursor.fetchone()[0] == 0:
                 logger.info("Populating SQLite model_versions table from model_registry.json...")
                 _populate_from_registry(cursor, is_pg=False)
+                conn.commit()
+                
+            # Phase 13: Seed default admin API key if table is empty
+            cursor.execute("SELECT COUNT(*) FROM api_keys;")
+            if cursor.fetchone()[0] == 0:
+                logger.info("Seeding default admin API key in SQLite api_keys table...")
+                from src.api.auth import hash_secret_key, ROLE_SCOPES
+                hashed_key = hash_secret_key("defaultadminsecretkey987654321")
+                cursor.execute("""
+                INSERT INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
+                VALUES (?, ?, ?, ?, ?, ?);
+                """, ("pubadmin", hashed_key, "default_admin", "ADMIN", json.dumps(ROLE_SCOPES["ADMIN"]), 0))
                 conn.commit()
                 
             cursor.close()
@@ -377,5 +481,70 @@ def log_prediction(
         logger.warning(f"Failed to log prediction for {corridor}: {e}")
         DB_ERRORS.labels(operation="insert").inc()
         return None
+    finally:
+        release_db_connection(conn)
+
+def log_security_event(
+    action: str,
+    resource: str,
+    status: str,
+    actor_id: Optional[str] = None,
+    actor_role: Optional[str] = None,
+    resource_id: Optional[str] = None,
+    corridor: Optional[str] = None,
+    model_version: Optional[str] = None,
+    ip_address: Optional[str] = None,
+    user_agent: Optional[str] = None,
+    reason: Optional[str] = None,
+    metadata: Optional[dict] = None
+) -> None:
+    """
+    Persists a security audit event in the security_audit_log table.
+    Guarantees that sensitive credentials or secrets are never logged.
+    """
+    from src.api.logging_config import request_id_var
+    req_id = request_id_var.get()
+    
+    # Strip any potential secrets from reason and metadata
+    def sanitize(val: Any) -> Any:
+        if isinstance(val, str):
+            for pattern in ["key", "password", "secret", "token", "api_key"]:
+                if pattern in val.lower():
+                    return "[SCRUBBED]"
+        return val
+
+    reason = sanitize(reason)
+    if metadata:
+        metadata = {k: sanitize(v) for k, v in metadata.items()}
+        metadata_str = json.dumps(metadata)
+    else:
+        metadata_str = None
+
+    t0 = time.time()
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        query = """
+        INSERT INTO security_audit_log (
+            request_id, actor_id, actor_role, action, resource,
+            resource_id, corridor, model_version, status,
+            ip_address, user_agent, reason, metadata
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """
+        query = format_query(query)
+        params = (
+            req_id, actor_id, actor_role, action, resource,
+            resource_id, corridor, model_version, status,
+            ip_address, user_agent, reason, metadata_str
+        )
+        cursor.execute(query, params)
+        conn.commit()
+        cursor.close()
+        DB_LATENCY.labels(operation="insert_audit").observe(time.time() - t0)
+    except Exception as e:
+        if not is_postgres_configured():
+            conn.rollback()
+        logger.warning(f"Failed to log security audit event: {e}")
+        DB_ERRORS.labels(operation="insert_audit").inc()
     finally:
         release_db_connection(conn)

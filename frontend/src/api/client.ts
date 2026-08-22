@@ -21,7 +21,15 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
   try {
-    const response = await fetch(url, options);
+    const headers = new Headers(options?.headers || {});
+    
+    // Automatically inject Bearer token if present
+    const key = localStorage.getItem('erp_api_key');
+    if (key) {
+      headers.set('Authorization', `Bearer ${key}`);
+    }
+
+    const response = await fetch(url, { ...options, headers });
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`HTTP Error ${response.status}: ${errorText || response.statusText}`);
@@ -164,5 +172,29 @@ export const api = {
 
   getObservabilityMetrics: () =>
     request<any>('/api/observability/metrics'),
+
+  // --- Phase 13: Enterprise Security ---
+  getSecurityStatus: () =>
+    request<any>('/api/security/status'),
+
+  getAuditLogs: (page: number = 1, limit: number = 20) =>
+    request<any>(`/api/security/audit?page=${page}&limit=${limit}`),
+
+  getKeys: () =>
+    request<any[]>('/api/security/keys'),
+
+  generateKey: (req: { actor_id: string; actor_role: string; expires_in_days: number }) =>
+    request<any>('/api/security/keys', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req),
+    }),
+
+  revokeKey: (publicId: string) =>
+    request<any>(`/api/security/keys/${publicId}/revoke`, {
+      method: 'POST',
+    }),
 };
 

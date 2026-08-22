@@ -62,11 +62,10 @@ def fetch_gdelt_articles(query, max_rows=250):
             final_url = urllib.parse.urlunparse(url_parts)
             
             try:
-                req = urllib.request.Request(final_url, headers=headers)
-                # Enforce request timeout from configuration
-                with urllib.request.urlopen(req, timeout=int(settings.request_timeout)) as response:
-                    content = response.read().decode('utf-8')
-                    return json.loads(content)
+                from src.api.secure_client import secure_urlopen
+                content_bytes = secure_urlopen(final_url, timeout=int(settings.request_timeout), headers=headers)
+                content = content_bytes.decode('utf-8')
+                return json.loads(content)
             except Exception as e:
                 # If we get 429 Too Many Requests, sleep and retry next attempt
                 if "429" in str(e):

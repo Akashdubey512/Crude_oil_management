@@ -98,6 +98,10 @@ def promote_challenger_to_champion(challenger_key: str, reason: str) -> Tuple[bo
     artifact_path = challenger.get("artifact_path")
     corridor = challenger.get("corridor_id")
 
+    # 0. Fast-fail: block promotion if model is already REJECTED
+    if challenger.get("status") == "REJECTED":
+        return False, f"Promotion blocked: Model '{challenger_key}' has status REJECTED and cannot be promoted."
+
     # 1. Verify artifact exists
     if not os.path.exists(artifact_path):
         return False, f"Promotion failed: Model artifact file not found at '{artifact_path}'."

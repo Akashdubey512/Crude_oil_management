@@ -8,7 +8,8 @@ All metrics are computed from real trained models and real data — never fabric
 import os
 import logging
 from typing import Optional, List
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends, Security
+from src.api.auth import authenticate_key
 
 from src.api.services.model_evaluation import evaluate_model_performance
 from src.api.services.drift_detection import detect_data_drift
@@ -33,6 +34,7 @@ def get_model_evaluation(
     corridor: str = Query("HORMUZ", description="Corridor ID: HORMUZ, BAB_EL_MANDEB, SUEZ, RED_SEA"),
     model_version: str = Query("1.0", description="Model version to evaluate"),
     split: str = Query("all_oos", description="Split to evaluate on: validation, test, or all_oos"),
+    auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])
 ):
     """
     Returns out-of-sample model evaluation metrics including ROC-AUC, PR-AUC, F1,
@@ -98,6 +100,7 @@ def get_model_evaluation(
 def get_data_drift(
     corridor: str = Query("HORMUZ", description="Corridor ID: HORMUZ, BAB_EL_MANDEB, SUEZ"),
     current_period: str = Query("all_oos", description="Current period split: validation, test, or all_oos"),
+    auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])
 ):
     """
     Returns feature-level data drift analysis between the training reference distribution
@@ -155,6 +158,7 @@ def get_data_drift(
 def get_model_health(
     corridor: str = Query("HORMUZ", description="Corridor ID: HORMUZ, BAB_EL_MANDEB, SUEZ"),
     model_version: str = Query("1.0", description="Model version to assess"),
+    auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])
 ):
     """
     Returns a transparent model health assessment combining performance, calibration ECE,
@@ -194,6 +198,7 @@ def get_prediction_history(
     start_date: Optional[str] = Query(None, description="Start date filter (YYYY-MM-DD)"),
     end_date: Optional[str] = Query(None, description="End date filter (YYYY-MM-DD)"),
     model_version: Optional[str] = Query(None, description="Filter by model version"),
+    auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])
 ):
     """
     Returns chronological prediction history records for a corridor from persistent SQLite store.
@@ -255,12 +260,12 @@ from src.api.services.retrain_recommendation import check_retrain_status
 from src.api.services.model_monitoring import get_production_monitoring_diagnostics
 
 @router.get("/models/registry", tags=["MLOps"])
-def get_full_registry():
+def get_full_registry(auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])):
     """Returns the entire model registry."""
     return _load_registry()
 
 @router.get("/models/{corridor}/versions", tags=["MLOps"])
-def get_corridor_versions(corridor: str):
+def get_corridor_versions(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])):
     """Returns historical versions and status logs for a corridor."""
     corridor_upper = corridor.upper()
     registry = _load_registry()
@@ -268,7 +273,7 @@ def get_corridor_versions(corridor: str):
     return sorted(versions, key=lambda x: x.get("created_at", ""), reverse=True)
 
 @router.get("/models/{corridor}/champion", tags=["MLOps"])
-def get_corridor_champion(corridor: str):
+def get_corridor_champion(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])):
     """Returns the current CHAMPION model for a corridor."""
     champ = get_champion_model(corridor.upper())
     if not champ:
@@ -276,7 +281,7 @@ def get_corridor_champion(corridor: str):
     return champ
 
 @router.get("/models/{corridor}/challenger", tags=["MLOps"])
-def get_corridor_challenger(corridor: str):
+def get_corridor_challenger(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])):
     """Returns active challenger (CANDIDATE/CHALLENGER) models for a corridor."""
     corridor_upper = corridor.upper()
     registry = _load_registry()
@@ -287,7 +292,7 @@ def get_corridor_challenger(corridor: str):
     return sorted(candidates, key=lambda x: x.get("created_at", ""), reverse=True)
 
 @router.get("/models/{corridor}/comparison", tags=["MLOps"])
-def get_champion_challenger_comparison(corridor: str):
+def get_champion_challenger_comparison(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])):
     """Compares metrics between the current Champion and the latest Challenger."""
     corridor_upper = corridor.upper()
     registry = _load_registry()
@@ -309,7 +314,7 @@ def get_champion_challenger_comparison(corridor: str):
     return {"corridor": corridor_upper, "champion": champion, "challenger": challenger}
 
 @router.get("/models/{corridor}/retrain-status", response_model=RetrainStatusResponse, tags=["MLOps"])
-def get_retrain_status(corridor: str):
+def get_retrain_status(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])):
     """Evaluates drift and performance to recommend model retraining."""
     corridor_upper = corridor.upper()
     if corridor_upper not in MODELED_CORRIDORS:
@@ -320,13 +325,31 @@ def get_retrain_status(corridor: str):
 def promote_challenger(
     corridor: str,
     req: PromotionRequest,
-    x_admin_role: Optional[str] = Header(None, alias="X-Admin-Role")
+    auth: dict = Security(authenticate_key, scopes=["MODEL_PROMOTE"])
 ):
     """Promotes a candidate challenger model to active production CHAMPION status."""
-    if x_admin_role != "admin":
-        raise HTTPException(status_code=403, detail="Administrative permission required. Invalid role.")
-        
+    from src.models.model_registry import get_champion_model
+    # Get previous champion
+    prev_champ = get_champion_model(corridor)
+    prev_champ_key = prev_champ.get("model_name", "None") + "_" + prev_champ.get("version", "None") if prev_champ else "None"
+
     success, detail = promote_challenger_to_champion(req.challenger_key, req.reason)
+    
+    # Audit log
+    from src.api.database import log_security_event
+    log_security_event(
+        action="MODEL_PROMOTED",
+        resource="MODEL",
+        status="SUCCESS" if success else "FAILURE",
+        actor_id=auth["actor_id"],
+        actor_role=auth["actor_role"],
+        resource_id=req.challenger_key,
+        corridor=corridor.upper(),
+        model_version=req.challenger_key,
+        reason=f"Promotion attempt for challenger {req.challenger_key}: {detail}",
+        metadata={"previous_champion": prev_champ_key}
+    )
+    
     if not success:
         raise HTTPException(status_code=400, detail=detail)
     return PromotionResponse(success=True, detail=detail)
@@ -335,19 +358,36 @@ def promote_challenger(
 def rollback_model(
     corridor: str,
     req: RollbackRequest,
-    x_admin_role: Optional[str] = Header(None, alias="X-Admin-Role")
+    auth: dict = Security(authenticate_key, scopes=["MODEL_ROLLBACK"])
 ):
     """Rolls back the active model to a previous valid version."""
-    if x_admin_role != "admin":
-        raise HTTPException(status_code=403, detail="Administrative permission required. Invalid role.")
-        
+    from src.models.model_registry import get_champion_model
+    prev_champ = get_champion_model(corridor)
+    prev_champ_key = prev_champ.get("model_name", "None") + "_" + prev_champ.get("version", "None") if prev_champ else "None"
+
     success, detail = rollback_to_version(corridor.upper(), req.rollback_key, req.reason)
+    
+    # Audit log
+    from src.api.database import log_security_event
+    log_security_event(
+        action="MODEL_ROLLEDBACK",
+        resource="MODEL",
+        status="SUCCESS" if success else "FAILURE",
+        actor_id=auth["actor_id"],
+        actor_role=auth["actor_role"],
+        resource_id=req.rollback_key,
+        corridor=corridor.upper(),
+        model_version=req.rollback_key,
+        reason=f"Rollback attempt to {req.rollback_key}: {detail}",
+        metadata={"previous_champion": prev_champ_key}
+    )
+    
     if not success:
         raise HTTPException(status_code=400, detail=detail)
     return RollbackResponse(success=True, detail=detail)
 
 @router.get("/models/{corridor}/model-card", tags=["MLOps"])
-def get_corridor_model_card(corridor: str):
+def get_corridor_model_card(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])):
     """Returns the markdown metadata file contents (Model Card) for the corridor."""
     corridor_upper = corridor.upper()
     card_path = os.path.join(r"D:\hackathon project\energy-resilience\docs\model-cards", f"{corridor_upper}.md")
@@ -360,7 +400,7 @@ def get_corridor_model_card(corridor: str):
         raise HTTPException(status_code=500, detail=f"Error reading model card: {e}")
 
 @router.get("/models/{corridor}/monitoring", tags=["MLOps"])
-def get_corridor_monitoring(corridor: str):
+def get_corridor_monitoring(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])):
     """Returns predictions tracking and distribution metrics for monitoring."""
     corridor_upper = corridor.upper()
     if corridor_upper not in MODELED_CORRIDORS:
@@ -368,7 +408,7 @@ def get_corridor_monitoring(corridor: str):
     return get_production_monitoring_diagnostics(corridor_upper)
 
 @router.get("/observability/metrics", tags=["MLOps"])
-def get_json_observability_metrics():
+def get_json_observability_metrics(auth: dict = Security(authenticate_key, scopes=["MODEL_VALIDATE"])):
     """Returns a parsed JSON summary of Prometheus metrics for the frontend observability tab."""
     from prometheus_client import REGISTRY
     metrics_data = {}

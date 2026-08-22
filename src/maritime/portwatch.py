@@ -43,16 +43,16 @@ def fetch_portwatch_data(portid, max_records=2000):
     url_parts[4] = urllib.parse.urlencode(params)
     final_url = urllib.parse.urlunparse(url_parts)
     
-    req = urllib.request.Request(final_url, headers=headers)
+    from src.api.secure_client import secure_urlopen
     timeout = int(settings.request_timeout)
     
     # Retry loop for resilience
     for attempt in range(3):
         try:
             print(f"Querying IMF PortWatch Live for {portid} (attempt {attempt+1}/3)...")
-            with urllib.request.urlopen(req, timeout=timeout) as response:
-                content = response.read().decode('utf-8')
-                return json.loads(content)
+            content_bytes = secure_urlopen(final_url, timeout=timeout, headers=headers)
+            content = content_bytes.decode('utf-8')
+            return json.loads(content)
         except Exception as e:
             print(f"IMF PortWatch attempt {attempt+1}/3 failed for {portid}: {e}")
             if attempt < 2:

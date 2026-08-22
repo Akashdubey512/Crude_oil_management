@@ -17,12 +17,12 @@ def fetch_ofac_file(url, filename):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
-    req = urllib.request.Request(url, headers=headers)
     try:
         print(f"Downloading OFAC file from {url}...")
-        with urllib.request.urlopen(req, timeout=20) as response:
-            with open(filepath, 'wb') as f:
-                f.write(response.read())
+        from src.api.secure_client import secure_urlopen
+        content_bytes = secure_urlopen(url, timeout=20.0, headers=headers)
+        with open(filepath, 'wb') as f:
+            f.write(content_bytes)
         print(f"  Successfully saved to {filepath}")
         return filepath
     except Exception as e:

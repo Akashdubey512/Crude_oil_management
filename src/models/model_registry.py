@@ -127,37 +127,55 @@ def register_model(
     _save_registry(registry)
     return key
 
+import threading
+REGISTRY_LOCK = threading.Lock()
+
 def update_model_status(
     key: str,
     status: str,
     reason: Optional[str] = None,
 ) -> None:
     """Updates the status and logs promotion/rejection/retirement events."""
-    registry = _load_registry()
-    if key not in registry:
-        raise ValueError(f"Model key '{key}' not found in registry.")
+    with REGISTRY_LOCK:
+        if os.path.exists(REGISTRY_PATH):
+            try:
+                with open(REGISTRY_PATH, "r") as f:
+                    registry = json.load(f)
+            except Exception:
+                registry = {}
+        else:
+            registry = {}
+
+        if key not in registry:
+            raise ValueError(f"Model key '{key}' not found in registry.")
+            
+        entry = registry[key]
         
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    entry = registry[key]
-    entry["status"] = status
-    entry["updated_at"] = ts
-    
-    if status == "CHAMPION":
-        entry["promoted_at"] = ts
-        entry["promotion_reason"] = reason
-        # Retire any other CHAMPION for this corridor
-        corridor = entry["corridor_id"]
-        for other_key, other_entry in registry.items():
-            if other_key != key and other_entry.get("corridor_id") == corridor and other_entry.get("status") == "CHAMPION":
-                other_entry["status"] = "RETIRED"
-                other_entry["retired_at"] = ts
-                other_entry["updated_at"] = ts
-    elif status == "REJECTED":
-        entry["rejection_reason"] = reason
-    elif status == "RETIRED":
-        entry["retired_at"] = ts
+        # Guard: Prevent promoting a model that is currently REJECTED
+        if status == "CHAMPION" and entry.get("status") == "REJECTED":
+            raise ValueError(f"Promotion rejected: Model '{key}' is in REJECTED status.")
+            
+        ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        entry["status"] = status
+        entry["updated_at"] = ts
         
-    _save_registry(registry)
+        if status == "CHAMPION":
+            entry["promoted_at"] = ts
+            entry["promotion_reason"] = reason
+            # Retire any other CHAMPION for this corridor
+            corridor = entry["corridor_id"]
+            for other_key, other_entry in registry.items():
+                if other_key != key and other_entry.get("corridor_id") == corridor and other_entry.get("status") == "CHAMPION":
+                    other_entry["status"] = "RETIRED"
+                    other_entry["retired_at"] = ts
+                    other_entry["updated_at"] = ts
+        elif status == "REJECTED":
+            entry["rejection_reason"] = reason
+        elif status == "RETIRED":
+            entry["retired_at"] = ts
+            
+        with open(REGISTRY_PATH, "w") as f:
+            json.dump(registry, f, indent=4)
 
 def get_champion_model(corridor_id: str) -> dict:
     """Returns the CHAMPION registry entry for a corridor."""

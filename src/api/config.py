@@ -1,5 +1,5 @@
 """
-Centralized Configuration & Startup Validation System — Phase 12
+Centralized Configuration & Startup Validation System — Phase 13
 """
 
 import os
@@ -28,6 +28,9 @@ class APIConfig(BaseModel):
     gdelt_base_url: str = Field(default="https://api.gdeltproject.org/api/v2")
     portwatch_base_url: str = Field(default="https://portwatch.imf.org/api")
     gfw_base_url: str = Field(default="https://gateway.gfw.org/v2")
+    
+    # Phase 13: Secret Hashing & Keys config
+    api_key_hash_secret: str = Field(default="")
 
     @field_validator("environment")
     @classmethod
@@ -75,18 +78,24 @@ def load_config() -> APIConfig:
         "gdelt_base_url": os.getenv("GDELT_BASE_URL", "https://api.gdeltproject.org/api/v2"),
         "portwatch_base_url": os.getenv("PORTWATCH_BASE_URL", "https://portwatch.imf.org/api"),
         "gfw_base_url": os.getenv("GFW_BASE_URL", "https://gateway.gfw.org/v2"),
+        "api_key_hash_secret": os.getenv("API_KEY_HASH_SECRET", ""),
     }
     
     config = APIConfig(**settings)
     
-    # Startup validation checks for production
+    # Startup validation checks for production (Fail-Fast Gate)
     if config.environment == "production":
-        if not config.fred_api_key:
-            # We don't fail immediately to allow offline production demos, but raise warning / require it
-            pass
-        if not config.database_url:
-            # Warn if using default sqlite in production
-            pass
+        # 1. Database URL must be configured
+        if not config.database_url or config.database_url.strip() == "":
+            raise ValueError("Production configuration error: DATABASE_URL must be set in production mode.")
+            
+        # 2. Secret Key must be set
+        if not config.api_key_hash_secret or len(config.api_key_hash_secret.strip()) < 16:
+            raise ValueError("Production configuration error: API_KEY_HASH_SECRET must be set and contain at least 16 characters.")
+            
+        # 3. CORS origins cannot be wildcards
+        if not config.cors_origins or "*" in config.cors_origins:
+            raise ValueError("Production configuration error: CORS_ORIGINS cannot contain wildcard '*' in production mode.")
             
     return config
 
