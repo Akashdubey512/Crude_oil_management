@@ -584,23 +584,29 @@ export default function GlobeMap({ risks, onSelectCorridor, selectedCorridor }: 
           )}
 
           {/* Quick selector pills */}
-          <div className="flex items-center gap-1 ml-2">
+          <div className="flex items-center gap-1.5 ml-2">
             {CHOKEPOINTS.map((cp) => {
               const risk = getRiskForCorridor(cp.id);
               const isSel = selectedCorridor === cp.id;
+              const label = cp.id === 'HORMUZ' ? 'Hormuz'
+                : cp.id === 'BAB_EL_MANDEB' ? 'Bab-el-Mandeb'
+                : cp.id === 'SUEZ' ? 'Suez'
+                : 'Red Sea';
               return (
                 <button
                   key={cp.id}
                   onClick={() => { setSelectedRoute(null); onSelectCorridor(cp.id); }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase transition-all cursor-pointer border font-space"
+                  title={cp.name || label}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold tracking-wide transition-all duration-150 cursor-pointer border font-space whitespace-nowrap"
                   style={{
-                    backgroundColor: isSel ? risk.bg : 'rgba(15,28,48,0.7)',
-                    borderColor: isSel ? risk.color + '80' : 'rgba(51,65,85,0.7)',
-                    color: isSel ? risk.color : '#64748b',
+                    backgroundColor: isSel ? risk.bg : 'rgba(15,28,48,0.85)',
+                    borderColor: isSel ? risk.color : 'rgba(71,85,105,0.6)',
+                    color: isSel ? risk.color : '#94a3b8',
+                    boxShadow: isSel ? `0 0 8px ${risk.color}40` : 'none',
                   }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: risk.color }} />
-                  {cp.id === 'HORMUZ' ? 'HRZ' : cp.id === 'BAB_EL_MANDEB' ? 'BEM' : cp.id === 'SUEZ' ? 'SUZ' : 'RED'}
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: risk.color }} />
+                  {label}
                 </button>
               );
             })}

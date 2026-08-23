@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sliders, RefreshCw, AlertTriangle, HelpCircle, ArrowRight } from 'lucide-react';
+import { Sliders, RefreshCw, AlertTriangle, HelpCircle, ArrowRight, Shield } from 'lucide-react';
 import { api } from '../../api/client';
 import type { Corridor, ScenarioSimulationResponse } from '../../types';
+import ReserveDrawdownChart from '../charts/ReserveDrawdownChart';
 
 interface ScenarioSimulatorProps {
   corridors: Corridor[];
@@ -26,6 +27,8 @@ export default function ScenarioSimulator({ corridors }: ScenarioSimulatorProps)
   const [simPrice, setSimPrice] = useState<number>(1.0);
   const [simVol, setSimVol] = useState<number>(1.0);
   const [simInfra, setSimInfra] = useState<boolean>(false);
+  const [simSprBuffer, setSimSprBuffer] = useState<number>(9.5);
+  const [simStrategy, setSimStrategy] = useState<string>('front_loaded');
   const [simResult, setSimResult] = useState<ScenarioSimulationResponse | null>(null);
   const [simulating, setSimulating] = useState<boolean>(false);
   const [simError, setSimError] = useState<string | null>(null);
@@ -41,6 +44,8 @@ export default function ScenarioSimulator({ corridors }: ScenarioSimulatorProps)
         brent_price_multiplier: simPrice,
         brent_volatility_multiplier: simVol,
         infrastructure_disruption: simInfra,
+        spr_buffer_days: simSprBuffer,
+        drawdown_strategy: simStrategy,
       });
       setSimResult(res);
     } catch (err: any) {
@@ -177,6 +182,41 @@ export default function ScenarioSimulator({ corridors }: ScenarioSimulatorProps)
             />
           </div>
 
+          {/* Strategic Petroleum Reserve (SPR) Controls */}
+          <div className="pt-3 border-t space-y-3" style={{ borderColor: 'var(--border-default)' }}>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider font-jakarta block" style={{ color: 'var(--text-muted)' }}>
+                SPR National Buffer (Days)
+              </span>
+              <span className="text-xs font-bold font-space text-emerald-400">
+                {simSprBuffer.toFixed(1)} days
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1.0}
+              max={30.0}
+              step={0.5}
+              value={simSprBuffer}
+              onChange={(e) => setSimSprBuffer(parseFloat(e.target.value))}
+              className="theme-range w-full"
+            />
+
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase tracking-wider font-jakarta block" style={{ color: 'var(--text-muted)' }}>
+                Drawdown Strategy
+              </label>
+              <select
+                value={simStrategy}
+                onChange={(e) => setSimStrategy(e.target.value)}
+                className="theme-select w-full"
+              >
+                <option value="front_loaded">Front-Loaded (Blunt Initial Shock)</option>
+                <option value="smoothed">Smoothed (Uniform Daily Release)</option>
+              </select>
+            </div>
+          </div>
+
           {/* Execute Button */}
           <button
             onClick={handleRunSimulation}
@@ -218,6 +258,8 @@ export default function ScenarioSimulator({ corridors }: ScenarioSimulatorProps)
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4"
             >
+              {/* Strategic Reserve Drawdown Chart Component */}
+              <ReserveDrawdownChart drawdownSchedule={simResult.drawdown_schedule || null} />
               {/* Comparison cards */}
               <div className="grid grid-cols-3 gap-3">
 
@@ -276,6 +318,60 @@ export default function ScenarioSimulator({ corridors }: ScenarioSimulatorProps)
                   </span>
                 </div>
               </div>
+
+              {/* Cascading Refining -> Price -> GDP Economic Impact Card */}
+              {simResult.economic_impact && (
+                <div className="navy-card p-4 space-y-3 font-geist">
+                  <div className="flex justify-between items-center pb-2 border-b" style={{ borderColor: 'var(--border-default)' }}>
+                    <span className="text-[10px] font-bold uppercase tracking-wider font-space text-amber-400">
+                      Cascading Downstream Impact: Refining → Price → GDP
+                    </span>
+                    <span className="text-[9px] font-mono uppercase text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                      RBI / IMF ELASTICITY
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="p-2.5 rounded-lg border bg-[#060b13] border-slate-800 space-y-1">
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block font-jakarta">REFINING DROP</span>
+                      <span className="text-sm font-bold text-amber-400 font-space block">
+                        -{simResult.economic_impact.refining_throughput_drop_pct.toFixed(1)}%
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg border bg-[#060b13] border-slate-800 space-y-1">
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block font-jakarta">DAILY COST DELTA</span>
+                      <span className="text-sm font-bold text-blue-400 font-space block">
+                        +${simResult.economic_impact.daily_import_cost_delta_usd_m.toFixed(1)}M /day
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg border bg-[#060b13] border-slate-800 space-y-1">
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block font-jakarta">ANNUAL IMPORT BILL</span>
+                      <span className="text-sm font-bold text-rose-400 font-space block">
+                        +${simResult.economic_impact.annualized_import_bill_delta_usd_b.toFixed(2)}B /yr
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg border bg-[#060b13] border-slate-800 space-y-1">
+                      <span className="text-[9px] uppercase font-bold text-slate-400 block font-jakarta">EST. GDP IMPACT</span>
+                      <span className="text-sm font-bold text-rose-500 font-space block">
+                        {simResult.economic_impact.estimated_gdp_growth_impact_pct.toFixed(3)} pp
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Formula and Rationale Tooltip Banner */}
+                  <div className="p-2.5 rounded-lg border text-[10px] space-y-1 bg-slate-950/60 border-slate-800 text-slate-400 font-inter">
+                    <p className="font-mono text-slate-300">
+                      📐 <strong className="text-slate-200">Elasticity Formula:</strong> {simResult.economic_impact.elasticity_formula}
+                    </p>
+                    <p className="italic text-slate-400 pt-0.5 border-t border-slate-800/80">
+                      ℹ️ {simResult.economic_impact.methodology_note}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Recommendation */}
               <div className="navy-card p-4 space-y-2.5">

@@ -34,7 +34,7 @@ To enable live AIS vessel tracking:
    ```
    GFW_API_TOKEN=your_actual_token_here
    ```
-3. The AIS client in [`src/maritime/ais_client.py`](file:///D:/hackathon%20project/energy-resilience/src/maritime/ais_client.py) reads `os.getenv("GFW_API_TOKEN")` at startup.
+3. The AIS client in [`src/maritime/ais_client.py`](src/maritime/ais_client.py) reads `os.getenv("GFW_API_TOKEN")` at startup.
 4. Restart the API server to pick up the new token.
 5. The `/api/data-status` endpoint will then reflect `status: FRESH` for the GFW AIS source.
 

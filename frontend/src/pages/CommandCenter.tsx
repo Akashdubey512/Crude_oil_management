@@ -23,6 +23,8 @@ import ModelCenter from '../components/models/ModelCenter';
 import GovernanceCenter from '../components/governance/GovernanceCenter';
 import ObservabilityCenter from '../components/observability/ObservabilityCenter';
 import SecurityCenter from '../components/security/SecurityCenter';
+import SupplierRiskExposureCard from '../components/corridor/SupplierRiskExposureCard';
+import AskAnalystChat from '../components/assistant/AskAnalystChat';
 
 // Custom API imports for tab-specific fetches
 import { api, setActiveKey, getActiveKey } from '../api/client';
@@ -368,6 +370,12 @@ export default function CommandCenter({
                       >
                         <span>Click a sector above or select nodes on the map layer to inspect SHAP diagnostics.</span>
                       </div>
+                    </div>
+
+                    {/* Supplier-Country Exposure Risk Card Overlay & Ask Analyst GenAI Chat */}
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                      <SupplierRiskExposureCard />
+                      <AskAnalystChat />
                     </div>
                   </div>
 

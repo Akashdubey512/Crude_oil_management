@@ -22,6 +22,8 @@ def simulate_scenario(request: ScenarioSimulationRequest):
             brent_price_multiplier=request.brent_price_multiplier,
             brent_volatility_multiplier=request.brent_volatility_multiplier,
             infrastructure_disruption=request.infrastructure_disruption,
+            spr_buffer_days=request.spr_buffer_days,
+            drawdown_strategy=request.drawdown_strategy,
         )
         return res
     except ValueError as e:

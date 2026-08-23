@@ -332,21 +332,23 @@ def get_champion_challenger_comparison(corridor: str, auth: dict = Security(auth
     registry = _load_registry()
     
     models = sorted(
-        [v for v in registry.values() if v.get("corridor_id") == corridor_upper],
-        key=lambda x: x.get("created_at", "") or x.get("registered_at", ""),
+        [(k, v) for k, v in registry.items() if v.get("corridor_id") == corridor_upper],
+        key=lambda item: item[1].get("created_at", "") or item[1].get("registered_at", ""),
         reverse=True
     )
     
     champion = None
     challenger = None
     
-    for m in models:
+    for k, m in models:
         st = m.get("status")
         name = m.get("model_name")
+        m_dict = dict(m)
+        m_dict["registry_key"] = k
         if st == "CHAMPION" or (not champion and name == "XGBoost"):
-            champion = m
+            champion = m_dict
         elif st in ["CANDIDATE", "CHALLENGER", "REJECTED"] or (not challenger and name in ["RandomForest", "LightGBM", "LogisticRegression"]):
-            challenger = m
+            challenger = m_dict
 
     def enrich_model_metrics(m: Optional[dict]):
         if not m:
@@ -390,7 +392,7 @@ def promote_challenger(
     prev_champ = get_champion_model(corridor)
     prev_champ_key = prev_champ.get("model_name", "None") + "_" + prev_champ.get("version", "None") if prev_champ else "None"
 
-    success, detail = promote_challenger_to_champion(req.challenger_key, req.reason)
+    success, detail = promote_challenger_to_champion(req.challenger_key, req.reason, corridor=corridor.upper())
     
     # Audit log
     from src.api.database import log_security_event

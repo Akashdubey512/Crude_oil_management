@@ -7,7 +7,7 @@ This audit details the investigation and resolution of target leakage in the cor
 ## 1. Executive Summary
 - **Issue Detected**: A test ROC-AUC score of `1.000` was flagged as a symptom of look-ahead target leakage.
 - **Root Cause**: The model features list included same-day (`t`) traffic counts, standard deviation scores, anomaly flags (`anomaly_type_drop`), and daily GDELT count variables. Because the target label (`is_disrupted`) for day `t` is defined using these same-day anomalies, the classifiers were learning simple same-day mapping rules instead of predictive relationships.
-- **Resolution**: Implemented a strict **1-day lag** (`shift(1)`) on all 52 training feature columns in [`src/features/feature_pipeline.py`](file:///D:/hackathon%20project/energy-resilience/src/features/feature_pipeline.py) and matching online inference queries in [`src/risk/corridor_risk.py`](file:///D:/hackathon%20project/energy-resilience/src/risk/corridor_risk.py). Predictions for day `t` now depend purely on observations from day `t-1` and earlier.
+- **Resolution**: Implemented a strict **1-day lag** (`shift(1)`) on all 52 training feature columns in [`src/features/feature_pipeline.py`](src/features/feature_pipeline.py) and matching online inference queries in [`src/risk/corridor_risk.py`](src/risk/corridor_risk.py). Predictions for day `t` now depend purely on observations from day `t-1` and earlier.
 - **Result**: Models were successfully retrained. Performance metrics returned to realistic, generalizable levels (e.g., Suez canal XGBoost test ROC-AUC of `0.8000`, Bab-el-Mandeb test ROC-AUC of `0.7950`).
 
 ---

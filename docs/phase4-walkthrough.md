@@ -27,23 +27,23 @@ $env:PYTHONPATH="D:\hackathon project\energy-resilience"; & "C:\Users\ss146\mini
 ## 2. Key Artifacts Created
 
 ### Feature Engineering
-- [`src/features/geopolitical_features.py`](file:///D:/hackathon%20project/energy-resilience/src/features/geopolitical_features.py): GPR indices and event count rolling features.
-- [`src/features/maritime_features.py`](file:///D:/hackathon%20project/energy-resilience/src/features/maritime_features.py): PortWatch daily transit rolling averages, z-scores, and decline rates.
-- [`src/features/energy_features.py`](file:///D:/hackathon%20project/energy-resilience/src/features/energy_features.py): Brent crude log returns and volatility, and lagged monthly PPAC indicators.
-- [`src/features/target_builder.py`](file:///D:/hackathon%20project/energy-resilience/src/features/target_builder.py): Disruption target builder combining traffic drops and event windows.
-- [`src/features/feature_pipeline.py`](file:///D:/hackathon%20project/energy-resilience/src/features/feature_pipeline.py): Pipeline orchestrator and pre-training QC checks.
+- [`src/features/geopolitical_features.py`](src/features/geopolitical_features.py): GPR indices and event count rolling features.
+- [`src/features/maritime_features.py`](src/features/maritime_features.py): PortWatch daily transit rolling averages, z-scores, and decline rates.
+- [`src/features/energy_features.py`](src/features/energy_features.py): Brent crude log returns and volatility, and lagged monthly PPAC indicators.
+- [`src/features/target_builder.py`](src/features/target_builder.py): Disruption target builder combining traffic drops and event windows.
+- [`src/features/feature_pipeline.py`](src/features/feature_pipeline.py): Pipeline orchestrator and pre-training QC checks.
 
 ### Modeling & Explainability
-- [`src/models/model_registry.py`](file:///D:/hackathon%20project/energy-resilience/src/models/model_registry.py): Versioning and training runs log.
-- [`src/models/train_risk_models.py`](file:///D:/hackathon%20project/energy-resilience/src/models/train_risk_models.py): Trains LR, RF, and XGBoost models.
-- [`src/models/evaluate_models.py`](file:///D:/hackathon%20project/energy-resilience/src/models/evaluate_models.py): Computes precision, recall, AUC, Brier scores.
-- [`src/models/explainability.py`](file:///D:/hackathon%20project/energy-resilience/src/models/explainability.py): SHAP tree explainers.
-- [`src/models/backtest.py`](file:///D:/hackathon%20project/energy-resilience/src/models/backtest.py): Simulates chronological historical warnings.
+- [`src/models/model_registry.py`](src/models/model_registry.py): Versioning and training runs log.
+- [`src/models/train_risk_models.py`](src/models/train_risk_models.py): Trains LR, RF, and XGBoost models.
+- [`src/models/evaluate_models.py`](src/models/evaluate_models.py): Computes precision, recall, AUC, Brier scores.
+- [`src/models/explainability.py`](src/models/explainability.py): SHAP tree explainers.
+- [`src/models/backtest.py`](src/models/backtest.py): Simulates chronological historical warnings.
 
 ### Risk Engine & API Services
-- [`src/risk/corridor_risk.py`](file:///D:/hackathon%20project/energy-resilience/src/risk/corridor_risk.py): Risk probability and threshold band classification.
-- [`src/risk/risk_decomposition.py`](file:///D:/hackathon%20project/energy-resilience/src/risk/risk_decomposition.py): Geopolitical, sanctions, maritime, market, and supply vectors.
-- [`src/risk/service.py`](file:///D:/hackathon%20project/energy-resilience/src/risk/service.py): FastAPI query services.
+- [`src/risk/corridor_risk.py`](src/risk/corridor_risk.py): Risk probability and threshold band classification.
+- [`src/risk/risk_decomposition.py`](src/risk/risk_decomposition.py): Geopolitical, sanctions, maritime, market, and supply vectors.
+- [`src/risk/service.py`](src/risk/service.py): FastAPI query services.
 
 ### Test Suite
-- [`tests/test_phase4.py`](file:///D:/hackathon%20project/energy-resilience/tests/test_phase4.py): Chronological split, target builder, explainers, registry, and service tests.
+- [`tests/test_phase4.py`](tests/test_phase4.py): Chronological split, target builder, explainers, registry, and service tests.

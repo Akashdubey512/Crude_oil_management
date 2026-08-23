@@ -35,7 +35,7 @@ frontend/
 
 ## 2. API Integration Layer
 
-The frontend client in [`src/api/client.ts`](file:///D:/hackathon%20project/energy-resilience/frontend/src/api/client.ts) handles all API calls strictly against the running FastAPI backend endpoints (`http://127.0.0.1:8000`). It maps data models defined in [`src/types/index.ts`](file:///D:/hackathon%20project/energy-resilience/frontend/src/types/index.ts), which correspond 1-to-1 with Pydantic backend models:
+The frontend client in [`src/api/client.ts`](frontend/src/api/client.ts) handles all API calls strictly against the running FastAPI backend endpoints (`http://127.0.0.1:8000`). It maps data models defined in [`src/types/index.ts`](frontend/src/types/index.ts), which correspond 1-to-1 with Pydantic backend models:
 
 - `api.getHealth()` -> `/health`
 - `api.getCorridors()` -> `/api/corridors`

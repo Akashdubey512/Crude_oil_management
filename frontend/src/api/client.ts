@@ -116,6 +116,20 @@ export const api = {
 
   getComparison: () => request<CorridorComparisonResponse>('/api/risk/comparison'),
 
+  getSupplierRiskExposures: () => request<import('../types').SupplierExposureResponse>('/api/risk/suppliers'),
+
+  getExecutiveBriefing: (corridorId: string, forceRefresh = false) =>
+    request<import('../types').ExecutiveBriefingResponse>(
+      `/api/corridors/${corridorId.toUpperCase()}/briefing${forceRefresh ? '?force_refresh=true' : ''}`,
+      { method: 'POST' }
+    ),
+
+  postAnalystQuery: (query: string) =>
+    request<import('../types').AnalystQueryResponse>('/api/assistant/query', {
+      method: 'POST',
+      body: JSON.stringify({ query }),
+    }),
+
   simulateScenario: (req: ScenarioSimulationRequest) =>
     request<ScenarioSimulationResponse>('/api/scenarios/simulate', {
       method: 'POST',

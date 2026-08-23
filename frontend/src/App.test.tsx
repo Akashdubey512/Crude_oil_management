@@ -154,14 +154,61 @@ describe('Phase 14 Premium Maritime Command Center Frontend Tests', { timeout: 1
       features_used: ['gpr_index'], limitations: [], metrics: { validation: {}, test: {} }
     });
     
-    // Phase 8 / 9 / 11 / 12 / 13 mocks
+    // Phase 8 / 9 / 11 / 12 / 13 / 18 mocks
     vi.spyOn(api, 'getComparison').mockResolvedValue({ comparison_date: '2026-08-22', items: [] });
+    vi.spyOn(api, 'getSupplierRiskExposures').mockResolvedValue({
+      computed_at: '2026-08-22T00:00:00Z',
+      suppliers: [
+        { supplier_country: 'Iraq', country_code: 'IQ', import_share_pct: 21.0, primary_corridor: 'HORMUZ', exposure_score: 25.0, risk_level: 'LOW', corridor_weights: { HORMUZ: 1.0 } }
+      ],
+      methodology: 'Modeled estimate derived from corridor risk vector outputs.'
+    });
+    vi.spyOn(api, 'getExecutiveBriefing').mockResolvedValue({
+      corridor_id: 'HORMUZ',
+      corridor_name: 'Strait of Hormuz',
+      briefing_text: 'EXECUTIVE BRIEF — STRAIT OF HORMUZ: Disruption risk is LOW at 1.7% probability.',
+      llm_generated: false,
+      llm_status: 'disabled_fallback',
+      disclaimer: 'AI-phrased executive summary based strictly on live XGBoost model predictions.',
+      context: {},
+      generated_at: '2026-08-22T00:00:00Z'
+    });
+    vi.spyOn(api, 'postAnalystQuery').mockResolvedValue({
+      query: 'What is Hormuz risk?',
+      intent: 'CORRIDOR_LOOKUP',
+      target_corridor: 'HORMUZ',
+      answer: 'Hormuz risk is LOW with 1.7% probability.',
+      llm_generated: false,
+      source_data: { corridor: 'HORMUZ', risk_level: 'LOW' },
+      generated_at: '2026-08-22T00:00:00Z'
+    });
     vi.spyOn(api, 'getRiskHistory').mockResolvedValue([]);
     vi.spyOn(api, 'simulateScenario').mockResolvedValue({
       corridor_id: 'HORMUZ', baseline_date: '2026-08-22', baseline_probability: 0.017,
       baseline_risk_level: 'LOW', simulated_probability: 0.45, simulated_risk_level: 'HIGH',
       probability_delta: 0.433, feature_mutations: {}, explanation: 'Disruption simulation statement',
-      recommendation: 'Deploy reserves'
+      recommendation: 'Deploy reserves',
+      drawdown_schedule: {
+        strategy: 'front_loaded',
+        predicted_supply_gap_mbpd: 1.2,
+        disruption_duration_days: 10,
+        spr_buffer_days: 9.5,
+        total_recommended_release_mbpd: 12.0,
+        buffer_exhausted: false,
+        warning_message: null,
+        schedule: [
+          { day: 1, recommended_release_mbpd: 2.1, cumulative_released_mbpd: 2.1, remaining_spr_buffer_days: 9.0 }
+        ],
+        heuristic_note: 'Heuristic planning tool for scenario decision support; not a globally-optimal mathematical solution.'
+      },
+      economic_impact: {
+        daily_import_cost_delta_usd_m: 45.2,
+        annualized_import_bill_delta_usd_b: 16.5,
+        estimated_gdp_growth_impact_pct: -0.325,
+        refining_throughput_drop_pct: 20.0,
+        elasticity_formula: 'GDP Impact (pp) = -[(Annualized Import Bill Delta $B / $3,750B Nominal GDP) * 100] - (Refining Drop % * 0.015)',
+        methodology_note: 'Illustrative economic impact estimate based on RBI/IMF elasticity parameters.'
+      }
     });
     vi.spyOn(api, 'getModelHealth').mockResolvedValue({ status: 'GOOD', recommendations: [] } as any);
     vi.spyOn(api, 'getModelEvaluation').mockResolvedValue({
@@ -334,7 +381,7 @@ describe('Phase 14 Premium Maritime Command Center Frontend Tests', { timeout: 1
     });
   });
 
-  it('renders feature mutations delta table rows', async () => {
+  it('renders feature mutations delta table rows and reserve drawdown schedule', async () => {
     await enterCommandCenter();
     fireEvent.click(screen.getByText('Scenarios').closest('button')!);
     await waitFor(() => {
@@ -343,6 +390,8 @@ describe('Phase 14 Premium Maritime Command Center Frontend Tests', { timeout: 1
     fireEvent.click(screen.getByRole('button', { name: /EXECUTE WHAT-IF SIMULATION/i }));
     await waitFor(() => {
       expect(screen.getByText(/Feature Mutations/i)).toBeDefined();
+      expect(screen.getByText(/Strategic Reserve \(SPR\) Drawdown Schedule/i)).toBeDefined();
+      expect(screen.getByText(/Cascading Downstream Impact: Refining → Price → GDP/i)).toBeDefined();
     });
   });
 

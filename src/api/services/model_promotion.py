@@ -6,25 +6,66 @@ Handles Champion vs Challenger evaluations, promotion policy rules, and safe rol
 import os
 import pickle
 import logging
-from typing import Tuple, Dict, Any
+from typing import Tuple, Dict, Any, Optional
 from src.models.model_registry import _load_registry, update_model_status, get_champion_model
 
 logger = logging.getLogger(__name__)
 
-def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
+def resolve_registry_key(registry: dict, key_or_version: str, corridor: Optional[str] = None) -> Optional[str]:
+    """
+    Intelligently resolves a model key, version, or algorithm name to an exact registry key.
+    """
+    if not key_or_version:
+        return None
+
+    if key_or_version in registry:
+        return key_or_version
+
+    target_corridor = corridor.upper() if corridor else None
+
+    # Step 1: Match by version + corridor among CANDIDATE / CHALLENGER models
+    for k, v in registry.items():
+        v_corridor = v.get("corridor_id", "").upper()
+        if target_corridor and v_corridor != target_corridor:
+            continue
+        v_version = str(v.get("version", ""))
+        v_name = str(v.get("model_name", ""))
+        status = v.get("status")
+        if (v_version == key_or_version or v_name == key_or_version) and status in ["CANDIDATE", "CHALLENGER"]:
+            return k
+
+    # Step 2: Match by version + corridor regardless of status
+    for k, v in registry.items():
+        v_corridor = v.get("corridor_id", "").upper()
+        if target_corridor and v_corridor != target_corridor:
+            continue
+        v_version = str(v.get("version", ""))
+        v_name = str(v.get("model_name", ""))
+        if v_version == key_or_version or v_name == key_or_version:
+            return k
+
+    # Step 3: Match suffix or substring in key
+    for k in registry.keys():
+        if k.endswith(f"__{key_or_version}") or key_or_version in k:
+            return k
+
+    return None
+
+def evaluate_promotion_policy(challenger_key: str, corridor: Optional[str] = None) -> Tuple[bool, str]:
     """
     Evaluates a candidate model against the strict MLOps promotion policy.
     Returns (passes, reason).
     """
     registry = _load_registry()
-    if challenger_key not in registry:
+    actual_key = resolve_registry_key(registry, challenger_key, corridor)
+    if not actual_key or actual_key not in registry:
         return False, f"Challenger model key '{challenger_key}' not found in registry."
 
-    challenger = registry[challenger_key]
-    corridor = challenger["corridor_id"]
+    challenger = registry[actual_key]
+    corridor_id = challenger["corridor_id"]
     
     from src.api.metrics import ML_CHALLENGER_EVALUATIONS
-    ML_CHALLENGER_EVALUATIONS.labels(corridor=corridor).inc()
+    ML_CHALLENGER_EVALUATIONS.labels(corridor=corridor_id).inc()
     metrics = challenger.get("metrics", {})
     calibration = challenger.get("calibration_metrics", {})
     drift = challenger.get("drift_metrics", {})
@@ -33,11 +74,8 @@ def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
     # Rule 1: Required metrics are valid (PR-AUC, ROC-AUC, Brier score must exist)
     required_metrics = ["roc_auc", "pr_auc", "brier_score", "f1"]
     for m in required_metrics:
-        # For splits with zero positive samples, some metrics can be None.
-        # But for model registration, validation split must have had positives.
         val_m = metrics.get("validation", {})
         if val_m.get(m) is None:
-            # Check if this is RED_SEA or general split
             pass
 
     # Rule 2: ECE calibration is acceptable
@@ -46,7 +84,6 @@ def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
         return False, f"Rejection: Calibration is unacceptable (ECE={ece:.4f} >= 0.15)."
 
     # Rule 3: Critical feature drift is not present in challenger
-    # Check if any feature drift score (PSI) exceeds a severe threshold (e.g. 0.50)
     for feat_name, psi_val in drift.get("psi_scores", {}).items():
         if psi_val > 0.50:
             return False, f"Rejection: Severe data drift detected in feature '{feat_name}' (PSI={psi_val:.4f} > 0.50)."
@@ -56,7 +93,7 @@ def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
         return False, "Rejection: Target leakage detected."
 
     # Compare against current CHAMPION (if one exists)
-    champion = get_champion_model(corridor)
+    champion = get_champion_model(corridor_id)
     if champion:
         champ_val_metrics = champion.get("metrics", {}).get("validation", {})
         chall_val_metrics = metrics.get("validation", {})
@@ -85,22 +122,23 @@ def evaluate_promotion_policy(challenger_key: str) -> Tuple[bool, str]:
 
     return True, "Challenger meets all policy criteria for promotion."
 
-def promote_challenger_to_champion(challenger_key: str, reason: str) -> Tuple[bool, str]:
+def promote_challenger_to_champion(challenger_key: str, reason: str, corridor: Optional[str] = None) -> Tuple[bool, str]:
     """
     Safely validates and promotes a challenger model to CHAMPION status.
     Ensures promotion is atomic and safe.
     """
     registry = _load_registry()
-    if challenger_key not in registry:
+    actual_key = resolve_registry_key(registry, challenger_key, corridor)
+    if not actual_key or actual_key not in registry:
         return False, f"Challenger key '{challenger_key}' not found in registry."
 
-    challenger = registry[challenger_key]
+    challenger = registry[actual_key]
     artifact_path = challenger.get("artifact_path")
-    corridor = challenger.get("corridor_id")
+    corridor_id = challenger.get("corridor_id")
 
     # 0. Fast-fail: block promotion if model is already REJECTED
     if challenger.get("status") == "REJECTED":
-        return False, f"Promotion blocked: Model '{challenger_key}' has status REJECTED and cannot be promoted."
+        return False, f"Promotion blocked: Model '{actual_key}' has status REJECTED and cannot be promoted."
 
     # 1. Verify artifact exists
     if not os.path.exists(artifact_path):
@@ -121,21 +159,21 @@ def promote_challenger_to_champion(challenger_key: str, reason: str) -> Tuple[bo
         return False, f"Promotion failed: Feature counts mismatch. Expected {len(FEATURE_COLS)} features."
 
     # 4. Check policy rules
-    passes_policy, policy_reason = evaluate_promotion_policy(challenger_key)
+    passes_policy, policy_reason = evaluate_promotion_policy(actual_key, corridor_id)
     from src.api.metrics import ML_PROMOTION_ATTEMPTS
     if not passes_policy:
-        update_model_status(challenger_key, "REJECTED", reason=policy_reason)
-        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor, status="REJECTED").inc()
+        update_model_status(actual_key, "REJECTED", reason=policy_reason)
+        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor_id, status="REJECTED").inc()
         return False, f"Promotion blocked by policy: {policy_reason}"
 
     # 5. Perform atomic status update
     try:
-        update_model_status(challenger_key, "CHAMPION", reason=reason)
-        logger.info(f"Model {challenger_key} promoted to CHAMPION for {corridor}.")
-        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor, status="SUCCESS").inc()
+        update_model_status(actual_key, "CHAMPION", reason=reason)
+        logger.info(f"Model {actual_key} promoted to CHAMPION for {corridor_id}.")
+        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor_id, status="SUCCESS").inc()
         return True, "Model successfully promoted to CHAMPION."
     except Exception as e:
-        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor, status="FAILED").inc()
+        ML_PROMOTION_ATTEMPTS.labels(corridor=corridor_id, status="FAILED").inc()
         return False, f"Promotion transaction failed: {e}"
 
 def rollback_to_version(corridor_id: str, rollback_key: str, reason: str) -> Tuple[bool, str]:
@@ -143,10 +181,11 @@ def rollback_to_version(corridor_id: str, rollback_key: str, reason: str) -> Tup
     Safely rolls back the corridor's CHAMPION model to a previously validated model version.
     """
     registry = _load_registry()
-    if rollback_key not in registry:
+    actual_key = resolve_registry_key(registry, rollback_key, corridor_id)
+    if not actual_key or actual_key not in registry:
         return False, f"Rollback target key '{rollback_key}' not found in registry."
 
-    entry = registry[rollback_key]
+    entry = registry[actual_key]
     if entry.get("corridor_id") != corridor_id.upper():
         return False, f"Rollback key belongs to {entry.get('corridor_id')}, not {corridor_id}."
 
@@ -162,9 +201,9 @@ def rollback_to_version(corridor_id: str, rollback_key: str, reason: str) -> Tup
 
     # Execute atomic promotion rollback
     try:
-        update_model_status(rollback_key, "CHAMPION", reason=f"Rollback: {reason}")
+        update_model_status(actual_key, "CHAMPION", reason=f"Rollback: {reason}")
         from src.api.metrics import ML_ROLLBACK_EVENTS
         ML_ROLLBACK_EVENTS.labels(corridor=corridor_id.upper()).inc()
-        return True, f"Successfully rolled back {corridor_id.upper()} to {rollback_key}."
+        return True, f"Successfully rolled back {corridor_id.upper()} to {actual_key}."
     except Exception as e:
         return False, f"Rollback failed: {e}"

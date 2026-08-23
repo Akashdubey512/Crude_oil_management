@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { X, Ship, Compass, ShieldAlert, CheckCircle2, AlertTriangle, AlertCircle } from 'lucide-react';
 import RiskDecomposition from './RiskDecomposition';
 import SHAPPanel from './SHAPPanel';
+import BriefingCard from './BriefingCard';
 import type { RiskSnapshot, GeopoliticalEvent, TrafficObservation, ExplainabilityResponse } from '../../types';
 import { slideInRight } from '../../design-system/animations';
 
@@ -138,6 +139,9 @@ export default function CorridorDrawer({
             />
           </div>
         </div>
+
+        {/* GenAI Executive Briefing Card */}
+        <BriefingCard corridorId={corridorId} />
 
         {/* 5-Vector Decomposition */}
         {activeRisk?.risk_decomposition && (

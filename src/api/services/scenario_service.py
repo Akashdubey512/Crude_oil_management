@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd
 from src.features.feature_pipeline import FEATURE_COLS
 from src.risk.corridor_risk import _load_best_model, _classify_risk
+from src.risk.reserve_drawdown import calculate_reserve_drawdown_schedule, CORRIDOR_BASELINE_IMPORT_MBPD, DEFAULT_BASELINE_IMPORT_MBPD
+from src.risk.economic_impact import calculate_cascading_economic_impact
 
 PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
 REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\model_evaluation"
@@ -31,6 +33,8 @@ def run_scenario_simulation(
     brent_price_multiplier: float = 1.0,
     brent_volatility_multiplier: float = 1.0,
     infrastructure_disruption: bool = False,
+    spr_buffer_days: float = 9.5,
+    drawdown_strategy: str = "front_loaded",
 ) -> dict:
     corridor_upper = corridor_id.upper()
     if corridor_upper not in {"HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"}:
@@ -216,12 +220,34 @@ def run_scenario_simulation(
             "Market volatility spikes. MoPNG pricing desk should hedge procurement contracts to minimize crude import cost volatility. "
         )
     
-    if not rec_parts:
-        rec_parts.append(
-            "Routine monitoring. Continue normal operations. The simulated adjustments do not cross critical resilience thresholds."
-        )
-
     recommendation = " ".join(rec_parts)
+
+    # 5. Compute Strategic Reserve Drawdown Schedule
+    corridor_base_import = CORRIDOR_BASELINE_IMPORT_MBPD.get(corridor_upper, DEFAULT_BASELINE_IMPORT_MBPD)
+    raw_gap = max(0.0, corridor_base_import * (1.0 - tanker_transit_multiplier))
+    if infrastructure_disruption:
+        raw_gap += 0.75  # Refinery disruption adds 0.75 MBPD supply deficit
+    
+    # Expected disruption duration scales with simulated risk probability
+    disruption_duration = max(10, int(10 + round(sim_prob * 10)))
+
+    drawdown_res = calculate_reserve_drawdown_schedule(
+        predicted_supply_gap_mbpd=raw_gap,
+        disruption_duration_days=disruption_duration,
+        spr_buffer_days=spr_buffer_days,
+        strategy=drawdown_strategy,
+    )
+
+    # 6. Compute Cascading Refining, Price, and GDP Economic Impact
+    base_brent = float(baseline_row.get("brent_price", 78.50) if pd.notna(baseline_row.get("brent_price")) else 78.50)
+    sim_brent = base_brent * brent_price_multiplier
+
+    econ_impact = calculate_cascading_economic_impact(
+        brent_baseline_usd=base_brent,
+        brent_simulated_usd=sim_brent,
+        tanker_transit_multiplier=tanker_transit_multiplier,
+        infrastructure_disruption=infrastructure_disruption,
+    )
 
     return {
         "corridor_id": corridor_upper,
@@ -233,5 +259,7 @@ def run_scenario_simulation(
         "probability_delta": round(prob_delta, 6),
         "feature_mutations": feature_mutations,
         "explanation": explanation,
-        "recommendation": recommendation
+        "recommendation": recommendation,
+        "drawdown_schedule": drawdown_res,
+        "economic_impact": econ_impact,
     }

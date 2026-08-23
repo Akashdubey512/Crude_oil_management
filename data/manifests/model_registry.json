@@ -49,10 +49,12 @@
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_hormuz_v1.0.pkl",
     "registered_at": "2026-08-22T07:43:46.585901+00:00",
-    "status": "CANDIDATE",
+    "status": "REJECTED",
     "deployed_at": "2026-08-22",
     "roc_auc": 0.3845,
-    "pr_auc": 0.0435
+    "pr_auc": 0.0435,
+    "updated_at": "2026-08-23T13:57:35.876186+00:00",
+    "rejection_reason": "Rejection: PR-AUC regressed materially (Challenger: 0.0435 vs Champion: 0.0798)."
   },
   "RandomForest__HORMUZ__1.0": {
     "model_name": "RandomForest",
@@ -104,10 +106,12 @@
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_hormuz_v1.0.pkl",
     "registered_at": "2026-08-22T07:43:46.854560+00:00",
-    "status": "CHALLENGER",
+    "status": "REJECTED",
     "deployed_at": "2026-08-22",
     "roc_auc": 0.2945,
-    "pr_auc": 0.0768
+    "pr_auc": 0.0768,
+    "updated_at": "2026-08-23T13:58:27.073078+00:00",
+    "rejection_reason": "Rejection: Brier score regressed materially (Challenger: 0.0460 vs Champion: 0.0325)."
   },
   "XGBoost__HORMUZ__1.0": {
     "model_name": "XGBoost",

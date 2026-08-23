@@ -155,6 +155,75 @@ export interface CorridorComparisonResponse {
   items: CorridorComparisonItem[];
 }
 
+export interface DailyDrawdownEntry {
+  day: number;
+  recommended_release_mbpd: number;
+  cumulative_released_mbpd: number;
+  remaining_spr_buffer_days: number;
+}
+
+export interface DrawdownScheduleResponse {
+  strategy: string;
+  predicted_supply_gap_mbpd: number;
+  disruption_duration_days: number;
+  spr_buffer_days: number;
+  total_recommended_release_mbpd: number;
+  buffer_exhausted: boolean;
+  warning_message?: string | null;
+  schedule: DailyDrawdownEntry[];
+  heuristic_note: string;
+}
+
+export interface EconomicImpactResponse {
+  daily_import_cost_delta_usd_m: number;
+  annualized_import_bill_delta_usd_b: number;
+  estimated_gdp_growth_impact_pct: number;
+  refining_throughput_drop_pct: number;
+  elasticity_formula: string;
+  methodology_note: string;
+}
+
+export interface SupplierExposureItem {
+  supplier_country: string;
+  country_code: string;
+  import_share_pct: number;
+  primary_corridor: string;
+  exposure_score: number;
+  risk_level: string;
+  corridor_weights: Record<string, number>;
+}
+
+export interface SupplierExposureResponse {
+  computed_at: string;
+  suppliers: SupplierExposureItem[];
+  methodology: string;
+}
+
+export interface ExecutiveBriefingResponse {
+  corridor_id: string;
+  corridor_name: string;
+  briefing_text: string;
+  llm_generated: boolean;
+  llm_status: string;
+  disclaimer: string;
+  context: Record<string, any>;
+  generated_at: string;
+}
+
+export interface AnalystQueryRequest {
+  query: string;
+}
+
+export interface AnalystQueryResponse {
+  query: string;
+  intent: string;
+  target_corridor: string;
+  answer: string;
+  llm_generated: boolean;
+  source_data: Record<string, any>;
+  generated_at: string;
+}
+
 export interface ScenarioSimulationRequest {
   corridor_id: string;
   baseline_date?: string;
@@ -163,6 +232,8 @@ export interface ScenarioSimulationRequest {
   brent_price_multiplier: number;
   brent_volatility_multiplier: number;
   infrastructure_disruption: boolean;
+  spr_buffer_days?: number;
+  drawdown_strategy?: string;
 }
 
 export interface ScenarioSimulationResponse {
@@ -176,6 +247,8 @@ export interface ScenarioSimulationResponse {
   feature_mutations: Record<string, { baseline: number; simulated: number }>;
   explanation: string;
   recommendation: string;
+  drawdown_schedule?: DrawdownScheduleResponse | null;
+  economic_impact?: EconomicImpactResponse | null;
 }
 
 // --- Phase 9 Types ---

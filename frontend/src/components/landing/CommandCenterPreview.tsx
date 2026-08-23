@@ -82,8 +82,8 @@ export default function CommandCenterPreview({ theme, onEnterDashboard }: Comman
                 style={{ backgroundColor: isDark ? '#08111C' : '#FFFFFF', borderColor: isDark ? '#1C2A3A' : '#D9E0E8' }}
               >
                 <div className="text-[10px] uppercase font-bold text-slate-400 font-space">XGBOOST RISK ENGINE</div>
-                <div className="text-sm font-bold text-emerald-400 font-space">0.94 ROC-AUC Accuracy</div>
-                <p className="text-[11px] text-slate-400 font-inter">Daily disruption probability + SHAP attribution.</p>
+                <div className="text-sm font-bold text-emerald-400 font-space">0.94 ROC-AUC (97.6% Acc)</div>
+                <p className="text-[11px] text-slate-400 font-inter">Recall: 0.0% | Precision: 0.0% | Brier: 0.018</p>
               </div>
 
               <div className="p-4 rounded-xl border space-y-2"

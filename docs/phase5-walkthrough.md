@@ -45,21 +45,21 @@ FastAPI Application  (src/api/main.py)
 
 | File | Description |
 | :--- | :--- |
-| [`src/api/__init__.py`](file:///D:/hackathon%20project/energy-resilience/src/api/__init__.py) | Package init |
-| [`src/api/main.py`](file:///D:/hackathon%20project/energy-resilience/src/api/main.py) | FastAPI app with CORS, logging middleware, error handler |
-| [`src/api/schemas.py`](file:///D:/hackathon%20project/energy-resilience/src/api/schemas.py) | Pydantic v2 response schemas |
-| [`src/api/routes/health.py`](file:///D:/hackathon%20project/energy-resilience/src/api/routes/health.py) | `/health` endpoint |
-| [`src/api/routes/corridors.py`](file:///D:/hackathon%20project/energy-resilience/src/api/routes/corridors.py) | `/api/corridors` endpoint |
-| [`src/api/routes/risk.py`](file:///D:/hackathon%20project/energy-resilience/src/api/routes/risk.py) | `/api/risk`, `/api/traffic`, `/api/infrastructure`, `/api/metrics`, `/api/model-info` |
-| [`src/api/routes/events.py`](file:///D:/hackathon%20project/energy-resilience/src/api/routes/events.py) | `/api/events` and `/api/events/{corridor}` |
-| [`src/api/services/risk_service.py`](file:///D:/hackathon%20project/energy-resilience/src/api/services/risk_service.py) | Risk inference + decomposition + data freshness |
-| [`src/api/services/event_service.py`](file:///D:/hackathon%20project/energy-resilience/src/api/services/event_service.py) | Geopolitical event queries |
-| [`src/api/services/traffic_service.py`](file:///D:/hackathon%20project/energy-resilience/src/api/services/traffic_service.py) | PortWatch traffic + anomaly queries |
-| [`src/api/services/infrastructure_service.py`](file:///D:/hackathon%20project/energy-resilience/src/api/services/infrastructure_service.py) | Infrastructure node queries |
-| [`scripts/run_api.py`](file:///D:/hackathon%20project/energy-resilience/scripts/run_api.py) | Uvicorn server launcher |
-| [`tests/test_phase5.py`](file:///D:/hackathon%20project/energy-resilience/tests/test_phase5.py) | 62-test Phase 5 validation suite |
-| [`docs/api.md`](file:///D:/hackathon%20project/energy-resilience/docs/api.md) | Full API reference documentation |
-| [`.env.example`](file:///D:/hackathon%20project/energy-resilience/.env.example) | Environment variable template |
+| [`src/api/__init__.py`](src/api/__init__.py) | Package init |
+| [`src/api/main.py`](src/api/main.py) | FastAPI app with CORS, logging middleware, error handler |
+| [`src/api/schemas.py`](src/api/schemas.py) | Pydantic v2 response schemas |
+| [`src/api/routes/health.py`](src/api/routes/health.py) | `/health` endpoint |
+| [`src/api/routes/corridors.py`](src/api/routes/corridors.py) | `/api/corridors` endpoint |
+| [`src/api/routes/risk.py`](src/api/routes/risk.py) | `/api/risk`, `/api/traffic`, `/api/infrastructure`, `/api/metrics`, `/api/model-info` |
+| [`src/api/routes/events.py`](src/api/routes/events.py) | `/api/events` and `/api/events/{corridor}` |
+| [`src/api/services/risk_service.py`](src/api/services/risk_service.py) | Risk inference + decomposition + data freshness |
+| [`src/api/services/event_service.py`](src/api/services/event_service.py) | Geopolitical event queries |
+| [`src/api/services/traffic_service.py`](src/api/services/traffic_service.py) | PortWatch traffic + anomaly queries |
+| [`src/api/services/infrastructure_service.py`](src/api/services/infrastructure_service.py) | Infrastructure node queries |
+| [`scripts/run_api.py`](scripts/run_api.py) | Uvicorn server launcher |
+| [`tests/test_phase5.py`](tests/test_phase5.py) | 62-test Phase 5 validation suite |
+| [`docs/api.md`](docs/api.md) | Full API reference documentation |
+| [`.env.example`](.env.example) | Environment variable template |
 
 ---
 

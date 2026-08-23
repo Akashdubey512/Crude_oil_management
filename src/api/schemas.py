@@ -154,6 +154,28 @@ class CorridorComparisonResponse(BaseModel):
     items: List[CorridorComparisonItem] = Field(..., description="Comparison records for all active corridors")
 
 
+class DailyDrawdownEntry(BaseModel):
+    day: int = Field(..., description="Day index in drawdown schedule (1..N)")
+    recommended_release_mbpd: float = Field(..., description="Recommended release volume for this day in MBPD")
+    cumulative_released_mbpd: float = Field(..., description="Cumulative released volume up to this day in MBPD")
+    remaining_spr_buffer_days: float = Field(..., description="Estimated remaining SPR buffer in days after this day's release")
+
+
+class DrawdownScheduleResponse(BaseModel):
+    strategy: str = Field(..., description="Drawdown strategy: 'front_loaded' or 'smoothed'")
+    predicted_supply_gap_mbpd: float = Field(..., description="Estimated daily supply gap volume in MBPD")
+    disruption_duration_days: int = Field(..., description="Expected disruption duration in days")
+    spr_buffer_days: float = Field(..., description="Configured initial SPR buffer in days")
+    total_recommended_release_mbpd: float = Field(..., description="Total volume recommended for release across schedule")
+    buffer_exhausted: bool = Field(..., description="Flag indicating if the required drawdown exceeds available SPR buffer")
+    warning_message: Optional[str] = Field(None, description="Warning if SPR buffer is insufficient or exhausted")
+    schedule: List[DailyDrawdownEntry] = Field(..., description="Day-by-day drawdown schedule entries")
+    heuristic_note: str = Field(
+        "Heuristic planning tool for scenario decision support; not a globally-optimal mathematical solution.",
+        description="Explanatory note on optimization heuristic"
+    )
+
+
 class ScenarioSimulationRequest(BaseModel):
     corridor_id: str = Field(..., description="Corridor ID to simulate (HORMUZ, BAB_EL_MANDEB, SUEZ)")
     baseline_date: Optional[str] = Field(None, description="Baseline date to simulate on. Defaults to latest available.")
@@ -162,6 +184,58 @@ class ScenarioSimulationRequest(BaseModel):
     brent_price_multiplier: float = Field(1.0, description="Multiplier for Brent crude price (e.g. 1.2 for 20% increase)")
     brent_volatility_multiplier: float = Field(1.0, description="Multiplier for Brent volatility (e.g. 1.5 for 50% increase)")
     infrastructure_disruption: bool = Field(False, description="Whether to simulate an active refinery/infrastructure supply drop flag")
+    spr_buffer_days: float = Field(9.5, description="Initial Strategic Petroleum Reserve buffer in days (default 9.5)")
+    drawdown_strategy: str = Field("front_loaded", description="Drawdown allocation strategy: 'front_loaded' or 'smoothed'")
+
+
+class EconomicImpactResponse(BaseModel):
+    daily_import_cost_delta_usd_m: float = Field(..., description="Estimated daily crude import cost change in $ Million USD")
+    annualized_import_bill_delta_usd_b: float = Field(..., description="Annualized crude import bill impact in $ Billion USD")
+    estimated_gdp_growth_impact_pct: float = Field(..., description="Illustrative annualized GDP growth impact (percentage points)")
+    refining_throughput_drop_pct: float = Field(..., description="Estimated refining throughput reduction (%)")
+    elasticity_formula: str = Field(..., description="Formula used for illustrative economic impact estimation")
+    methodology_note: str = Field(..., description="Mandatory caveat stating this is an illustrative estimate based on RBI/IMF elasticity")
+
+
+class SupplierExposureItem(BaseModel):
+    supplier_country: str = Field(..., description="Crude supplier country name (e.g. Iraq, Saudi Arabia, Russia)")
+    country_code: str = Field(..., description="ISO-2 country code (e.g. IQ, SA, RU, AE, KW, NG)")
+    import_share_pct: float = Field(..., description="Share of India's total crude oil imports (%)")
+    primary_corridor: str = Field(..., description="Primary transit corridor for crude shipments")
+    exposure_score: float = Field(..., description="Computed disruption exposure score [0-100]")
+    risk_level: str = Field(..., description="Calculated risk band: MINIMAL, LOW, MODERATE, HIGH, CRITICAL")
+    corridor_weights: Dict[str, float] = Field(..., description="Corridor exposure weight mapping")
+
+
+class SupplierExposureResponse(BaseModel):
+    computed_at: str = Field(..., description="ISO-8601 computation timestamp")
+    suppliers: List[SupplierExposureItem] = Field(..., description="List of supplier country risk exposure items")
+    methodology: str = Field(..., description="Explicit declaration of modeling methodology and data proxy limitation")
+
+
+class ExecutiveBriefingResponse(BaseModel):
+    corridor_id: str = Field(..., description="Corridor ID (e.g. HORMUZ, SUEZ, BAB_EL_MANDEB)")
+    corridor_name: str = Field(..., description="Full corridor name")
+    briefing_text: str = Field(..., description="Constrained 4-6 line executive briefing phrased by LLM or audit-safe template")
+    llm_generated: bool = Field(..., description="Flag indicating if text was generated via active Anthropic API call")
+    llm_status: str = Field(..., description="LLM status: 'active_claude' or 'disabled_fallback'")
+    disclaimer: str = Field(..., description="Auditable disclaimer text")
+    context: Dict[str, Any] = Field(..., description="Underlying verified numeric context object")
+    generated_at: str = Field(..., description="ISO-8601 generation timestamp")
+
+
+class AnalystQueryRequest(BaseModel):
+    query: str = Field(..., description="Natural language analyst query text")
+
+
+class AnalystQueryResponse(BaseModel):
+    query: str = Field(..., description="Original user query")
+    intent: str = Field(..., description="Classified intent (e.g. CORRIDOR_LOOKUP, EXPLAINABILITY, CROSS_CORRIDOR_COMPARISON)")
+    target_corridor: str = Field(..., description="Identified corridor target")
+    answer: str = Field(..., description="Natural language answer text")
+    llm_generated: bool = Field(..., description="Flag indicating if answer was phrased via active Anthropic API call")
+    source_data: Dict[str, Any] = Field(..., description="Authoritative underlying source data object used for response")
+    generated_at: str = Field(..., description="ISO-8601 generation timestamp")
 
 
 class ScenarioSimulationResponse(BaseModel):
@@ -175,6 +249,8 @@ class ScenarioSimulationResponse(BaseModel):
     feature_mutations: Dict[str, Any] = Field(..., description="Summary of modified features and their baseline vs simulated values")
     explanation: str = Field(..., description="Decision-oriented explanation of why the risk changed or didn't")
     recommendation: str = Field(..., description="Recommended action based on the model's actual risk drivers and active features")
+    drawdown_schedule: Optional[DrawdownScheduleResponse] = Field(None, description="Strategic Petroleum Reserve drawdown schedule forecast")
+    economic_impact: Optional[EconomicImpactResponse] = Field(None, description="Cascading refining throughput, price shock, and GDP growth impact estimate")
 
 
 # --- Phase 9 Schemas ---

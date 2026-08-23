@@ -21,7 +21,9 @@ from src.api.schemas import (
     RiskHistoryResponse,
     CorridorComparisonResponse,
     CorridorComparisonItem,
+    SupplierExposureResponse,
 )
+from src.risk.supplier_risk import compute_supplier_risk_exposures
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -98,6 +100,20 @@ def get_corridor_comparison(date: Optional[str] = Query(None, description="Targe
         logger.error(f"Failed to generate corridor comparison: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
+
+@router.get("/risk/suppliers", response_model=SupplierExposureResponse, tags=["Risk Intelligence"])
+def get_supplier_risk_exposures():
+    """
+    Returns per-supplier crude oil disruption exposure scores as a weighted composition
+    of corridor risk outputs. Includes explicit methodology metadata declaring this is
+    a modeled estimate derived from corridor risk vector outputs.
+    """
+    try:
+        return compute_supplier_risk_exposures()
+    except Exception as e:
+        logger.error(f"Error computing supplier risk exposures: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to compute supplier risk exposures: {str(e)}")
 
 
 @router.get("/risk/{corridor_id}", tags=["Risk"])
@@ -268,4 +284,3 @@ def get_corridor_risk_history(
     except Exception as e:
         logger.error(f"Error fetching historical risk for {corridor_upper}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to retrieve risk history: {str(e)}")
-

@@ -35,12 +35,13 @@ export default function GovernanceCenter({
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   const handlePromote = async () => {
-    if (!championChallenger?.challenger?.version) return;
+    const keyToPromote = championChallenger?.challenger?.registry_key || championChallenger?.challenger?.key || championChallenger?.challenger?.version;
+    if (!keyToPromote) return;
     setSubmitting(true);
     setActionError(null);
     setActionSuccess(null);
     try {
-      await onPromote(championChallenger.challenger.version, promoteReason || 'Manual promotion via Command Center Dashboard');
+      await onPromote(keyToPromote, promoteReason || 'Manual promotion via Command Center Dashboard');
       setActionSuccess('Challenger successfully promoted to CHAMPION role.');
       setPromoteReason('');
     } catch (err: any) {
