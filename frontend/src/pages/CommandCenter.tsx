@@ -25,6 +25,7 @@ import ObservabilityCenter from '../components/observability/ObservabilityCenter
 import SecurityCenter from '../components/security/SecurityCenter';
 import SupplierRiskExposureCard from '../components/corridor/SupplierRiskExposureCard';
 import AskAnalystChat from '../components/assistant/AskAnalystChat';
+import BacktestReplayCard from '../components/monitoring/BacktestReplayCard';
 
 // Custom API imports for tab-specific fetches
 import { api, setActiveKey, getActiveKey } from '../api/client';
@@ -609,6 +610,7 @@ export default function CommandCenter({
                   key="models"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                  className="space-y-5"
                 >
                   <ModelCenter
                     corridors={corridors}
@@ -618,6 +620,7 @@ export default function CommandCenter({
                     modelEval={modelEvalData}
                     modelDrift={modelDriftData}
                   />
+                  <BacktestReplayCard initialCorridor={modelHealthCorridor} />
                 </motion.div>
               )}
 

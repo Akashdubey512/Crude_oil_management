@@ -215,4 +215,29 @@ export const api = {
 
   revokeKey: (publicId: string) =>
     request<any>(`/api/security/keys/${publicId}/revoke`, { method: 'POST' }),
+
+  // --- Phase 21: Backtest Replay & Board Pack PDF Export ---
+  getBacktestReplay: (corridor: string = 'RED_SEA', startDate: string = '2023-11-01', endDate: string = '2024-02-28') =>
+    request<any>(`/api/monitoring/backtest/replay?corridor=${corridor}&start_date=${startDate}&end_date=${endDate}`),
+
+  downloadBoardPackPdf: async (): Promise<void> => {
+    const url = `${API_BASE}/api/reports/board-pack/pdf`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${_activeKey}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to generate Board Pack PDF: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = `India_Energy_Resilience_Board_Pack_${new Date().toISOString().slice(0, 10)}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  },
 };

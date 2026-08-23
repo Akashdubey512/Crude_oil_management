@@ -16,11 +16,34 @@ from src.api.services.report_service import (
     generate_daily_report,
     export_risk_history_csv,
     export_alerts_csv,
-    generate_pdf_report
+    generate_pdf_report,
+    export_board_pack_pdf,
 )
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+
+@router.get("/reports/board-pack/pdf", tags=["Reports — Phase 21 Board Pack"])
+def download_board_pack_pdf(auth: dict = Depends(authenticate_key)):
+    """
+    Generates and downloads the executive Board Pack PDF summarizing current corridor risk state,
+    SHAP attributions, Strategic Petroleum Reserve drawdown schedule, supplier exposures, and GDP impact.
+    Targeted for energy desk executives and board members.
+    """
+    try:
+        pdf_bytes = export_board_pack_pdf()
+        import datetime
+        date_str = datetime.date.today().isoformat()
+        filename = f"India_Energy_Resilience_Board_Pack_{date_str}.pdf"
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        logger.error(f"Board Pack PDF generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Board Pack PDF generation failed: {e}")
 
 
 @router.get("/reports/daily", tags=["Reports — Phase 14"])

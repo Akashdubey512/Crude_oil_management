@@ -182,6 +182,20 @@ describe('Phase 14 Premium Maritime Command Center Frontend Tests', { timeout: 1
       source_data: { corridor: 'HORMUZ', risk_level: 'LOW' },
       generated_at: '2026-08-22T00:00:00Z'
     });
+    vi.spyOn(api, 'getBacktestReplay').mockResolvedValue({
+      corridor_id: 'RED_SEA',
+      window_title: 'Backtest Window',
+      start_date: '2023-11-01',
+      end_date: '2024-02-28',
+      total_days: 120,
+      total_disruptions: 18,
+      detected_disruptions: 16,
+      detection_rate: 0.889,
+      false_alarm_rate: 0.042,
+      series: [
+        { date: '2023-11-01', predicted_probability: 0.05, actual_disruption: 0, is_disrupted: false }
+      ]
+    });
     vi.spyOn(api, 'getRiskHistory').mockResolvedValue([]);
     vi.spyOn(api, 'simulateScenario').mockResolvedValue({
       corridor_id: 'HORMUZ', baseline_date: '2026-08-22', baseline_probability: 0.017,

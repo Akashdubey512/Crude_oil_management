@@ -14,6 +14,7 @@ from src.api.auth import authenticate_key
 from src.api.services.model_evaluation import evaluate_model_performance
 from src.api.services.drift_detection import detect_data_drift
 from src.api.services.model_health_service import evaluate_model_health
+from src.models.backtest import get_backtest_replay_series
 from src.api.schemas import (
     ModelEvaluationResponse, ModelEvaluationMetrics, CalibrationInfo, CalibrationBinEntry,
     DriftResponse, DriftFeatureItem, DriftResponseSummary,
@@ -25,6 +26,24 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 MODELED_CORRIDORS = {"HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"}
+
+
+@router.get("/monitoring/backtest/replay", tags=["Monitoring"])
+def get_backtest_replay(
+    corridor: str = Query("RED_SEA", description="Corridor ID: RED_SEA, HORMUZ, SUEZ, BAB_EL_MANDEB"),
+    start_date: Optional[str] = Query("2023-11-01", description="Start date (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query("2024-02-28", description="End date (YYYY-MM-DD)"),
+):
+    """
+    Returns day-by-day predicted risk probability vs actual labeled disruption series
+    for a chosen historical window (e.g. Red Sea Houthi Attack period).
+    Demonstrates model predictive validity over real documented historical disruption episodes.
+    """
+    try:
+        return get_backtest_replay_series(corridor_id=corridor, start_date=start_date, end_date=end_date)
+    except Exception as e:
+        logger.error(f"Error fetching backtest replay for {corridor}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate backtest replay: {str(e)}")
 
 
 # ─── Model Evaluation ────────────────────────────────────────────────────────

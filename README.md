@@ -466,6 +466,7 @@ Energy Resilience Intel has evolved through 19 engineering phases from baseline 
 | **Phase 18** | **Supplier Overlay & GDP Cascade** | Per-supplier crude risk exposure scores (Russia, Iraq, Saudi Arabia, UAE, Kuwait, Nigeria); cascading refining $\rightarrow$ price $\rightarrow$ GDP growth impact model using RBI/IMF elasticity. | [`src/risk/supplier_risk.py`](src/risk/supplier_risk.py), [`src/risk/economic_impact.py`](src/risk/economic_impact.py) |
 | **Phase 19** | **Constrained Auditable GenAI Layer** | Claude 3.5 Sonnet / audit-safe fallback executive briefing engine; natural-language "Ask the Analyst" query bar with expandable auditable source data drawers. | [`src/api/services/briefing_service.py`](src/api/services/briefing_service.py), [`AskAnalystChat.tsx`](frontend/src/components/assistant/AskAnalystChat.tsx) |
 | **Phase 20** | **Real-Time WebSocket & Webhook Push** | `/ws/alerts` WebSocket push stream for immediate threshold alert broadcasting; live indicator & toast notifications in `AlertsPanel.tsx`; optional outbound HTTP webhook (`WEBHOOK_ALERT_ENABLED`). | [`src/api/services/websocket_service.py`](src/api/services/websocket_service.py), [`AlertsPanel.tsx`](frontend/src/components/AlertsPanel.tsx) |
+| **Phase 21** | **Empirical Backtest & Board Pack PDF** | Out-of-sample day-by-day historical backtest replay scrubber proving predictive validity over real documented Red Sea Houthi conflict period; 1-click ReportLab Executive Board Pack PDF download. | [`src/models/backtest.py`](src/models/backtest.py), [`src/api/services/report_service.py`](src/api/services/report_service.py), [`BacktestReplayCard.tsx`](frontend/src/components/monitoring/BacktestReplayCard.tsx) |
 
 ---
 
@@ -480,6 +481,8 @@ Energy Resilience Intel has evolved through 19 engineering phases from baseline 
 - [x] Cascading downstream economic impact model (refining $\rightarrow$ price $\rightarrow$ GDP)
 - [x] Constrained GenAI executive briefings & "Ask the Analyst" query bar
 - [x] WebSocket `/ws/alerts` real-time alert push stream & optional outbound webhook
+- [x] Empirical historical backtest replay timeline scrubber with proof metrics
+- [x] 1-Click Executive Board Pack PDF report export
 - [x] Champion/Challenger model registry & PSI/KS drift monitoring
 - [x] HMAC-SHA256 4-tier Role-Based Access Control
 - [x] React 19 enterprise dual-theme command center
