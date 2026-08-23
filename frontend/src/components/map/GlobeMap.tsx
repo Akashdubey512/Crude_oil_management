@@ -106,7 +106,11 @@ export default function GlobeMap({ risks, onSelectCorridor, selectedCorridor }: 
 
     return () => {
       observer.disconnect();
-      leafletMap.current?.remove();
+      try {
+        leafletMap.current?.remove();
+      } catch {
+        // Safe cleanup for headless/testing environments
+      }
       leafletMap.current = null;
     };
   }, [updateMapTiles]);

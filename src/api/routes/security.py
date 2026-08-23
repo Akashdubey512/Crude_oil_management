@@ -4,7 +4,7 @@ Security Configuration & Audit Management API Routes — Phase 13
 
 import json
 from typing import List, Dict, Any, Optional
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Security, Query, HTTPException, status
 from pydantic import BaseModel, Field
 
 from src.api.auth import authenticate_key, generate_new_api_key
@@ -115,7 +115,7 @@ async def get_security_status(auth: dict = Depends(authenticate_key)):
 async def get_audit_log(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=20, ge=1, le=100),
-    auth: dict = Depends(authenticate_key)
+    auth: dict = Security(authenticate_key, scopes=["ADMIN"])
 ):
     """Admin: full paginated audit log. Non-admin: own events only (last 20)."""
     is_admin = "ADMIN" in auth["scopes"]

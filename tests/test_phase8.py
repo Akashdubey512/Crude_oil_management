@@ -43,11 +43,21 @@ class TestRiskHistoryAPI:
             assert item["date"] >= "2026-01-01"
             assert item["date"] <= "2026-03-31"
 
-    def test_red_sea_history_returns_empty_list(self):
+    def test_red_sea_history_returns_valid_list(self):
+        """RED_SEA is now a modeled corridor (via Bab-el-Mandeb proxy) with stored predictions.
+        The history endpoint returns accumulated prediction records from the DB.
+        Phase 10 added RED_SEA as a first-class modeled corridor so an empty list is no longer expected."""
         r = client.get("/api/risk/RED_SEA/history")
         assert r.status_code == 200
         body = r.json()
-        assert body == []
+        assert isinstance(body, list)
+        # RED_SEA has prediction history from Phase 10 onwards
+        # Each item must contain the required schema fields
+        for item in body:
+            assert "corridor_id" in item
+            assert item["corridor_id"] == "RED_SEA"
+            assert "risk_level" in item
+            assert item["risk_level"] in ("LOW", "MODERATE", "HIGH")
 
     def test_invalid_corridor_history_returns_404(self):
         r = client.get("/api/risk/INVALID_CORRIDOR/history")

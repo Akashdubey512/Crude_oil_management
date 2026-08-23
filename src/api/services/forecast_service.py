@@ -135,12 +135,14 @@ def generate_corridor_forecast(corridor_id: str) -> Dict[str, Any]:
         ci_low = _clamp(forecast_prob - ci_half)
         ci_high = _clamp(forecast_prob + ci_half)
         forecast_date = (today + datetime.timedelta(days=day_offset)).isoformat()
+        rl = _prob_to_risk_level(forecast_prob)
         entries.append({
             "forecast_date": forecast_date,
             "forecasted_probability": round(forecast_prob, 4),
             "confidence_interval_low": round(ci_low, 4),
             "confidence_interval_high": round(ci_high, 4),
-            "forecasted_risk_level": _prob_to_risk_level(forecast_prob),
+            "forecasted_risk_level": rl,
+            "risk_level": rl,   # alias for backward-compat
         })
 
     # Current anchor point

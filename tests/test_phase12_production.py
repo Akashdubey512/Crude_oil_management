@@ -52,8 +52,10 @@ class TestProductionIntegration(unittest.TestCase):
         response = self.client.get("/api/observability/metrics")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertIn("app_uptime_seconds", data)
-        self.assertIn("http_requests", data)
+        self.assertIn("system", data)
+        self.assertIn("requests", data)
+        self.assertIn("database", data)
+        self.assertIn("raw_metrics", data)
 
     def test_security_response_headers(self):
         """Verify that essential security headers are present in responses."""

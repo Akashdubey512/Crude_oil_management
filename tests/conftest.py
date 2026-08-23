@@ -40,7 +40,7 @@ async def mock_authenticate_key(
 @pytest.fixture(autouse=True)
 def override_auth(request):
     # If testing Phase 13 security specifically, preserve authentic authentication
-    if "test_phase13_security" in request.node.nodeid:
+    if "test_phase13_security" in request.node.nodeid or "test_phase16" in request.node.nodeid:
         yield
     else:
         app.dependency_overrides[authenticate_key] = mock_authenticate_key

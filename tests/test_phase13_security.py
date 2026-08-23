@@ -119,17 +119,25 @@ class TestEnterpriseSecurity(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_role_scope_enforcement_read_only(self):
-        """6. Verify that a VIEWER can read but not simulate scenarios."""
+        """6. Verify that a VIEWER can read risk data and run what-if simulations.
+        Phase 15 decision: scenario simulation is a non-destructive read-only analytical
+        operation. VIEWER has READ scope which allows it. Only mutating governance
+        actions (MODEL_PROMOTE, MODEL_ROLLBACK, ADMIN) remain restricted."""
         key = self._create_test_key("VIEWER", actor_id="viewer")
         
         # Read risk should succeed
         response = self.client.get("/api/risk", headers={"Authorization": f"Bearer {key}"})
         self.assertEqual(response.status_code, 200)
 
-        # Simulate scenario should fail with 403 Forbidden
-        sim_payload = {"scenario_name": "Blockade", "risk_factors": {"geopolitical": 2.5}}
+        # Simulate scenario should NOW succeed for VIEWER (Phase 15 scope alignment)
+        sim_payload = {"corridor_id": "HORMUZ", "gpr_multiplier": 2.5}
         response2 = self.client.post("/api/scenarios/simulate", json=sim_payload, headers={"Authorization": f"Bearer {key}"})
-        self.assertEqual(response2.status_code, 403)
+        self.assertEqual(response2.status_code, 200)
+
+        # Model promotion must still fail with 403 for VIEWER
+        promo_payload = {"challenger_key": "some_model", "reason": "Viewer promotion attempt"}
+        response3 = self.client.post("/api/models/HORMUZ/promote", json=promo_payload, headers={"Authorization": f"Bearer {key}"})
+        self.assertEqual(response3.status_code, 403)
 
     def test_role_scope_enforcement_analyst(self):
         """7. Verify that an ANALYST can read and simulate but not promote models."""
