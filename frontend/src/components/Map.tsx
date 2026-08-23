@@ -31,18 +31,18 @@ export default function Map({
   // Helper to resolve risk color
   const getRiskColor = (corridorId: string) => {
     const risk = risks.find((r) => r.corridor === corridorId);
-    if (!risk) return '#9ca3af'; // gray-400
+    if (!risk) return '#94a3b8';
     switch (risk.risk_level) {
       case 'CRITICAL':
-        return '#ef4444'; // red-500
+        return '#f87171'; // red
       case 'HIGH':
-        return '#f97316'; // orange-500
+        return '#fb923c'; // orange
       case 'MODERATE':
-        return '#eab308'; // yellow-500
+        return '#fbbf24'; // yellow
       case 'LOW':
-        return '#10b981'; // emerald-500
+        return '#34d399'; // emerald
       default:
-        return '#6b7280'; // gray-500
+        return '#64748b';
     }
   };
 
@@ -61,8 +61,8 @@ export default function Map({
 
     L.control.zoom({ position: 'bottomright' }).addTo(leafletMap.current);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CartoDB',
     }).addTo(leafletMap.current);
 
     markersLayer.current = L.layerGroup().addTo(leafletMap.current);
@@ -89,10 +89,10 @@ export default function Map({
       const isSelected = selectedCorridor === choke.id;
 
       const circle = L.circleMarker([choke.lat, choke.lng], {
-        radius: isSelected ? 18 : 12,
+        radius: isSelected ? 16 : 10,
         fillColor: activeColor,
         color: isSelected ? '#ffffff' : activeColor,
-        weight: isSelected ? 3 : 1,
+        weight: isSelected ? 2.5 : 1,
         opacity: 1,
         fillOpacity: 0.6,
       });
@@ -102,9 +102,9 @@ export default function Map({
       const prob = risk && risk.probability !== null ? `${(risk.probability * 100).toFixed(1)}%` : 'N/A';
 
       circle.bindTooltip(
-        `<div class="text-xs font-semibold text-gray-200">
-          <p class="font-bold text-white text-sm">${choke.name}</p>
-          <p class="mt-1">Risk Level: <span class="uppercase font-extrabold" style="color: ${activeColor}">${level}</span></p>
+        `<div class="text-xs font-medium text-slate-200 font-geist">
+          <p class="font-bold text-white text-xs mb-0.5">${choke.name}</p>
+          <p>Risk Level: <span class="uppercase font-semibold" style="color: ${activeColor}">${level}</span></p>
           <p>Disruption Prob: ${prob}</p>
          </div>`,
         { direction: 'top', className: 'glass-panel p-2 border-0' }
@@ -119,22 +119,21 @@ export default function Map({
 
     // 2. Draw India infrastructure markers
     infrastructure.forEach((node) => {
-      let iconColor = '#06b6d4'; // cyan-500 (Refinery)
-      if (node.facility_type === 'port') iconColor = '#3b82f6'; // blue-500
-      if (node.facility_type === 'spr') iconColor = '#a855f7'; // purple-500
+      let iconColor = '#38bdf8'; // Refinery
+      if (node.facility_type === 'port') iconColor = '#60a5fa'; // Port
+      if (node.facility_type === 'spr') iconColor = '#c084fc'; // SPR
 
-      // Custom SVG dot icon
       const svgHtml = `
-        <svg width="12" height="12" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="5" cy="5" r="4" fill="${iconColor}" stroke="#ffffff" stroke-width="1" />
+        <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="5" cy="5" r="4" fill="${iconColor}" stroke="#ffffff" stroke-width="0.8" />
         </svg>
       `;
 
       const customIcon = L.divIcon({
         html: svgHtml,
         className: 'custom-leaflet-marker',
-        iconSize: [12, 12],
-        iconAnchor: [6, 6],
+        iconSize: [10, 10],
+        iconAnchor: [5, 5],
       });
 
       const marker = L.marker([node.latitude, node.longitude], { icon: customIcon });
@@ -142,10 +141,10 @@ export default function Map({
       const capacityText = node.capacity ? `${node.capacity} ${node.unit}` : 'Capacity Unavailable';
 
       marker.bindTooltip(
-        `<div class="text-xs text-gray-300">
-          <p class="font-bold text-white">${node.name}</p>
+        `<div class="text-xs text-slate-300 font-geist">
+          <p class="font-bold text-white text-xs mb-0.5">${node.name}</p>
           <p class="capitalize">Type: ${node.facility_type} | Owner: ${node.operator}</p>
-          <p>${capacityText}</p>
+          <p class="text-blue-300 font-medium">${capacityText}</p>
          </div>`,
         { direction: 'top', className: 'glass-panel p-2 border-0' }
       );
@@ -166,45 +165,45 @@ export default function Map({
   }, [selectedCorridor]);
 
   return (
-    <div className="relative w-full h-full min-h-[400px] bg-gray-950 rounded-lg overflow-hidden border border-gray-800">
+    <div className="relative w-full h-full min-h-[400px] bg-[#060b13] rounded-xl overflow-hidden border border-slate-800/80">
       <div ref={mapRef} className="w-full h-full" />
       
       {/* Map Legend overlay */}
-      <div className="absolute bottom-4 left-4 z-[1000] glass-panel p-3 rounded-lg text-xs flex flex-col gap-2 max-w-[200px]">
-        <p className="font-bold text-gray-300">Resilience Twin Legend</p>
+      <div className="absolute bottom-3.5 left-3.5 z-[1000] bg-[#0a1322]/90 backdrop-blur-md p-3 rounded-lg text-xs flex flex-col gap-1.5 max-w-[200px] border border-slate-800 font-geist">
+        <p className="font-semibold text-slate-300 text-[10px] uppercase tracking-wide">Resilience Twin Legend</p>
         
-        <div className="flex flex-col gap-1 text-gray-400">
+        <div className="flex flex-col gap-1 text-slate-400 text-[10px]">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
             <span>LOW Corridor Risk</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
             <span>MODERATE Risk</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-orange-500 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
             <span>HIGH Risk</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-red-500 inline-block" />
+            <span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />
             <span>CRITICAL Risk</span>
           </div>
         </div>
 
-        <hr className="border-gray-800 my-1" />
+        <hr className="border-slate-800 my-1" />
 
-        <div className="flex flex-col gap-1 text-gray-400">
+        <div className="flex flex-col gap-1 text-slate-400 text-[10px]">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 border border-white inline-block" />
+            <span className="w-2 h-2 rounded-full bg-sky-400 border border-white inline-block" />
             <span>Indian Refineries</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-white inline-block" />
+            <span className="w-2 h-2 rounded-full bg-blue-400 border border-white inline-block" />
             <span>Import Ports</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-purple-500 border border-white inline-block" />
+            <span className="w-2 h-2 rounded-full bg-purple-400 border border-white inline-block" />
             <span>Strategic Reserves (SPR)</span>
           </div>
         </div>

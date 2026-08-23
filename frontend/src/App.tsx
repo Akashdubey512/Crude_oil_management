@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { useTheme } from './api/hooks/useTheme';
 
-// Hooks & page imports
-import { useGlobalData } from './api/hooks/useGlobalData';
+// Page imports
 import Landing from './pages/Landing';
 import CommandCenter from './pages/CommandCenter';
 
 export default function App() {
+  const { theme, toggleTheme } = useTheme();
+
   const getInitialTabFromPath = () => {
     const path = window.location.pathname.replace('/', '').toUpperCase();
     if (!path || path === 'LANDING') return null;
@@ -33,15 +35,6 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Load global states to feed landing page status bar & live cards
-  const {
-    health,
-    corridors,
-    risks,
-    brentPrices,
-    dataStatuses,
-  } = useGlobalData();
-
   const handleEnter = (tab = 'MONITOR', corridorId: string | null = null) => {
     setTargetTab(tab);
     if (corridorId) setTargetCorridor(corridorId);
@@ -59,16 +52,15 @@ export default function App() {
       {showLanding ? (
         <Landing
           key="landing"
-          health={health}
-          dataStatuses={dataStatuses}
-          brentPrices={brentPrices}
-          risks={risks}
-          corridorsCount={corridors.length}
-          onEnter={handleEnter}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onEnterDashboard={handleEnter}
         />
       ) : (
         <CommandCenter
           key="dashboard"
+          theme={theme}
+          onToggleTheme={toggleTheme}
           initialTab={targetTab}
           initialCorridor={targetCorridor}
           onReturnToLanding={handleReturnToLanding}

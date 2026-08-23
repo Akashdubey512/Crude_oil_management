@@ -3,11 +3,11 @@ import {
   Layers,
   Sliders,
   TrendingUp,
+  Compass,
   Activity,
   Award,
   HeartPulse,
   Lock,
-  Compass
 } from 'lucide-react';
 
 interface SideNavProps {
@@ -17,26 +17,34 @@ interface SideNavProps {
 
 export default function SideNav({ currentTab, onTabChange }: SideNavProps) {
   const menuItems = [
-    { id: 'MONITOR', label: 'Monitor', icon: Monitor },
-    { id: 'COMPARISON', label: 'Corridors', icon: Layers },
-    { id: 'SCENARIO', label: 'Scenarios', icon: Sliders },
-    { id: 'TRENDS', label: 'Trends', icon: TrendingUp },
-    { id: 'INTELLIGENCE', label: 'Intelligence', icon: Compass },
-    { id: 'MODELS', label: 'Models', icon: Activity },
-    { id: 'GOVERNANCE', label: 'Governance', icon: Award },
-    { id: 'OBSERVABILITY', label: 'Observability', icon: HeartPulse },
-    { id: 'SECURITY', label: 'Security', icon: Lock },
+    { id: 'MONITOR',       label: 'Monitor',       icon: Monitor },
+    { id: 'COMPARISON',    label: 'Corridors',      icon: Layers },
+    { id: 'SCENARIO',      label: 'Scenarios',      icon: Sliders },
+    { id: 'TRENDS',        label: 'Trends',         icon: TrendingUp },
+    { id: 'INTELLIGENCE',  label: 'Intelligence',   icon: Compass },
+    { id: 'MODELS',        label: 'Models',         icon: Activity },
+    { id: 'GOVERNANCE',    label: 'Governance',     icon: Award },
+    { id: 'OBSERVABILITY', label: 'Observability',  icon: HeartPulse },
+    { id: 'SECURITY',      label: 'Security',       icon: Lock },
   ];
 
   return (
-    <aside className="w-full lg:w-60 shrink-0 bg-white border-r border-slate-200/90 flex flex-col justify-between py-6 select-none font-manrope shadow-2xs">
-      <div className="space-y-6">
-        {/* Navigation Section */}
-        <div className="px-4">
-          <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase px-3 mb-3 font-jakarta">
-            COMMAND CHANNELS
+    <aside
+      className="w-full lg:w-56 shrink-0 flex flex-col justify-between py-4 select-none font-manrope border-r"
+      style={{
+        backgroundColor: 'var(--sidebar-bg)',
+        borderColor: 'var(--border-default)',
+      }}
+    >
+      <div>
+        <div className="px-3 mb-1">
+          <p
+            className="text-[9px] font-bold tracking-widest uppercase px-2 mb-3 font-jakarta"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            Command Channels
           </p>
-          <nav className="space-y-1">
+          <nav className="space-y-0.5">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
@@ -44,14 +52,28 @@ export default function SideNav({ currentTab, onTabChange }: SideNavProps) {
                 <button
                   key={item.id}
                   onClick={() => onTabChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 cursor-pointer"
+                  style={
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent'
-                  }`}
+                      ? {
+                          backgroundColor: 'var(--active-overlay)',
+                          color: 'var(--accent)',
+                          fontWeight: 700,
+                          border: '1px solid var(--accent-muted)',
+                        }
+                      : {
+                          backgroundColor: 'transparent',
+                          color: 'var(--text-secondary)',
+                          border: '1px solid transparent',
+                        }
+                  }
+                  title={item.label}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
+                  <Icon
+                    className="w-3.5 h-3.5 shrink-0"
+                    style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}
+                  />
+                  <span className="font-manrope tracking-tight">{item.label}</span>
                 </button>
               );
             })}
@@ -59,10 +81,15 @@ export default function SideNav({ currentTab, onTabChange }: SideNavProps) {
         </div>
       </div>
 
-      {/* Sidebar Footer info */}
-      <div className="px-6 text-[10px] text-slate-400 space-y-1 border-t border-slate-100 pt-4 mt-6 font-inter">
-        <p className="font-bold text-slate-700">MARITIME THREAT MATRIX v2.0</p>
-        <p>© INDIA SECURE SUPPLY TWIN</p>
+      {/* Sidebar Footer */}
+      <div
+        className="mx-3 px-3 text-[9px] space-y-0.5 border-t pt-3.5 mt-4 font-geist"
+        style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}
+      >
+        <p className="font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
+          Maritime Threat Matrix v2.0
+        </p>
+        <p>© India Secure Supply Twin</p>
       </div>
     </aside>
   );

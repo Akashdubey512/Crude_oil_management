@@ -239,9 +239,6 @@ def get_corridor_risk_history(
             detail=f"Unknown corridor '{corridor_id}'. Supported: {list(SUPPORTED_CORRIDORS.keys())}",
         )
     
-    if corridor_upper == "RED_SEA":
-        return []
-
     from src.risk.corridor_risk import get_historical_risk
     
     try:

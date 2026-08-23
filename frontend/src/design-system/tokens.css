@@ -1,38 +1,177 @@
+/* 
+  ENERGY RESILIENCE INTELLIGENCE PLATFORM
+  Complete Enterprise Dual-Theme Token System v3.0
+  Dark: Maritime Command Center | Light: Enterprise Analytics Workspace
+*/
+
+/* ─────────────────────────────────────────────────────────────
+   DARK THEME — default / :root
+   "Maritime Command Center" – deep navy, precise, professional
+   ───────────────────────────────────────────────────────────── */
 :root {
-  /* Crisp White, Dark Blue & Orange Theme System */
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --bg-surface: #ffffff;
-  
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  
-  /* Semantic Accents */
-  --accent-blue: #1d4ed8;
-  --accent-navy: #1e3a8a;
-  --accent-orange: #f97316;
-  --accent-amber: #f59e0b;
-  --accent-emerald: #10b981;
-  --accent-rose: #ef4444;
+  /* Backgrounds — layered hierarchy */
+  --bg-app:             #04080F;
+  --bg-shell:           #06101A;
+  --bg-surface:         #0C1929;
+  --bg-surface-subtle:  #060E18;
+  --bg-surface-elevated:#0F2038;
+  --bg-card:            #0C1929;
+  --bg-card-hover:      #112238;
+  --bg-secondary:       #060E18;
+  --sidebar-bg:         #06101A;
 
-  /* Risk Semantics */
-  --risk-low: #10b981;
-  --risk-moderate: #f59e0b;
-  --risk-high: #f97316;
-  --risk-critical: #ef4444;
-  --risk-unknown: #64748b;
-  --risk-unavailable: #94a3b8;
+  /* Typography */
+  --text-primary:       #EDF2F7;
+  --text-secondary:     #8BA2BB;
+  --text-muted:         #546A7E;
+  --text-disabled:      #374B5C;
 
-  /* Status Semantics */
-  --status-success: #10b981;
-  --status-warning: #f97316;
-  --status-danger: #ef4444;
-  --status-info: #1d4ed8;
+  /* Borders & Dividers */
+  --border-default:     #1A2E45;
+  --border-subtle:      #12253A;
+  --border-strong:      #24405E;
+  --divider:            rgba(255,255,255,0.06);
 
-  /* Card & Glassmorphism Defaults */
-  --glass-bg: rgba(255, 255, 255, 0.95);
-  --glass-border: rgba(226, 232, 240, 0.9);
-  --glass-border-hover: rgba(203, 213, 225, 1);
+  /* Accents */
+  --accent:             #3B82F6;
+  --accent-hover:       #2563EB;
+  --accent-muted:       rgba(59,130,246,0.15);
+  --accent-amber:       #F59E0B;
+  --accent-amber-subtle:rgba(245,158,11,0.15);
+  --accent-amber-text:  #FCD34D;
+
+  /* Information blue */
+  --info-blue:          #5B8DEF;
+  --info-blue-subtle:   rgba(91,141,239,0.12);
+  --info-blue-text:     #93B7FF;
+
+  /* Risk Semantic */
+  --risk-low:           #34D399;
+  --risk-low-bg:        rgba(52,211,153,0.12);
+  --risk-low-border:    rgba(52,211,153,0.30);
+  --risk-low-text:      #34D399;
+
+  --risk-moderate:      #FBBF24;
+  --risk-moderate-bg:   rgba(251,191,36,0.12);
+  --risk-moderate-border:rgba(251,191,36,0.30);
+  --risk-moderate-text: #FBBF24;
+
+  --risk-high:          #F87171;
+  --risk-high-bg:       rgba(248,113,113,0.12);
+  --risk-high-border:   rgba(248,113,113,0.30);
+  --risk-high-text:     #F87171;
+
+  --risk-critical:      #DC2626;
+  --risk-critical-bg:   rgba(220,38,38,0.12);
+  --risk-critical-border:rgba(220,38,38,0.30);
+  --risk-critical-text: #FCA5A5;
+
+  /* Shadows */
+  --shadow-sm:          0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:          0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:          0 8px 32px rgba(0,0,0,0.6);
+  --card-shadow:        0 2px 12px rgba(0,0,0,0.4);
+
+  /* Chart */
+  --chart-grid:         #1A2E45;
+  --chart-axis:         #546A7E;
+  --chart-label:        #8BA2BB;
+
+  /* Map */
+  --map-bg:             #04080F;
+
+  /* Scrollbar */
+  --scrollbar-thumb:    #1A2E45;
+  --scrollbar-track:    #060E18;
+
+  /* Interactive states */
+  --hover-overlay:      rgba(255,255,255,0.04);
+  --active-overlay:     rgba(59,130,246,0.12);
+  --focus-ring:         rgba(59,130,246,0.40);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LIGHT THEME — html.theme-light
+   "Enterprise Energy Analytics Workspace" – clean, professional, readable
+   ───────────────────────────────────────────────────────────── */
+html.theme-light {
+  /* Backgrounds — layered hierarchy */
+  --bg-app:             #F2F5F8;
+  --bg-shell:           #EAEFF4;
+  --bg-surface:         #FFFFFF;
+  --bg-surface-subtle:  #F8FAFC;
+  --bg-surface-elevated:#FFFFFF;
+  --bg-card:            #FFFFFF;
+  --bg-card-hover:      #F8FAFC;
+  --bg-secondary:       #F0F4F8;
+  --sidebar-bg:         #F8FAFC;
+
+  /* Typography */
+  --text-primary:       #0F1C2E;
+  --text-secondary:     #4A5E72;
+  --text-muted:         #7A8E9E;
+  --text-disabled:      #B0BEC8;
+
+  /* Borders & Dividers */
+  --border-default:     #D4DCE6;
+  --border-subtle:      #E5EBF2;
+  --border-strong:      #B8C6D4;
+  --divider:            rgba(0,0,0,0.07);
+
+  /* Accents */
+  --accent:             #1E40AF;
+  --accent-hover:       #1D4ED8;
+  --accent-muted:       rgba(30,64,175,0.10);
+  --accent-amber:       #B45309;
+  --accent-amber-subtle:#FFFBEB;
+  --accent-amber-text:  #92400E;
+
+  /* Information blue */
+  --info-blue:          #1E40AF;
+  --info-blue-subtle:   #EFF6FF;
+  --info-blue-text:     #1E3A8A;
+
+  /* Risk Semantic */
+  --risk-low:           #059669;
+  --risk-low-bg:        #ECFDF5;
+  --risk-low-border:    #A7F3D0;
+  --risk-low-text:      #065F46;
+
+  --risk-moderate:      #D97706;
+  --risk-moderate-bg:   #FFFBEB;
+  --risk-moderate-border:#FDE68A;
+  --risk-moderate-text: #92400E;
+
+  --risk-high:          #DC2626;
+  --risk-high-bg:       #FEF2F2;
+  --risk-high-border:   #FECACA;
+  --risk-high-text:     #991B1B;
+
+  --risk-critical:      #7F1D1D;
+  --risk-critical-bg:   #FEF2F2;
+  --risk-critical-border:#FECACA;
+  --risk-critical-text: #7F1D1D;
+
+  /* Shadows */
+  --shadow-sm:          0 1px 3px rgba(15,28,46,0.06);
+  --shadow-md:          0 4px 12px rgba(15,28,46,0.08);
+  --shadow-lg:          0 8px 24px rgba(15,28,46,0.10);
+  --card-shadow:        0 1px 4px rgba(15,28,46,0.08), 0 0 0 1px rgba(15,28,46,0.05);
+
+  /* Chart */
+  --chart-grid:         #E5EBF2;
+  --chart-axis:         #B8C6D4;
+  --chart-label:        #4A5E72;
+
+  /* Map */
+  --map-bg:             #DDE4EC;
+
+  /* Scrollbar */
+  --scrollbar-thumb:    #C4CFDB;
+  --scrollbar-track:    #EEF2F7;
+
+  /* Interactive states */
+  --hover-overlay:      rgba(15,28,46,0.04);
+  --active-overlay:     rgba(30,64,175,0.08);
+  --focus-ring:         rgba(30,64,175,0.35);
 }

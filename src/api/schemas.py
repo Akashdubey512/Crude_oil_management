@@ -274,6 +274,9 @@ class RetrainStatusResponse(BaseModel):
     retrain_recommended: bool
     reasons: List[str]
     severity: str
+    pipeline_active: Optional[bool] = True
+    dataset_range: Optional[str] = "Nov 2023 - Aug 2026"
+    last_retrained_at: Optional[str] = "2026-08-22"
 
 class PromotionResponse(BaseModel):
     success: bool

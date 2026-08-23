@@ -40,43 +40,43 @@ export default function AlertsPanel({ risks }: AlertsPanelProps) {
   });
 
   return (
-    <div className="p-4 rounded-xl border border-gray-800 bg-gray-950/50 flex flex-col gap-3 min-h-[160px]">
-      <div className="flex justify-between items-center border-b border-gray-800 pb-2">
-        <span className="text-xs uppercase font-extrabold tracking-widest text-gray-400">
+    <div className="p-4 rounded-xl border border-slate-800/80 bg-[#0a1322] flex flex-col gap-3 min-h-[160px]">
+      <div className="flex justify-between items-center border-b border-slate-800/80 pb-2">
+        <span className="text-xs uppercase font-bold tracking-wider text-slate-400 font-space">
           Platform Alerts Center
         </span>
-        <span className="bg-gray-800 px-2 py-0.5 rounded text-[10px] font-bold text-gray-300">
+        <span className="bg-slate-800/60 border border-slate-700/60 px-2 py-0.5 rounded text-[10px] font-semibold text-slate-300">
           {activeAlerts.length} Active
         </span>
       </div>
 
       <div className="flex flex-col gap-2 max-h-[180px] overflow-y-auto pr-1">
         {activeAlerts.length === 0 ? (
-          <div className="text-gray-500 text-center py-6 text-xs flex flex-col items-center gap-1.5">
-            <RefreshCw className="w-5 h-5 opacity-40 animate-spin" />
+          <div className="text-slate-500 text-center py-6 text-xs flex flex-col items-center gap-1.5 font-inter">
+            <RefreshCw className="w-4 h-4 opacity-40 animate-spin" />
             <span>All monitored chokepoints operating within normal bounds.</span>
           </div>
         ) : (
           activeAlerts.map((alert) => (
             <div
               key={alert.id}
-              className={`p-3 rounded-lg border text-xs flex gap-3 items-start ${
+              className={`p-2.5 rounded-lg border text-xs flex gap-2.5 items-start font-inter ${
                 alert.level === 'CRITICAL'
-                  ? 'border-red-500/20 bg-red-950/15 text-red-400'
-                  : 'border-orange-500/20 bg-orange-950/15 text-orange-400'
+                  ? 'border-rose-800/40 bg-rose-950/20 text-rose-300'
+                  : 'border-amber-800/40 bg-amber-950/20 text-amber-300'
               }`}
             >
               {alert.type === 'TRAFFIC_DROP' ? (
-                <TrendingDown className="w-5 h-5 shrink-0" />
+                <TrendingDown className="w-4 h-4 shrink-0 text-slate-400" />
               ) : (
-                <AlertTriangle className="w-5 h-5 shrink-0" />
+                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
               )}
               
               <div>
-                <p className="font-bold uppercase tracking-wider text-[10px] mb-0.5">
+                <p className="font-semibold uppercase tracking-wide text-[10px] mb-0.5 font-space">
                   {alert.level} — {alert.type}
                 </p>
-                <p className="text-gray-200 leading-relaxed">{alert.message}</p>
+                <p className="text-slate-300 leading-relaxed text-[11px]">{alert.message}</p>
               </div>
             </div>
           ))

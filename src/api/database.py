@@ -361,17 +361,20 @@ def init_database() -> None:
                 _populate_from_registry(cursor, is_pg=False)
                 conn.commit()
                 
-            # Phase 13: Seed default admin API key if table is empty
-            cursor.execute("SELECT COUNT(*) FROM api_keys;")
-            if cursor.fetchone()[0] == 0:
-                logger.info("Seeding default admin API key in SQLite api_keys table...")
-                from src.api.auth import hash_secret_key, ROLE_SCOPES
-                hashed_key = hash_secret_key("defaultadminsecretkey987654321")
+            # Phase 13: Seed preset role keys (ADMIN / ANALYST / VIEWER) for demo role switcher
+            from src.api.auth import hash_secret_key, ROLE_SCOPES
+            preset_keys = [
+                ("pubadmin",   hash_secret_key("defaultadminsecretkey987654321"), "default_admin",   "ADMIN",   json.dumps(ROLE_SCOPES["ADMIN"])),
+                ("pubanalyst", hash_secret_key("defaultanalystsecretkey987654"),  "default_analyst", "ANALYST", json.dumps(ROLE_SCOPES["ANALYST"])),
+                ("pubviewer",  hash_secret_key("defaultviewersecretkey1234567"),  "default_viewer",  "VIEWER",  json.dumps(ROLE_SCOPES["VIEWER"])),
+            ]
+            for pub_id, hk, actor_id, role, scopes in preset_keys:
                 cursor.execute("""
-                INSERT INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
+                INSERT OR IGNORE INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
                 VALUES (?, ?, ?, ?, ?, ?);
-                """, ("pubadmin", hashed_key, "default_admin", "ADMIN", json.dumps(ROLE_SCOPES["ADMIN"]), 0))
-                conn.commit()
+                """, (pub_id, hk, actor_id, role, scopes, 0))
+            conn.commit()
+            logger.info("Preset role API keys (ADMIN/ANALYST/VIEWER) seeded in SQLite.")
                 
             cursor.close()
             

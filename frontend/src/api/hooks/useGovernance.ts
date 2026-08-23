@@ -24,14 +24,10 @@ export function useGovernance(corridorId: string | null) {
       setChampionChallenger(comp);
       setRetrainStatus(retrain);
 
-      if (corridorId === 'RED_SEA') {
-        try {
-          const card = await api.getModelCard(corridorId);
-          setModelCardMarkdown(card?.markdown || null);
-        } catch {
-          setModelCardMarkdown(null);
-        }
-      } else {
+      try {
+        const card = await api.getModelCard(corridorId);
+        setModelCardMarkdown(card?.markdown || null);
+      } catch {
         setModelCardMarkdown(null);
       }
     } catch (err: any) {

@@ -36,42 +36,45 @@ export default function CalibrationChart({ calibration }: CalibrationChartProps)
     <div className="w-full h-full font-mono text-[9px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData} margin={{ top: 10, right: 15, left: -25, bottom: 5 }}>
-          <CartesianGrid stroke="#1f2937" strokeDasharray="3 3" opacity={0.4} />
+          <CartesianGrid stroke="var(--border-default)" strokeDasharray="3 3" opacity={0.5} />
           <XAxis
             dataKey="midpoint"
             type="number"
             domain={[0, 1]}
-            stroke="#4b5563"
+            stroke="var(--border-strong)"
             tickFormatter={(tick) => tick.toFixed(1)}
+            tick={{ fontSize: 9, fill: 'var(--text-secondary)' }}
           />
           <YAxis
             type="number"
             domain={[0, 1]}
-            stroke="#4b5563"
+            stroke="var(--border-strong)"
             tickFormatter={(tick) => tick.toFixed(1)}
+            tick={{ fontSize: 9, fill: 'var(--text-secondary)' }}
           />
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const item = payload[0].payload;
                 return (
-                  <div className="glass-panel px-3 py-2 rounded-lg border border-gray-800 text-[10px] text-gray-300 leading-normal">
-                    <p className="font-bold text-white mb-1">Bin Midpoint: {item.midpoint.toFixed(2)}</p>
-                    <p>PREDICTED: <span className="font-bold text-cyan-400">{(item.predicted * 100).toFixed(1)}%</span></p>
-                    <p>OBSERVED: <span className="font-bold text-emerald-400">{(item.observed * 100).toFixed(1)}%</span></p>
+                  <div className="px-2.5 py-1.5 rounded-lg border shadow-md text-[10px] leading-normal font-geist"
+                    style={{ backgroundColor: 'var(--text-primary)', borderColor: 'var(--text-primary)', color: '#FFFFFF' }}>
+                    <p className="font-semibold mb-1">Bin Midpoint: {item.midpoint.toFixed(2)}</p>
+                    <p>PREDICTED: <span className="font-semibold text-sky-400">{(item.predicted * 100).toFixed(1)}%</span></p>
+                    <p>OBSERVED: <span className="font-semibold text-emerald-400">{(item.observed * 100).toFixed(1)}%</span></p>
                   </div>
                 );
               }
               return null;
             }}
           />
-          <Legend wrapperStyle={{ fontSize: '8px' }} />
+          <Legend wrapperStyle={{ fontSize: '8px', color: 'var(--text-secondary)' }} />
           <Line
-            name="Perfect Calibration"
+            name="Ideal Calibration"
             type="monotone"
             dataKey="perfect"
-            stroke="#4b5563"
-            strokeWidth={1.2}
+            stroke="#64748b"
+            strokeWidth={1}
             strokeDasharray="4 4"
             dot={false}
           />
@@ -79,9 +82,9 @@ export default function CalibrationChart({ calibration }: CalibrationChartProps)
             name="Observed Frequency"
             type="monotone"
             dataKey="observed"
-            stroke="#10b981"
-            strokeWidth={2}
-            dot={{ r: 4, fill: '#10b981', stroke: '#ffffff', strokeWidth: 1 }}
+            stroke="#34d399"
+            strokeWidth={1.5}
+            dot={{ r: 3, fill: '#34d399', stroke: '#ffffff', strokeWidth: 1 }}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -5,6 +5,8 @@ import SHAPPanel from './SHAPPanel';
 import type { RiskSnapshot, GeopoliticalEvent, TrafficObservation, ExplainabilityResponse } from '../../types';
 import { slideInRight } from '../../design-system/animations';
 
+import { getRiskInfo } from '../map/maritimeData';
+
 interface CorridorDrawerProps {
   corridorId: string;
   corridorName: string;
@@ -26,20 +28,14 @@ export default function CorridorDrawer({
 }: CorridorDrawerProps) {
   const isRedSea = corridorId === 'RED_SEA';
 
-  // Risk Score Styling
+  // Unified Risk Info using single source of truth getRiskInfo()
+  const riskInfo = getRiskInfo(activeRisk?.probability, activeRisk?.risk_level);
   const score = activeRisk && activeRisk.risk_score !== null ? activeRisk.risk_score : 0;
-  const probPercent = activeRisk && activeRisk.probability !== null ? `${(activeRisk.probability * 100).toFixed(0)}%` : '---';
-  const riskLevel = activeRisk ? activeRisk.risk_level : 'UNKNOWN';
+  const probPercent = riskInfo.percentage;
 
-  let riskColorClass = 'text-emerald-700 bg-emerald-50 border-emerald-200';
   let badgeIcon = CheckCircle2;
-  if (riskLevel === 'MODERATE') {
-    riskColorClass = 'text-amber-700 bg-amber-50 border-amber-200';
-    badgeIcon = AlertTriangle;
-  } else if (riskLevel === 'HIGH' || riskLevel === 'CRITICAL') {
-    riskColorClass = 'text-rose-700 bg-rose-50 border-rose-200';
-    badgeIcon = AlertCircle;
-  }
+  if (riskInfo.level === 'MODERATE') badgeIcon = AlertTriangle;
+  if (riskInfo.level === 'HIGH') badgeIcon = AlertCircle;
 
   const BadgeIcon = badgeIcon;
   const latestTraffic = activeTraffic.length > 0 ? activeTraffic[0] : null;
@@ -50,19 +46,30 @@ export default function CorridorDrawer({
       initial="initial"
       animate="animate"
       exit="exit"
-      className="fixed right-0 top-[60px] bottom-0 w-full md:w-[480px] bg-white border-l border-slate-200/90 shadow-2xl z-[1500] flex flex-col justify-between select-none font-manrope"
+      className="fixed right-0 top-[57px] bottom-0 w-full md:w-[460px] border-l z-[1500] flex flex-col justify-between select-none font-manrope shadow-2xl"
+      style={{
+        backgroundColor: 'var(--bg-surface)',
+        borderColor: 'var(--border-default)',
+        color: 'var(--text-primary)',
+      }}
     >
       {/* Header Area */}
-      <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur">
+      <div
+        className="p-4 border-b flex justify-between items-center backdrop-blur"
+        style={{
+          backgroundColor: 'var(--bg-surface-subtle)',
+          borderColor: 'var(--border-default)',
+        }}
+      >
         <div>
           <div className="flex items-center gap-2">
-            <Compass className="w-5 h-5 text-blue-600" />
-            <h3 className="text-base font-black text-slate-900 uppercase font-space tracking-tight">
+            <Compass className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+            <h3 className="text-sm font-bold uppercase font-space tracking-tight" style={{ color: 'var(--text-primary)' }}>
               {corridorName}
             </h3>
           </div>
           {isRedSea && (
-            <span className="text-[10px] font-bold text-orange-600 block mt-0.5 uppercase tracking-wide font-inter">
+            <span className="text-[10px] font-medium text-amber-500 block mt-0.5 uppercase tracking-wide font-inter">
               * Bab el-Mandeb traffic proxy
             </span>
           )}
@@ -70,127 +77,173 @@ export default function CorridorDrawer({
         <button
           onClick={onClose}
           aria-label="close"
-          className="p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-900 transition cursor-pointer"
+          className="p-1.5 rounded-lg border transition cursor-pointer hover:opacity-80"
+          style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderColor: 'var(--border-default)',
+            color: 'var(--text-secondary)',
+          }}
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Drawer Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar">
         {/* Risk Badge and Probability Bar */}
-        <div className="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-3">
+        <div className="navy-card p-4 space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-[10px] font-bold text-slate-400 uppercase font-jakarta">
+            <span
+              className="text-[10px] font-bold uppercase font-jakarta"
+              style={{ color: 'var(--text-muted)' }}
+            >
               Operational Risk Level
             </span>
-            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-extrabold uppercase ${riskColorClass}`}>
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-0.5 rounded border text-xs font-semibold uppercase font-geist"
+              style={{
+                color: riskInfo.color,
+                backgroundColor: riskInfo.bg,
+                borderColor: riskInfo.border,
+              }}
+            >
               <BadgeIcon className="w-3.5 h-3.5" />
-              <span>{riskLevel}</span>
+              <span>{riskInfo.label}</span>
             </div>
           </div>
 
           <div className="flex items-end justify-between">
             <div>
-              <span className="text-slate-500 text-xs font-inter font-medium">Risk Index:</span>
-              <span className="text-3xl font-black font-space text-slate-900 block leading-none mt-1">
+              <span className="text-xs font-inter font-medium" style={{ color: 'var(--text-muted)' }}>Risk Index:</span>
+              <span className="text-2xl font-bold font-space block leading-none mt-1" style={{ color: 'var(--text-primary)' }}>
                 {score.toFixed(2)}
               </span>
             </div>
             <div className="text-right">
-              <span className="text-slate-500 text-xs font-inter font-medium">Probability:</span>
-              <span className="text-2xl font-bold font-geist text-blue-600 block leading-none mt-1">{probPercent}</span>
+              <span className="text-xs font-inter font-medium" style={{ color: 'var(--text-muted)' }}>Probability:</span>
+              <span className="text-xl font-bold font-geist block leading-none mt-1" style={{ color: riskInfo.color }}>
+                {probPercent}
+              </span>
             </div>
           </div>
 
-          {/* Simple horizontal progress indicator */}
-          <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+          {/* Horizontal progress indicator */}
+          <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--border-default)' }}>
             <div
-              className={`h-full rounded-full ${
-                riskLevel === 'LOW'
-                  ? 'bg-emerald-500'
-                  : riskLevel === 'MODERATE'
-                  ? 'bg-amber-500'
-                  : 'bg-rose-500'
-              }`}
-              style={{ width: `${score * 100}%` }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: probPercent === 'N/A' ? '0%' : probPercent,
+                backgroundColor: riskInfo.color,
+              }}
             />
           </div>
         </div>
 
         {/* 5-Vector Decomposition */}
         {activeRisk?.risk_decomposition && (
-          <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="navy-card p-4">
             <RiskDecomposition decomposition={activeRisk.risk_decomposition} />
           </div>
         )}
 
         {/* Traffic Intelligence Card */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+        <div className="navy-card p-4 space-y-3">
+          <div
+            className="flex justify-between items-center pb-2 border-b"
+            style={{ borderColor: 'var(--border-default)' }}
+          >
             <div className="flex items-center gap-2">
-              <Ship className="w-4 h-4 text-blue-600" />
-              <h4 className="text-xs font-black tracking-wider text-slate-900 uppercase font-space">
-                AIS TRAFFIC INTEL
+              <Ship className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+              <h4
+                className="text-xs font-semibold tracking-wide uppercase font-space"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                AIS Traffic Intel
               </h4>
             </div>
-            <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">PORTWATCH FEED</span>
+            <span
+              className="text-[9px] font-geist uppercase font-medium"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              PORTWATCH FEED
+            </span>
           </div>
 
           {latestTraffic ? (
-            <div className="grid grid-cols-2 gap-4 text-xs font-geist">
+            <div className="grid grid-cols-2 gap-3 text-xs font-geist">
               <div>
-                <span className="text-slate-400 block text-[10px] font-bold uppercase">TOTAL VESSELS</span>
-                <span className="text-base font-extrabold text-slate-900">{latestTraffic.vessel_count} / day</span>
+                <span className="block text-[10px] font-medium uppercase" style={{ color: 'var(--text-muted)' }}>TOTAL VESSELS</span>
+                <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{latestTraffic.vessel_count} / day</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] font-bold uppercase">TANKERS (OIL/LNG)</span>
-                <span className="text-base font-extrabold text-blue-600">{latestTraffic.tanker_count} / day</span>
+                <span className="block text-[10px] font-medium uppercase" style={{ color: 'var(--text-muted)' }}>TANKERS (OIL/LNG)</span>
+                <span className="text-sm font-bold" style={{ color: 'var(--info-blue)' }}>{latestTraffic.tanker_count} / day</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] font-bold uppercase">ANOMALY STATUS</span>
-                <span className={`font-extrabold text-xs ${latestTraffic.anomaly_flag ? 'text-rose-600' : 'text-emerald-600'}`}>
+                <span className="block text-[10px] font-medium uppercase" style={{ color: 'var(--text-muted)' }}>ANOMALY STATUS</span>
+                <span
+                  className="font-semibold text-xs"
+                  style={{ color: latestTraffic.anomaly_flag ? 'var(--risk-high)' : 'var(--risk-low)' }}
+                >
                   {latestTraffic.anomaly_type}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] font-bold uppercase">LAST RECORDED</span>
-                <span className="text-slate-700 font-bold">{latestTraffic.date}</span>
+                <span className="block text-[10px] font-medium uppercase" style={{ color: 'var(--text-muted)' }}>LAST RECORDED</span>
+                <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{latestTraffic.date}</span>
               </div>
             </div>
           ) : (
-            <div className="text-center py-2 text-xs text-slate-400 font-inter">
+            <div className="text-center py-2 text-xs font-inter" style={{ color: 'var(--text-muted)' }}>
               AIS traffic data unavailable from PortWatch API for this region.
             </div>
           )}
         </div>
 
         {/* SHAP explanation */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs">
+        <div className="navy-card p-4">
           <SHAPPanel explainability={activeExplainability} corridorId={corridorId} />
         </div>
 
         {/* Geopolitical Events List */}
-        <div className="bg-white p-4.5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
+        <div className="navy-card p-4 space-y-3">
+          <div
+            className="flex justify-between items-center pb-2 border-b"
+            style={{ borderColor: 'var(--border-default)' }}
+          >
             <div className="flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-orange-600" />
-              <h4 className="text-xs font-black tracking-wider text-slate-900 uppercase font-space">
-                GEOPOLITICAL INCIDENTS
+              <ShieldAlert className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+              <h4
+                className="text-xs font-semibold tracking-wide uppercase font-space"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Geopolitical Incidents
               </h4>
             </div>
-            <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">GDELT REPOSITORY</span>
+            <span
+              className="text-[9px] font-geist uppercase font-medium"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              GDELT REPOSITORY
+            </span>
           </div>
 
-          <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1 scrollbar">
+          <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar">
             {activeEvents.length > 0 ? (
               activeEvents.map((evt, idx) => (
-                <div key={idx} className="border-b border-slate-100 last:border-0 pb-2.5 mb-2.5 last:pb-0 last:mb-0">
-                  <div className="flex justify-between items-center text-[10px] font-geist text-slate-400">
-                    <span className="font-bold text-blue-600">SRC: {evt.source.toUpperCase()}</span>
+                <div
+                  key={idx}
+                  className="border-b last:border-0 pb-2 mb-2 last:pb-0 last:mb-0"
+                  style={{ borderColor: 'var(--border-subtle)' }}
+                >
+                  <div
+                    className="flex justify-between items-center text-[10px] font-geist"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>SRC: {evt.source.toUpperCase()}</span>
                     <span>{evt.event_date}</span>
                   </div>
-                  <p className="text-xs text-slate-700 mt-1 leading-relaxed font-inter">
+                  <p className="text-xs mt-1 leading-relaxed font-inter" style={{ color: 'var(--text-secondary)' }}>
                     {evt.text_reference}
                   </p>
                 </div>
@@ -205,9 +258,9 @@ export default function CorridorDrawer({
       </div>
 
       {/* Footer Provenance Info */}
-      <div className="p-4 border-t border-slate-200 bg-slate-50 text-[10px] font-geist text-slate-500 flex justify-between items-center select-none font-bold">
-        <span>MODEL INFERENCE TARGET: V1.0</span>
-        <span className="text-emerald-700">SECURITY PROMPT ACCESS: ACTIVE</span>
+      <div className="p-3.5 border-t border-slate-800/80 bg-[#060b13] text-[10px] font-geist text-slate-400 flex justify-between items-center select-none font-medium">
+        <span>MODEL INFERENCE: V1.0</span>
+        <span className="text-slate-300">SECURITY SESSION: ACTIVE</span>
       </div>
     </motion.div>
   );

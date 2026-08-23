@@ -216,8 +216,8 @@ app.include_router(prices.router, prefix="/api", dependencies=[Security(authenti
 app.include_router(data_status.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
 app.include_router(explainability.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
 
-# WRITE scope routes
-app.include_router(scenarios.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["WRITE"])])
+# Analysis & Scenarios (READ scope)
+app.include_router(scenarios.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
 
 # Routers with endpoint-level scope checks
 app.include_router(monitoring.router, prefix="/api")

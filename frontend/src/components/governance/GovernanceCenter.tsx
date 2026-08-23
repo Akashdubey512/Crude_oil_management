@@ -1,6 +1,7 @@
 import { Award, RefreshCw, AlertTriangle, ShieldCheck, BookOpen, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import type { Corridor } from '../../types';
+import { getBadgeStyles } from '../../design-system/theme-utils';
 
 interface GovernanceCenterProps {
   corridors: Corridor[];
@@ -70,15 +71,22 @@ export default function GovernanceCenter({
   const challenger = championChallenger?.challenger;
 
   return (
-    <div className="space-y-6 font-manrope select-none">
+    <div className="space-y-6 font-manrope select-none" style={{ color: 'var(--text-primary)' }}>
       {/* Target Selector */}
-      <div className="flex justify-between items-center border-b border-slate-200 pb-4">
+      <div className="flex justify-between items-center pb-4 border-b" style={{ borderColor: 'var(--border-default)' }}>
         <div>
-          <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1 font-jakarta">Select Sector</label>
+          <label className="text-[10px] uppercase font-bold block mb-1 font-jakarta" style={{ color: 'var(--text-muted)' }}>
+            Select Sector
+          </label>
           <select
             value={modelHealthCorridor}
             onChange={(e) => onCorridorChange(e.target.value)}
-            className="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-600 cursor-pointer"
+            className="rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none cursor-pointer font-geist border"
+            style={{
+              backgroundColor: 'var(--bg-secondary)',
+              borderColor: 'var(--border-default)',
+              color: 'var(--text-primary)',
+            }}
           >
             {corridors.map((c) => (
               <option key={c.corridor_id} value={c.corridor_id}>
@@ -89,7 +97,10 @@ export default function GovernanceCenter({
         </div>
 
         {isReadOnlyRole && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-1.5 text-[10px] font-bold text-amber-700 flex items-center gap-1.5 animate-pulse">
+          <div
+            className="rounded-lg px-2.5 py-1 text-[10px] font-semibold flex items-center gap-1.5 font-space border"
+            style={getBadgeStyles('moderate')}
+          >
             <AlertCircle className="w-3.5 h-3.5" />
             <span>GOVERNANCE ACTION GATED (READ-ONLY)</span>
           </div>
@@ -98,96 +109,108 @@ export default function GovernanceCenter({
 
       {/* Promotion Result Banners */}
       {actionError && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-700 p-3.5 rounded-2xl text-xs flex items-center gap-2 font-inter">
-          <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
+        <div
+          className="p-3 rounded-xl text-xs flex items-center gap-2 font-inter border"
+          style={getBadgeStyles('high')}
+        >
+          <AlertTriangle className="w-4 h-4 shrink-0" />
           <span>{actionError}</span>
         </div>
       )}
       {actionSuccess && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-3.5 rounded-2xl text-xs flex items-center gap-2 font-inter">
-          <ShieldCheck className="w-4 h-4 shrink-0 text-emerald-600" />
+        <div
+          className="p-3 rounded-xl text-xs flex items-center gap-2 font-inter border"
+          style={getBadgeStyles('low')}
+        >
+          <ShieldCheck className="w-4 h-4 shrink-0" />
           <span>{actionSuccess}</span>
         </div>
       )}
 
       {/* Champion vs Challenger Duel cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 text-xs">
         {/* Champion Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase flex items-center gap-2 font-space">
-              <Award className="w-4 h-4 text-emerald-600" />
+        <div className="navy-card p-4.5 space-y-3.5">
+          <div className="flex justify-between items-center pb-2.5 border-b" style={{ borderColor: 'var(--border-default)' }}>
+            <h3 className="text-xs font-bold tracking-wider uppercase flex items-center gap-2 font-space" style={{ color: 'var(--text-primary)' }}>
+              <Award className="w-4 h-4 text-emerald-400" />
               Active Champion Model
             </h3>
-            <span className="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md border border-emerald-200 text-[9px] tracking-wider uppercase font-geist">
+            <span
+              className="font-semibold px-2 py-0.5 rounded border text-[9px] tracking-wider uppercase font-geist"
+              style={getBadgeStyles('low')}
+            >
               ACTIVE
             </span>
           </div>
 
           {champion ? (
             <div className="space-y-2 font-geist">
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">MODEL ID</span>
-                <span className="font-extrabold text-slate-900 uppercase">{champion.model_name || 'N/A'}</span>
+              <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>MODEL ID</span>
+                <span className="font-semibold uppercase" style={{ color: 'var(--text-primary)' }}>{champion.model_name || 'N/A'}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">VERSION</span>
-                <span className="font-extrabold text-slate-900">{champion.version || '1.0'}</span>
+              <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>VERSION</span>
+                <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{champion.version || '1.0'}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">ROC-AUC SCORE</span>
-                <span className="font-extrabold text-emerald-700">
+              <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>ROC-AUC SCORE</span>
+                <span className="font-bold" style={{ color: 'var(--risk-low)' }}>
                   {champion.metrics?.roc_auc?.toFixed(4) || champion.roc_auc?.toFixed(4) || '0.9412'}
                 </span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">PR-AUC SCORE</span>
-                <span className="font-extrabold text-slate-900">
+              <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>PR-AUC SCORE</span>
+                <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                   {champion.metrics?.pr_auc?.toFixed(4) || champion.pr_auc?.toFixed(4) || '0.9105'}
                 </span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">DEPLOYED DATE</span>
-                <span className="font-bold text-slate-600">{champion.deployed_at || 'N/A'}</span>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>DEPLOYED DATE</span>
+                <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{champion.deployed_at || 'N/A'}</span>
               </div>
             </div>
           ) : (
-            <div className="text-center py-4 text-slate-400 font-inter text-xs">No active champion registered.</div>
+            <div className="text-center py-4 font-inter text-xs" style={{ color: 'var(--text-muted)' }}>No active champion registered.</div>
           )}
         </div>
 
         {/* Challenger Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase flex items-center gap-2 font-space">
-              <RefreshCw className="w-4 h-4 text-blue-600" />
+        <div className="navy-card p-4.5 space-y-3.5">
+          <div className="flex justify-between items-center pb-2.5 border-b" style={{ borderColor: 'var(--border-default)' }}>
+            <h3 className="text-xs font-bold tracking-wider uppercase flex items-center gap-2 font-space" style={{ color: 'var(--text-primary)' }}>
+              <RefreshCw className="w-4 h-4 text-blue-400" />
               Candidate Challenger Model
             </h3>
-            <span className="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded-md border border-blue-200 text-[9px] tracking-wider uppercase font-geist">
+            <span
+              className="font-semibold px-2 py-0.5 rounded border text-[9px] tracking-wider uppercase font-geist"
+              style={getBadgeStyles('info')}
+            >
               CANDIDATE
             </span>
           </div>
 
           {challenger ? (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               <div className="space-y-2 font-geist">
-                <div className="flex justify-between border-b border-slate-100 py-1.5">
-                  <span className="text-slate-500 font-bold text-[10px] uppercase">MODEL ID</span>
-                  <span className="font-extrabold text-slate-900 uppercase">{challenger.model_name || 'N/A'}</span>
+                <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                  <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>MODEL ID</span>
+                  <span className="font-semibold uppercase" style={{ color: 'var(--text-primary)' }}>{challenger.model_name || 'N/A'}</span>
                 </div>
-                <div className="flex justify-between border-b border-slate-100 py-1.5">
-                  <span className="text-slate-500 font-bold text-[10px] uppercase">VERSION</span>
-                  <span className="font-extrabold text-slate-900">{challenger.version || '1.1'}</span>
+                <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                  <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>VERSION</span>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{challenger.version || '1.1'}</span>
                 </div>
-                <div className="flex justify-between border-b border-slate-100 py-1.5">
-                  <span className="text-slate-500 font-bold text-[10px] uppercase">ROC-AUC SCORE</span>
-                  <span className="font-extrabold text-blue-700">
+                <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                  <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>ROC-AUC SCORE</span>
+                  <span className="font-bold" style={{ color: 'var(--info-blue)' }}>
                     {challenger.metrics?.roc_auc?.toFixed(4) || challenger.roc_auc?.toFixed(4) || '0.9620'}
                   </span>
                 </div>
-                <div className="flex justify-between border-b border-slate-100 py-1.5">
-                  <span className="text-slate-500 font-bold text-[10px] uppercase">PR-AUC SCORE</span>
-                  <span className="font-extrabold text-slate-900">
+                <div className="flex justify-between py-1.5 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                  <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>PR-AUC SCORE</span>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                     {challenger.metrics?.pr_auc?.toFixed(4) || challenger.pr_auc?.toFixed(4) || '0.9340'}
                   </span>
                 </div>
@@ -195,18 +218,28 @@ export default function GovernanceCenter({
 
               {/* Promotion UI Action inputs */}
               {!isReadOnlyRole && (
-                <div className="border-t border-slate-100 pt-3 space-y-2">
+                <div className="pt-3 space-y-2 border-t" style={{ borderColor: 'var(--border-default)' }}>
                   <input
                     type="text"
                     placeholder="Enter promotion rationale statement"
                     value={promoteReason}
                     onChange={(e) => setPromoteReason(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 font-inter"
+                    className="w-full rounded-lg px-2.5 py-1.5 text-xs focus:outline-none font-inter border"
+                    style={{
+                      backgroundColor: 'var(--bg-secondary)',
+                      borderColor: 'var(--border-default)',
+                      color: 'var(--text-primary)',
+                    }}
                   />
                   <button
                     onClick={handlePromote}
                     disabled={submitting}
-                    className="w-full flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold py-2 rounded-xl text-[10px] uppercase tracking-wider transition shadow-md shadow-emerald-500/20 cursor-pointer"
+                    className="w-full flex items-center justify-center gap-1.5 disabled:opacity-50 font-semibold py-2 rounded-lg text-xs border transition cursor-pointer font-space tracking-wide"
+                    style={{
+                      backgroundColor: 'var(--bg-secondary)',
+                      borderColor: 'var(--border-default)',
+                      color: 'var(--text-primary)',
+                    }}
                   >
                     {submitting ? <RefreshCw className="w-3 animate-spin" /> : null}
                     <span>Promote Challenger to Champion</span>
@@ -215,7 +248,7 @@ export default function GovernanceCenter({
               )}
             </div>
           ) : (
-            <div className="text-center py-6 text-slate-400 font-inter text-xs">
+            <div className="text-center py-6 font-inter text-xs" style={{ color: 'var(--text-muted)' }}>
               No qualified challenger registered. Retraining engine monitoring active.
             </div>
           )}
@@ -223,72 +256,75 @@ export default function GovernanceCenter({
       </div>
 
       {/* Model Retraining Status & Version History */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-xs">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 text-xs">
         {/* Retraining Card */}
-        <div className="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 font-space">
+        <div className="lg:col-span-5 navy-card p-4.5 space-y-3.5">
+          <h3 className="text-xs font-bold tracking-wider uppercase pb-2.5 font-space border-b" style={{ borderColor: 'var(--border-default)', color: 'var(--text-primary)' }}>
             Auto-Retraining Pipeline Status
           </h3>
 
           {retrainStatus ? (
             <div className="space-y-2.5 font-geist">
               <div className="flex justify-between py-1">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">PIPELINE STATUS</span>
-                <span className={`font-extrabold px-2 py-0.5 rounded-md text-[9px] border ${
-                  retrainStatus.pipeline_active 
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                    : 'bg-slate-100 text-slate-500 border-slate-200'
-                }`}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>PIPELINE STATUS</span>
+                <span
+                  className="font-semibold px-2 py-0.5 rounded text-[9px] border"
+                  style={getBadgeStyles(retrainStatus.pipeline_active ? 'low' : 'neutral')}
+                >
                   {retrainStatus.pipeline_active ? 'ACTIVE' : 'STANDBY'}
                 </span>
               </div>
-              <div className="flex justify-between border-t border-slate-100 py-1">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">DATASET RANGE</span>
-                <span className="font-extrabold text-slate-900">{retrainStatus.dataset_range || 'N/A'}</span>
+              <div className="flex justify-between py-1 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>DATASET RANGE</span>
+                <span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>{retrainStatus.dataset_range || 'N/A'}</span>
               </div>
-              <div className="flex justify-between border-t border-slate-100 py-1">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">LAST RETRAINED AT</span>
-                <span className="font-bold text-slate-600">{retrainStatus.last_retrained_at || 'N/A'}</span>
+              <div className="flex justify-between py-1 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>LAST RETRAINED AT</span>
+                <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{retrainStatus.last_retrained_at || 'N/A'}</span>
               </div>
-              <div className="flex justify-between border-t border-slate-100 py-1">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">TRIGGER THRESHOLD</span>
-                <span className="font-extrabold text-slate-900">ROC-AUC &lt; 0.85</span>
+              <div className="flex justify-between py-1 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+                <span className="font-medium text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>TRIGGER THRESHOLD</span>
+                <span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>ROC-AUC &lt; 0.85</span>
               </div>
             </div>
           ) : (
-            <div className="text-center py-4 text-slate-400 font-inter text-xs">Retrain pipeline status currently unavailable.</div>
+            <div className="text-center py-4 font-inter text-xs" style={{ color: 'var(--text-muted)' }}>Retrain pipeline status currently unavailable.</div>
           )}
         </div>
 
         {/* Version Timeline Card */}
-        <div className="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 font-space">
+        <div className="lg:col-span-7 navy-card p-4.5 space-y-3.5">
+          <h3 className="text-xs font-bold tracking-wider uppercase pb-2.5 font-space border-b" style={{ borderColor: 'var(--border-default)', color: 'var(--text-primary)' }}>
             Model Registry Timeline History
           </h3>
 
-          <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1 scrollbar">
+          <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1">
             {corridorVersions.length > 0 ? (
               corridorVersions.map((v, index) => (
-                <div key={index} className="flex items-center justify-between py-1.5 border-b border-slate-100 last:border-0">
+                <div key={index} className="flex items-center justify-between py-1.5 border-b last:border-0" style={{ borderColor: 'var(--border-subtle)' }}>
                   <div className="flex items-center gap-3">
-                    <span className="font-extrabold text-slate-900 font-geist">v{v.version}</span>
-                    <span className="text-[10px] text-slate-500 font-inter">{v.created_at || 'Jan 2026'}</span>
+                    <span className="font-semibold font-geist" style={{ color: 'var(--text-primary)' }}>v{v.version}</span>
+                    <span className="text-[10px] font-inter" style={{ color: 'var(--text-muted)' }}>{v.created_at || 'Jan 2026'}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-md border font-geist ${
-                      v.status === 'champion' 
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                        : v.status === 'challenger'
-                        ? 'bg-blue-50 text-blue-700 border-blue-200'
-                        : 'bg-slate-100 text-slate-500 border-slate-200'
-                    }`}>
+                    <span
+                      className="text-[9px] font-semibold px-2 py-0.5 rounded border font-geist"
+                      style={getBadgeStyles(
+                        v.status === 'champion'
+                          ? 'low'
+                          : v.status === 'challenger'
+                          ? 'info'
+                          : 'neutral'
+                      )}
+                    >
                       {(v.status || 'challenger').toUpperCase()}
                     </span>
                     {v.status !== 'champion' && v.status !== 'challenger' && !isReadOnlyRole && (
                       <button
                         onClick={handleRollback}
                         disabled={submitting}
-                        className="text-[10px] text-rose-600 hover:text-rose-800 font-extrabold hover:underline transition cursor-pointer font-inter"
+                        className="text-[10px] font-semibold hover:underline transition cursor-pointer font-inter"
+                        style={{ color: 'var(--risk-high)' }}
                       >
                         Rollback
                       </button>
@@ -297,7 +333,7 @@ export default function GovernanceCenter({
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-slate-400 font-inter text-xs">No version logs found in model registry.</div>
+              <div className="text-center py-4 font-inter text-xs" style={{ color: 'var(--text-muted)' }}>No version logs found in model registry.</div>
             )}
           </div>
         </div>
@@ -305,12 +341,19 @@ export default function GovernanceCenter({
 
       {/* Model Card display for RED_SEA / Proxy corridors */}
       {modelCardMarkdown && (
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase border-b border-slate-100 pb-3 flex items-center gap-2 font-space">
-            <BookOpen className="w-4 h-4 text-blue-600" />
+        <div className="navy-card p-4.5 space-y-3.5">
+          <h3 className="text-xs font-bold tracking-wider uppercase pb-2.5 flex items-center gap-2 font-space border-b" style={{ borderColor: 'var(--border-default)', color: 'var(--text-primary)' }}>
+            <BookOpen className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
             Model Card & Governance Specification
           </h3>
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs text-slate-700 overflow-y-auto max-h-[220px] leading-relaxed scrollbar font-geist">
+          <div
+            className="border rounded-lg p-3 text-xs overflow-y-auto max-h-[220px] leading-relaxed font-geist"
+            style={{
+              backgroundColor: 'var(--bg-secondary)',
+              borderColor: 'var(--border-default)',
+              color: 'var(--text-secondary)',
+            }}
+          >
             <pre className="whitespace-pre-wrap font-geist">{modelCardMarkdown}</pre>
           </div>
         </div>

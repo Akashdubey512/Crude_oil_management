@@ -48,7 +48,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_hormuz_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:46.585901+00:00"
+    "registered_at": "2026-08-22T07:43:46.585901+00:00",
+    "status": "CANDIDATE",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.3845,
+    "pr_auc": 0.0435
   },
   "RandomForest__HORMUZ__1.0": {
     "model_name": "RandomForest",
@@ -99,7 +103,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_hormuz_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:46.854560+00:00"
+    "registered_at": "2026-08-22T07:43:46.854560+00:00",
+    "status": "CHALLENGER",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.2945,
+    "pr_auc": 0.0768
   },
   "XGBoost__HORMUZ__1.0": {
     "model_name": "XGBoost",
@@ -150,7 +158,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_hormuz_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:48.808341+00:00"
+    "registered_at": "2026-08-22T07:43:48.808341+00:00",
+    "status": "CHAMPION",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.3608,
+    "pr_auc": 0.0798
   },
   "LogisticRegression__BAB_EL_MANDEB__1.0": {
     "model_name": "LogisticRegression",
@@ -225,7 +237,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_bab_el_mandeb_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:48.877644+00:00"
+    "registered_at": "2026-08-22T07:43:48.877644+00:00",
+    "status": "CANDIDATE",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.2942,
+    "pr_auc": 0.0171
   },
   "RandomForest__BAB_EL_MANDEB__1.0": {
     "model_name": "RandomForest",
@@ -300,7 +316,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_bab_el_mandeb_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:49.178228+00:00"
+    "registered_at": "2026-08-22T07:43:49.178228+00:00",
+    "status": "CHALLENGER",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.3762,
+    "pr_auc": 0.093
   },
   "XGBoost__BAB_EL_MANDEB__1.0": {
     "model_name": "XGBoost",
@@ -375,7 +395,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_bab_el_mandeb_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:49.395842+00:00"
+    "registered_at": "2026-08-22T07:43:49.395842+00:00",
+    "status": "CHAMPION",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.3687,
+    "pr_auc": 0.0515
   },
   "LogisticRegression__SUEZ__1.0": {
     "model_name": "LogisticRegression",
@@ -450,7 +474,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_suez_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:49.467319+00:00"
+    "registered_at": "2026-08-22T07:43:49.467319+00:00",
+    "status": "CANDIDATE",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.9389,
+    "pr_auc": 0.1213
   },
   "RandomForest__SUEZ__1.0": {
     "model_name": "RandomForest",
@@ -525,7 +553,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_suez_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:49.770117+00:00"
+    "registered_at": "2026-08-22T07:43:49.770117+00:00",
+    "status": "CHALLENGER",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.8667,
+    "pr_auc": 0.0794
   },
   "XGBoost__SUEZ__1.0": {
     "model_name": "XGBoost",
@@ -600,7 +632,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_suez_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:50.000533+00:00"
+    "registered_at": "2026-08-22T07:43:50.000533+00:00",
+    "status": "CHAMPION",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.9778,
+    "pr_auc": 0.6
   },
   "LogisticRegression__RED_SEA__1.0": {
     "model_name": "LogisticRegression",
@@ -675,7 +711,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\lr_red_sea_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:50.082376+00:00"
+    "registered_at": "2026-08-22T07:43:50.082376+00:00",
+    "status": "CANDIDATE",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.4898,
+    "pr_auc": 0.0787
   },
   "RandomForest__RED_SEA__1.0": {
     "model_name": "RandomForest",
@@ -750,7 +790,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\rf_red_sea_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:50.405771+00:00"
+    "registered_at": "2026-08-22T07:43:50.405771+00:00",
+    "status": "CHALLENGER",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.3892,
+    "pr_auc": 0.0933
   },
   "XGBoost__RED_SEA__1.0": {
     "model_name": "XGBoost",
@@ -825,7 +869,11 @@
       }
     },
     "artifact_path": "D:\\hackathon project\\energy-resilience\\models\\xgb_red_sea_v1.0.pkl",
-    "registered_at": "2026-08-22T07:43:50.649768+00:00"
+    "registered_at": "2026-08-22T07:43:50.649768+00:00",
+    "status": "CHAMPION",
+    "deployed_at": "2026-08-22",
+    "roc_auc": 0.3743,
+    "pr_auc": 0.1764
   },
   "XGBoost__RED_SEA__2.0": {
     "model_name": "XGBoost",
@@ -885,6 +933,8 @@
     "promoted_at": null,
     "retired_at": null,
     "promotion_reason": null,
-    "rejection_reason": null
+    "rejection_reason": null,
+    "roc_auc": 0.37430167597765357,
+    "pr_auc": 0.17644887412329271
   }
 }

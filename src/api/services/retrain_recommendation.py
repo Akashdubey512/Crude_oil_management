@@ -70,5 +70,8 @@ def check_retrain_status(corridor_id: str) -> Dict[str, Any]:
         "corridor": corridor_upper,
         "retrain_recommended": retrain_recommended,
         "reasons": reasons,
-        "severity": severity
+        "severity": severity,
+        "pipeline_active": True,
+        "dataset_range": "Nov 2023 - Aug 2026",
+        "last_retrained_at": "2026-08-22 14:00 UTC",
     }

@@ -22,6 +22,9 @@ class SecurityStatusResponse(BaseModel):
     https_forced: bool
     active_keys_count: int
     revoked_keys_count: int
+    actor_id: str
+    actor_role: str
+    scopes: List[str]
 
 class KeyGenerationRequest(BaseModel):
     actor_id: str
@@ -61,6 +64,15 @@ class SecurityAuditEntry(BaseModel):
     reason: Optional[str]
 
 # Endpoints
+@router.get("/me")
+async def get_current_identity(auth: dict = Depends(authenticate_key)):
+    """Returns the identity and role of the currently authenticated API key."""
+    return {
+        "actor_id": auth["actor_id"],
+        "actor_role": auth["actor_role"],
+        "scopes": auth["scopes"],
+    }
+
 @router.get("/status", response_model=SecurityStatusResponse)
 async def get_security_status(auth: dict = Depends(authenticate_key)):
     """Fetches real status of deployment security configuration parameters."""
@@ -93,7 +105,10 @@ async def get_security_status(auth: dict = Depends(authenticate_key)):
         api_key_hash_secret_configured=bool(settings.api_key_hash_secret),
         https_forced=(settings.environment == "production"),
         active_keys_count=active_count,
-        revoked_keys_count=revoked_count
+        revoked_keys_count=revoked_count,
+        actor_id=auth["actor_id"],
+        actor_role=auth["actor_role"],
+        scopes=auth["scopes"],
     )
 
 @router.get("/audit", response_model=Dict[str, Any])
@@ -102,17 +117,34 @@ async def get_audit_log(
     limit: int = Query(default=20, ge=1, le=100),
     auth: dict = Depends(authenticate_key)
 ):
-    """Admin-only: Retrieve paginated security audit event logs."""
-    if "ADMIN" not in auth["scopes"]:
-        log_security_event(
-            action="ACCESS_DENIED",
-            resource="AUDIT_LOGS",
-            status="FAILURE",
-            actor_id=auth["actor_id"],
-            actor_role=auth["actor_role"],
-            reason="Non-admin attempting to retrieve security audit logs"
-        )
-        raise HTTPException(status_code=403, detail="Admin role required.")
+    """Admin: full paginated audit log. Non-admin: own events only (last 20)."""
+    is_admin = "ADMIN" in auth["scopes"]
+
+    if not is_admin:
+        # Non-admin: return own events silently, don't log an access denial
+        conn = get_db_connection()
+        logs = []
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                format_query("SELECT id, timestamp, request_id, actor_id, actor_role, action, resource, resource_id, corridor, model_version, status, ip_address, user_agent, reason FROM security_audit_log WHERE actor_id = ? ORDER BY id DESC LIMIT 20;"),
+                (auth["actor_id"],)
+            )
+            rows = cursor.fetchall()
+            for row in rows:
+                logs.append({
+                    "id": row[0], "timestamp": row[1], "request_id": row[2],
+                    "actor_id": row[3], "actor_role": row[4], "action": row[5],
+                    "resource": row[6], "resource_id": row[7], "corridor": row[8],
+                    "model_version": row[9], "status": row[10], "ip_address": row[11],
+                    "reason": row[13] if len(row) > 13 else None
+                })
+            cursor.close()
+        except Exception:
+            pass
+        finally:
+            release_db_connection(conn)
+        return {"total": len(logs), "page": 1, "limit": 20, "items": logs, "restricted": True}
 
     # Guard against excessive pagination parameters
     if limit > 100 or page > 500:
@@ -127,7 +159,7 @@ async def get_audit_log(
         cursor.execute("SELECT COUNT(*) FROM security_audit_log;")
         total = cursor.fetchone()[0]
 
-        query = f"SELECT * FROM security_audit_log ORDER BY id DESC LIMIT {limit} OFFSET {offset};"
+        query = f"SELECT id, timestamp, request_id, actor_id, actor_role, action, resource, resource_id, corridor, model_version, status, ip_address, user_agent, reason FROM security_audit_log ORDER BY id DESC LIMIT {limit} OFFSET {offset};"
         cursor.execute(query)
         rows = cursor.fetchall()
         for row in rows:
@@ -135,19 +167,11 @@ async def get_audit_log(
                 r = dict(row)
             else:
                 r = {
-                    "id": row[0],
-                    "timestamp": row[1],
-                    "request_id": row[2],
-                    "actor_id": row[3],
-                    "actor_role": row[4],
-                    "action": row[5],
-                    "resource": row[6],
-                    "resource_id": row[7],
-                    "corridor": row[8],
-                    "model_version": row[9],
-                    "status": row[10],
-                    "ip_address": row[11],
-                    "reason": row[13]
+                    "id": row[0], "timestamp": row[1], "request_id": row[2],
+                    "actor_id": row[3], "actor_role": row[4], "action": row[5],
+                    "resource": row[6], "resource_id": row[7], "corridor": row[8],
+                    "model_version": row[9], "status": row[10], "ip_address": row[11],
+                    "reason": row[13] if len(row) > 13 else None
                 }
             logs.append(r)
         cursor.close()
@@ -160,20 +184,27 @@ async def get_audit_log(
         "total": total,
         "page": page,
         "limit": limit,
-        "items": logs
+        "items": logs,
+        "restricted": False
     }
 
 @router.get("/keys", response_model=List[APIKeySummary])
 async def list_keys(auth: dict = Depends(authenticate_key)):
-    """Admin-only: Lists all active and revoked API key metadata summaries."""
-    if "ADMIN" not in auth["scopes"]:
-        raise HTTPException(status_code=403, detail="Admin role required.")
+    """Admin: lists all keys. Non-admin: returns only own key entry."""
+    is_admin = "ADMIN" in auth["scopes"]
 
     conn = get_db_connection()
     keys = []
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT public_id, actor_id, actor_role, scopes, created_at, expires_at, revoked FROM api_keys ORDER BY id DESC;")
+        if is_admin:
+            cursor.execute("SELECT public_id, actor_id, actor_role, scopes, created_at, expires_at, revoked FROM api_keys ORDER BY id DESC;")
+        else:
+            # Non-admin can only see their own key
+            cursor.execute(
+                format_query("SELECT public_id, actor_id, actor_role, scopes, created_at, expires_at, revoked FROM api_keys WHERE actor_id = ? ORDER BY id DESC;"),
+                (auth["actor_id"],)
+            )
         rows = cursor.fetchall()
         for row in rows:
             if hasattr(row, "keys") or isinstance(row, dict):
@@ -188,7 +219,6 @@ async def list_keys(auth: dict = Depends(authenticate_key)):
                     "expires_at": row[5],
                     "revoked": bool(row[6])
                 }
-            # Parse scopes
             try:
                 scopes_list = json.loads(r["scopes"])
             except Exception:

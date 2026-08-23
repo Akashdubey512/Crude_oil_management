@@ -25,19 +25,25 @@ import ObservabilityCenter from '../components/observability/ObservabilityCenter
 import SecurityCenter from '../components/security/SecurityCenter';
 
 // Custom API imports for tab-specific fetches
-import { api } from '../api/client';
+import { api, setActiveKey, getActiveKey } from '../api/client';
 import type { RiskHistoryEntry, CorridorComparisonResponse } from '../types';
+
+import type { Theme } from '../api/hooks/useTheme';
 
 interface CommandCenterProps {
   initialTab?: string;
   initialCorridor?: string | null;
   onReturnToLanding?: () => void;
+  theme?: Theme;
+  onToggleTheme?: () => void;
 }
 
 export default function CommandCenter({
   initialTab = 'MONITOR',
   initialCorridor = 'HORMUZ',
   onReturnToLanding,
+  theme = 'dark',
+  onToggleTheme,
 }: CommandCenterProps = {}) {
   // 1. Navigation state
   const [dashboardMode, setDashboardMode] = useState<string>(initialTab);
@@ -62,9 +68,14 @@ export default function CommandCenter({
 
   const selectedCorridorObj = corridors.find((c) => c.corridor_id === selectedCorridor);
 
-  const handleSelectCorridor = (id: string) => {
-    setSelectedCorridor(id);
-    setIsDrawerOpen(true);
+  const handleSelectCorridor = (id: string | null) => {
+    if (!id) {
+      setSelectedCorridor(null);
+      setIsDrawerOpen(false);
+    } else {
+      setSelectedCorridor(id);
+      setIsDrawerOpen(true);
+    }
   };
 
   // 4. Corridor details hook
@@ -86,7 +97,7 @@ export default function CommandCenter({
   }, [selectedCorridor]);
 
   // 5. Security state hook
-  const [activeApiKey, setActiveApiKey] = useState<string>(localStorage.getItem('erp_api_key') || '');
+  const [activeApiKey, setActiveApiKey] = useState<string>(() => getActiveKey());
   const {
     securityStatus,
     securityKeys,
@@ -97,9 +108,10 @@ export default function CommandCenter({
     revokeApiKey,
   } = useSecurity(activeApiKey);
 
+  /** Atomically change the active API key and persist it. */
   const handleApiKeyChange = (newKey: string) => {
-    setActiveApiKey(newKey);
-    localStorage.setItem('erp_api_key', newKey);
+    setActiveKey(newKey);        // synchronous — updates module store + localStorage
+    setActiveApiKey(newKey);     // triggers re-render & hook refresh
   };
 
   // 6. Model Monitoring, MLOps, Governance hook
@@ -115,7 +127,7 @@ export default function CommandCenter({
   } = useGovernance(modelHealthCorridor);
 
   // Fallback health status for KPI
-  const modelHealthStatus = 'GOOD'; // Default optimal status
+  const modelHealthStatus = 'GOOD';
 
   // 7. Observability hook
   const { observabilityMetrics, refresh: refreshObservability } = useObservability();
@@ -172,9 +184,6 @@ export default function CommandCenter({
   // Master manual refresh controller
   const handleRefresh = async () => {
     await refreshGlobal();
-    if (selectedCorridor) {
-      // Re-trigger details fetch automatically by updating dependency trigger if needed
-    }
     if (activeApiKey) {
       await refreshSecurity();
     }
@@ -182,22 +191,45 @@ export default function CommandCenter({
     await refreshObservability();
   };
 
-  const userRole = securityStatus?.role || 'VIEWER';
+  // Live role – resolved from /api/security/me whenever the active key changes
+  const [userRole, setUserRole] = useState<string>('ADMIN');
   const isReadOnlyRole = userRole === 'VIEWER' || userRole === 'ANALYST';
+
+  useEffect(() => {
+    api.getMe()
+      .then((me) => setUserRole(me.actor_role))
+      .catch(() => setUserRole('VIEWER'));
+  }, [activeApiKey]);
+
+  /** Switch role: update key atomically FIRST, then resolve the new role. */
+  const handleRoleChange = (newKey: string) => {
+    setActiveKey(newKey);          // synchronous — store updated before getMe fires
+    setActiveApiKey(newKey);
+    // Pass the new key directly so getMe doesn't read stale state
+    api.getMe(newKey)
+      .then((me) => setUserRole(me.actor_role))
+      .catch(() => setUserRole('VIEWER'));
+  };
 
   // Skeleton screen if global state loading
   if (globalLoading) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center text-slate-600 font-geist p-6 select-none">
-        <RefreshCw className="w-10 h-10 animate-spin text-blue-600 mb-4" />
-        <p className="text-xs font-black font-space tracking-widest uppercase text-slate-900">SYNCHRONIZING OPERATIONAL COMMAND CENTER...</p>
-        <p className="text-[11px] text-slate-500 mt-1">Connecting to FastAPI twin nodes</p>
+      <div
+        className="min-h-screen flex flex-col items-center justify-center font-geist p-6 select-none"
+        style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-secondary)' }}
+      >
+        <RefreshCw className="w-8 h-8 animate-spin mb-4" style={{ color: 'var(--text-muted)' }} />
+        <p className="text-xs font-semibold font-space tracking-wider uppercase" style={{ color: 'var(--text-primary)' }}>SYNCHRONIZING OPERATIONAL COMMAND CENTER...</p>
+        <p className="text-[11px] mt-1" style={{ color: 'var(--text-secondary)' }}>Connecting to FastAPI twin nodes</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-manrope selection:bg-blue-600 selection:text-white">
+    <div
+      className="min-h-screen flex flex-col font-manrope"
+      style={{ backgroundColor: 'var(--bg-app)', color: 'var(--text-primary)' }}
+    >
       {/* 1. Header TopBar */}
       <TopBar
         health={health}
@@ -205,13 +237,23 @@ export default function CommandCenter({
         onRefresh={handleRefresh}
         error={globalError}
         userRole={userRole}
+        onRoleChange={handleRoleChange}
         onReturnToLanding={onReturnToLanding}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
       />
 
       {/* Global Error Banner */}
       {globalError && (
-        <div className="bg-rose-50 border-b border-rose-200 p-3 text-center text-xs font-geist text-rose-700 flex items-center justify-center gap-2 select-none font-bold">
-          <AlertOctagon className="w-4 h-4 text-rose-600" />
+        <div
+          className="border-b p-2.5 text-center text-xs font-geist flex items-center justify-center gap-2 select-none font-medium"
+          style={{
+            backgroundColor: 'var(--risk-high-bg)',
+            borderColor: 'var(--risk-high-border)',
+            color: 'var(--risk-high-text)',
+          }}
+        >
+          <AlertOctagon className="w-4 h-4" style={{ color: 'var(--risk-high)' }} />
           <span>{globalError}</span>
         </div>
       )}
@@ -223,7 +265,7 @@ export default function CommandCenter({
         <SideNav currentTab={dashboardMode} onTabChange={setDashboardMode} />
 
         {/* 3. Panel Area wrapper */}
-        <main className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar">
+        <main className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar">
           
           {/* Dashboard KPIs shown on ALL tabs except landing */}
           <KPIBar
@@ -243,11 +285,11 @@ export default function CommandCenter({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
                   {/* Map and details selection layout */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                    {/* 3D Globe Map */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                    {/* 60FPS Tactical Map */}
                     <div className="lg:col-span-8 h-[580px]">
                       <GlobeMap
                         infrastructure={infrastructure}
@@ -258,39 +300,60 @@ export default function CommandCenter({
                     </div>
 
                     {/* Quick selector side card */}
-                    <div className="lg:col-span-4 flex flex-col justify-between bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs font-manrope">
+                    <div
+                      className="lg:col-span-4 flex flex-col justify-between navy-card p-4 font-manrope"
+                    >
                       <div>
-                        <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3 mb-3">
-                          <Compass className="w-4 h-4 text-blue-600" />
-                          <h3 className="text-xs font-black tracking-wider text-slate-900 uppercase font-space">Sector Inventory</h3>
+                        <div
+                          className="flex items-center gap-2 pb-2.5 mb-3 border-b"
+                          style={{ borderColor: 'var(--border-default)' }}
+                        >
+                          <Compass className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                          <h3
+                            className="text-xs font-bold tracking-wider uppercase font-space"
+                            style={{ color: 'var(--text-primary)' }}
+                          >
+                            Sector Inventory
+                          </h3>
                         </div>
 
-                        <div className="space-y-2.5">
+                        <div className="space-y-1.5">
                           {corridors.map((c) => {
                             const cr = risks.find(r => r.corridor === c.corridor_id);
+                            const isSelected = selectedCorridor === c.corridor_id;
+                            const riskLevel = cr?.risk_level || 'UNKNOWN';
                             return (
                               <button
                                 key={c.corridor_id}
                                 onClick={() => handleSelectCorridor(c.corridor_id)}
-                                className={`w-full text-left p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
-                                  selectedCorridor === c.corridor_id
-                                    ? 'bg-blue-50/90 border-blue-300 text-blue-800 shadow-2xs'
-                                    : 'bg-slate-50/80 border-slate-200/80 text-slate-700 hover:bg-slate-100'
-                                }`}
+                                className="w-full text-left p-3 rounded-lg border transition-all duration-150 cursor-pointer"
+                                style={{
+                                  backgroundColor: isSelected ? 'var(--active-overlay)' : 'transparent',
+                                  borderColor: isSelected ? 'var(--accent-muted)' : 'var(--border-subtle)',
+                                }}
                               >
-                                <div className="flex justify-between items-center font-bold text-xs">
-                                  <span>{c.name}</span>
-                                  <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded border uppercase ${
-                                    cr?.risk_level === 'LOW' 
-                                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
-                                      : cr?.risk_level === 'MODERATE' 
-                                      ? 'text-amber-700 bg-amber-50 border-amber-200' 
-                                      : 'text-rose-700 bg-rose-50 border-rose-200'
-                                  }`}>
-                                    {cr?.risk_level || 'UNKNOWN'}
+                                <div className="flex justify-between items-center font-medium text-xs">
+                                  <span
+                                    className="font-space font-semibold"
+                                    style={{ color: 'var(--text-primary)' }}
+                                  >
+                                    {c.name}
+                                  </span>
+                                  <span
+                                    className={`risk-badge ${
+                                      riskLevel === 'LOW' ? 'low'
+                                      : riskLevel === 'MODERATE' ? 'moderate'
+                                      : riskLevel === 'HIGH' ? 'high'
+                                      : 'critical'
+                                    }`}
+                                  >
+                                    {riskLevel}
                                   </span>
                                 </div>
-                                <p className="text-[10px] text-slate-500 mt-1 leading-relaxed font-inter">
+                                <p
+                                  className="text-[10px] mt-1.5 leading-relaxed font-inter"
+                                  style={{ color: 'var(--text-muted)' }}
+                                >
                                   {c.description}
                                 </p>
                               </button>
@@ -299,46 +362,43 @@ export default function CommandCenter({
                         </div>
                       </div>
 
-                      <div className="border-t border-slate-100 pt-3 mt-4 text-[10px] text-slate-400 font-inter">
-                        <span>Click a sector above or select nodes on the map layer to expand deep SHAP explanation diagnostics.</span>
+                      <div
+                        className="border-t pt-3 mt-3 text-[10px] font-inter"
+                        style={{ borderColor: 'var(--border-default)', color: 'var(--text-muted)' }}
+                      >
+                        <span>Click a sector above or select nodes on the map layer to inspect SHAP diagnostics.</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Below-map charts shelf */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Risk History */}
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider font-space">Risk History Index</span>
-                        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">30d inference</span>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    {[
+                      { title: 'Risk History Index', label: '30d inference', content: <RiskHistoryChart data={monitorHistory} /> },
+                      { title: 'Traffic Flow Sensor', label: 'Observed Vessels', content: <TrafficTrendChart data={activeTraffic} /> },
+                      { title: 'Brent Crude Spot', label: 'FRED Stream', content: <BrentChart brentPrices={brentPrices} /> },
+                    ].map(({ title, label, content }) => (
+                      <div key={title} className="navy-card p-4 space-y-2">
+                        <div
+                          className="flex justify-between items-center pb-2 border-b"
+                          style={{ borderColor: 'var(--border-default)' }}
+                        >
+                          <span
+                            className="text-xs font-semibold uppercase tracking-wide font-space"
+                            style={{ color: 'var(--text-primary)' }}
+                          >
+                            {title}
+                          </span>
+                          <span
+                            className="text-[9px] font-geist uppercase font-medium"
+                            style={{ color: 'var(--text-muted)' }}
+                          >
+                            {label}
+                          </span>
+                        </div>
+                        <div className="h-[180px] w-full">{content}</div>
                       </div>
-                      <div className="h-[180px] w-full">
-                        <RiskHistoryChart data={monitorHistory} />
-                      </div>
-                    </div>
-
-                    {/* Traffic Flow */}
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider font-space">Traffic Flow Sensor</span>
-                        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">observed vessels</span>
-                      </div>
-                      <div className="h-[180px] w-full">
-                        <TrafficTrendChart data={activeTraffic} />
-                      </div>
-                    </div>
-
-                    {/* Brent Prices */}
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider font-space">Brent Crude Spot</span>
-                        <span className="text-[9px] font-geist text-slate-400 uppercase font-bold">Fred Data Stream</span>
-                      </div>
-                      <div className="h-[180px] w-full">
-                        <BrentChart brentPrices={brentPrices} />
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </motion.div>
               )}
@@ -349,46 +409,49 @@ export default function CommandCenter({
                   key="comparison"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-4 font-mono text-[10px]"
+                  className="navy-card p-5 space-y-4 font-manrope text-xs"
                 >
-                  <h3 className="text-xs font-black tracking-wider text-white uppercase border-b border-gray-900 pb-2 flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-cyan-400" />
+                  <h3
+                    className="text-xs font-semibold tracking-wider uppercase pb-3 flex items-center gap-2 font-space border-b"
+                    style={{ color: 'var(--text-primary)', borderColor: 'var(--border-default)' }}
+                  >
+                    <Layers className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                     Cross-Corridor Comparison
                   </h3>
 
                   {comparisonLoading ? (
-                    <div className="text-center py-12 text-gray-500">Retrieving comparatives...</div>
+                    <div className="text-center py-12 font-inter" style={{ color: 'var(--text-muted)' }}>Retrieving comparatives...</div>
                   ) : comparison?.items ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left">
+                    <div className="overflow-x-auto font-geist">
+                      <table className="theme-table">
                         <thead>
-                          <tr className="border-b border-gray-900 text-gray-500 uppercase text-[9px]">
-                            <th className="pb-2">Sector Name</th>
-                            <th className="pb-2 text-right">Risk Score</th>
-                            <th className="pb-2 text-right">Probability</th>
-                            <th className="pb-2 text-right">Geopolitical</th>
-                            <th className="pb-2 text-right">Traffic Status</th>
-                            <th className="pb-2 text-right">Data freshness</th>
+                          <tr>
+                            <th>Sector Name</th>
+                            <th className="text-right">Risk Score</th>
+                            <th className="text-right">Probability</th>
+                            <th className="text-right">Geopolitical</th>
+                            <th className="text-right">Traffic Status</th>
+                            <th className="text-right">Data Freshness</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-900/40 text-gray-300">
+                        <tbody>
                           {comparison.items.map((item) => (
-                            <tr key={item.corridor_id} className="hover:bg-gray-900/20">
-                              <td className="py-3 font-bold uppercase">{item.name}</td>
-                              <td className="py-3 text-right font-black text-white">{item.risk_score?.toFixed(2) || '0.00'}</td>
-                              <td className="py-3 text-right text-cyan-400">
+                            <tr key={item.corridor_id}>
+                              <td className="font-semibold uppercase font-space" style={{ color: 'var(--text-primary)' }}>{item.name}</td>
+                              <td className="text-right font-bold" style={{ color: 'var(--text-primary)' }}>{item.risk_score?.toFixed(2) || '0.00'}</td>
+                              <td className="text-right font-semibold" style={{ color: 'var(--info-blue)' }}>
                                 {item.probability !== null ? `${(item.probability * 100).toFixed(1)}%` : 'N/A'}
                               </td>
-                              <td className="py-3 text-right uppercase">{item.geopolitical_status}</td>
-                              <td className="py-3 text-right uppercase">{item.vessel_volume_status}</td>
-                              <td className="py-3 text-right text-gray-500 uppercase">{item.data_freshness_traffic}</td>
+                              <td className="text-right uppercase">{item.geopolitical_status}</td>
+                              <td className="text-right uppercase">{item.vessel_volume_status}</td>
+                              <td className="text-right uppercase" style={{ color: 'var(--text-muted)' }}>{item.data_freshness_traffic}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">Comparison indices unavailable.</div>
+                    <div className="text-center py-8 font-inter" style={{ color: 'var(--text-muted)' }}>Comparison indices unavailable.</div>
                   )}
                 </motion.div>
               )}
@@ -410,17 +473,23 @@ export default function CommandCenter({
                   key="trends"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-4 font-mono text-[10px]"
+                  className="navy-card p-5 space-y-4 font-manrope text-xs"
                 >
-                  <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                    <h3 className="text-xs font-black tracking-wider text-white uppercase flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-cyan-400" />
+                  <div
+                    className="flex justify-between items-center pb-3 border-b"
+                    style={{ borderColor: 'var(--border-default)' }}
+                  >
+                    <h3
+                      className="text-xs font-semibold tracking-wider uppercase flex items-center gap-2 font-space"
+                      style={{ color: 'var(--text-primary)' }}
+                    >
+                      <TrendingUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                       Retrospective Trend Analysis
                     </h3>
                     <select
                       value={trendCorridor}
                       onChange={(e) => setTrendCorridor(e.target.value)}
-                      className="bg-gray-950 border border-gray-900 rounded px-2 py-0.5 text-xs text-white focus:outline-none"
+                      className="theme-select"
                     >
                       {corridors.map((c) => (
                         <option key={c.corridor_id} value={c.corridor_id}>{c.name}</option>
@@ -428,9 +497,9 @@ export default function CommandCenter({
                     </select>
                   </div>
 
-                  <div className="h-[300px] w-full">
+                  <div className="h-[320px] w-full">
                     {trendLoading ? (
-                      <div className="h-full flex items-center justify-center text-gray-500">Querying historical trend matrices...</div>
+                      <div className="h-full flex items-center justify-center font-inter" style={{ color: 'var(--text-muted)' }}>Querying historical trend matrices...</div>
                     ) : (
                       <RiskHistoryChart data={trendData} />
                     )}
@@ -444,50 +513,82 @@ export default function CommandCenter({
                   key="intelligence"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono text-[10px]"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-5 font-manrope text-xs"
                 >
                   {/* Geopolitical logs */}
-                  <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-                    <span className="text-xs font-black text-white uppercase border-b border-gray-900 pb-2 block">
+                  <div className="navy-card p-4 space-y-3">
+                    <span
+                      className="text-xs font-semibold uppercase pb-2.5 border-b block font-space"
+                      style={{ color: 'var(--text-primary)', borderColor: 'var(--border-default)' }}
+                    >
                       Geopolitical Threat Incident Feed
                     </span>
-                    <div className="space-y-2 max-h-[350px] overflow-y-auto pr-1 scrollbar">
+                    <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar">
                       {activeEvents.map((evt, idx) => (
-                        <div key={idx} className="border-b border-gray-900/40 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
-                          <div className="flex justify-between text-[8px] text-gray-500">
-                            <span>SOURCE: {evt.source.toUpperCase()}</span>
+                        <div
+                          key={idx}
+                          className="border-b pb-2.5 mb-2.5 last:border-0 last:pb-0 last:mb-0"
+                          style={{ borderColor: 'var(--border-subtle)' }}
+                        >
+                          <div
+                            className="flex justify-between text-[10px] font-geist"
+                            style={{ color: 'var(--text-muted)' }}
+                          >
+                            <span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>SOURCE: {evt.source.toUpperCase()}</span>
                             <span>{evt.event_date}</span>
                           </div>
-                          <p className="text-[10px] text-gray-300 mt-1 leading-normal">{evt.text_reference}</p>
+                          <p
+                            className="text-xs mt-1.5 leading-relaxed font-inter"
+                            style={{ color: 'var(--text-secondary)' }}
+                          >
+                            {evt.text_reference}
+                          </p>
                         </div>
                       ))}
                       {activeEvents.length === 0 && (
-                        <div className="text-center py-8 text-gray-500">No events logged.</div>
+                        <div className="text-center py-8 font-inter" style={{ color: 'var(--text-muted)' }}>No events logged.</div>
                       )}
                     </div>
                   </div>
 
                   {/* Traffic sensor logs */}
-                  <div className="glass-panel p-4 rounded-xl border border-gray-900/60 space-y-3">
-                    <span className="text-xs font-black text-white uppercase border-b border-gray-900 pb-2 block">
+                  <div className="navy-card p-4 space-y-3">
+                    <span
+                      className="text-xs font-semibold uppercase pb-2.5 border-b block font-space"
+                      style={{ color: 'var(--text-primary)', borderColor: 'var(--border-default)' }}
+                    >
                       Vessel Flow Stream Ingests
                     </span>
-                    <div className="space-y-2 max-h-[350px] overflow-y-auto pr-1 scrollbar">
+                    <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar">
                       {activeTraffic.map((t, idx) => (
-                        <div key={idx} className="border-b border-gray-900/40 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
-                          <div className="flex justify-between text-[8px] text-gray-500">
+                        <div
+                          key={idx}
+                          className="border-b pb-2.5 mb-2.5 last:border-0 last:pb-0 last:mb-0"
+                          style={{ borderColor: 'var(--border-subtle)' }}
+                        >
+                          <div
+                            className="flex justify-between text-[10px] font-geist"
+                            style={{ color: 'var(--text-muted)' }}
+                          >
                             <span>DATE: {t.date}</span>
-                            <span className={t.anomaly_flag ? 'text-rose-500 font-bold' : 'text-emerald-400 font-bold'}>
+                            <span
+                              className="font-semibold"
+                              style={{ color: t.anomaly_flag ? 'var(--risk-high)' : 'var(--risk-low)' }}
+                            >
                               {t.anomaly_type}
                             </span>
                           </div>
-                          <p className="text-[10px] text-gray-300 mt-1">
-                            Vessels: <span className="font-bold">{t.vessel_count}</span> | Tankers: <span className="font-bold text-cyan-400">{t.tanker_count}</span>
+                          <p
+                            className="text-xs mt-1.5 font-geist"
+                            style={{ color: 'var(--text-secondary)' }}
+                          >
+                            Vessels: <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{t.vessel_count}</span>{' '}
+                            | Tankers: <span className="font-semibold" style={{ color: 'var(--info-blue)' }}>{t.tanker_count}</span>
                           </p>
                         </div>
                       ))}
                       {activeTraffic.length === 0 && (
-                        <div className="text-center py-8 text-gray-500">No traffic logs found.</div>
+                        <div className="text-center py-8 font-inter" style={{ color: 'var(--text-muted)' }}>No traffic logs found.</div>
                       )}
                     </div>
                   </div>
@@ -557,10 +658,12 @@ export default function CommandCenter({
                     securityKeys={securityKeys}
                     securityAudits={securityAudits}
                     activeApiKey={activeApiKey}
+                    userRole={userRole}
                     onApiKeyChange={handleApiKeyChange}
                     securityError={securityError}
                     onGenerateKey={generateNewKey}
                     onRevokeKey={revokeApiKey}
+                    onRefresh={refreshSecurity}
                   />
                 </motion.div>
               )}

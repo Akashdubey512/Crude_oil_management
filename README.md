@@ -115,8 +115,20 @@ Open your browser and navigate to: http://localhost:5173
 | Phase 12 | Observability, Postgres, Rate Limiting, Lifespan Probes | COMPLETE |
 | Phase 13 | Enterprise Security, API Security & Production Deployment Hardening | COMPLETE |
 | Phase 14 | Premium Cinematic Maritime Command Center & Landing Experience | COMPLETE |
+| Phase 15 | Enterprise Dual-Theme System, Cartographic Intelligence & MLOps Governance Overhaul | COMPLETE |
 
 **Backend:** 282 tests passing. **Frontend:** 30 tests passing.
+
+## Phase 15 — Enterprise Dual-Theme System, Cartographic Intelligence & MLOps Governance Overhaul
+
+- **Production-Grade Dual-Theme Engine (Light & Dark)** — Complete architectural overhaul utilizing semantic CSS design tokens (`--bg-app`, `--bg-card`, `--text-primary`, `--border-default`, `--risk-*`), automatic CartoDB Positron/Dark Matter tile layer switching, and zero unstyled components across all dashboard channels.
+- **Advanced Maritime Vector & Geospatial Command Map** — High-precision coordinates and color-graded corridor risk arcs (Low: Emerald, Moderate: Amber, High: Crimson) reflecting real-time threat calculations for Hormuz, Bab-el-Mandeb, Suez, and Red Sea corridors.
+- **MLOps Diagnostics & Governance Center Complete** — Live Champion vs. Challenger model comparisons with real ROC-AUC/PR-AUC metrics, automated feature drift detection (PSI/KS checks across all 52 features), and formal Model Card specifications for all maritime corridors.
+- **Telemetry & Observability Stream** — Integrated real-time Prometheus throughput, response latency, database connection pool tracking, and streaming telemetry console.
+- **RBAC Scope & Permission Alignment** — Refined role-based permissions allowing Viewer, Analyst, and Admin roles to explore intelligence, inspect models, and run what-if scenario simulations with secure Admin gating for model promotions and key provisioning.
+- **Zero-Error Compilation & Production Hardened** — Fully optimized Vite production build passing TypeScript verification (`tsc -b`) with zero Framer Motion or React runtime warnings.
+
+---
 
 ## Phase 12 — Observability & Reliability Engineering
 

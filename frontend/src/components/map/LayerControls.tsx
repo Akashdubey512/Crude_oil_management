@@ -16,42 +16,58 @@ interface LayerControlsProps {
 }
 
 export default function LayerControls({ layers, onLayerToggle }: LayerControlsProps) {
-  const layerList: { key: keyof LayerState; label: string; color: string }[] = [
-    { key: 'risk', label: 'Risk Indices', color: 'bg-red-500' },
-    { key: 'traffic', label: 'Maritime Traffic', color: 'bg-cyan-500' },
-    { key: 'infrastructure', label: 'Energy Infrastructure', color: 'bg-purple-500' },
-    { key: 'ports', label: 'Import Ports', color: 'bg-blue-500' },
-    { key: 'corridors', label: 'Transit Corridors', color: 'bg-amber-500' },
-    { key: 'events', label: 'Geopolitical Incidents', color: 'bg-rose-500' },
-    { key: 'alerts', label: 'System Alerts', color: 'bg-red-600 animate-pulse' },
+  const layerList: { key: keyof LayerState; label: string; dotColor: string }[] = [
+    { key: 'risk', label: 'Risk Indices', dotColor: 'var(--risk-high)' },
+    { key: 'traffic', label: 'Maritime Traffic', dotColor: 'var(--info-blue)' },
+    { key: 'infrastructure', label: 'Energy Infrastructure', dotColor: '#a855f7' },
+    { key: 'ports', label: 'Import Ports', dotColor: '#38bdf8' },
+    { key: 'corridors', label: 'Transit Corridors', dotColor: 'var(--risk-moderate)' },
+    { key: 'events', label: 'Geopolitical Incidents', dotColor: 'var(--risk-high)' },
+    { key: 'alerts', label: 'System Alerts', dotColor: '#ef4444' },
   ];
 
   return (
-    <div className="glass-panel p-3.5 rounded-xl border border-gray-900/60 max-w-[220px] select-none text-[10px] font-mono">
-      <div className="flex items-center gap-2 mb-3 text-cyan-400 font-bold border-b border-gray-900 pb-2">
-        <Layers className="w-3.5 h-3.5" />
+    <div
+      className="p-3 rounded-lg border max-w-[210px] select-none text-[10px] font-geist backdrop-blur-md shadow-xl"
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        borderColor: 'var(--border-default)',
+        color: 'var(--text-primary)',
+      }}
+    >
+      <div
+        className="flex items-center gap-1.5 mb-2.5 font-semibold pb-1.5 font-space border-b"
+        style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
+      >
+        <Layers className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
         <span>MAP LAYERS</span>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {layerList.map((layer) => {
           const isEnabled = layers[layer.key];
           return (
             <button
               key={layer.key}
               onClick={() => onLayerToggle(layer.key)}
-              className="w-full flex items-center justify-between text-left hover:bg-gray-900/50 p-1.5 rounded transition hover:cursor-pointer"
+              className="w-full flex items-center justify-between text-left p-1.5 rounded transition cursor-pointer hover:opacity-80"
+              style={{
+                backgroundColor: isEnabled ? 'var(--bg-secondary)' : 'transparent',
+              }}
             >
               <div className="flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${layer.color} shrink-0`} />
-                <span className={isEnabled ? 'text-gray-200 font-bold' : 'text-gray-500'}>
+                <span
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{ backgroundColor: layer.dotColor }}
+                />
+                <span style={{ color: isEnabled ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: isEnabled ? 600 : 400 }}>
                   {layer.label}
                 </span>
               </div>
               {isEnabled ? (
-                <Eye className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-primary)' }} />
               ) : (
-                <EyeOff className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+                <EyeOff className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
               )}
             </button>
           );
