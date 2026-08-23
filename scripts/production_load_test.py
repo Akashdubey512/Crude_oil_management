@@ -50,7 +50,7 @@ def send_single_request(base_url: str, endpoint: str, method: str = "GET", heade
 
 def run_load_test(base_url: str, concurrency: int = 10, requests_per_user: int = 20) -> dict:
     total_requests = concurrency * requests_per_user
-    print(f"🚀 Starting load test: {concurrency} virtual users x {requests_per_user} requests = {total_requests} total requests against {base_url}")
+    print(f"[START] Load test: {concurrency} virtual users x {requests_per_user} requests = {total_requests} total requests against {base_url}")
 
     latencies = []
     status_counts = {}
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     report = run_load_test(args.url, args.concurrency, args.requests)
 
-    print("\n📊 LOAD TEST PERFORMANCE SUMMARY:")
+    print("\n[RESULTS] LOAD TEST PERFORMANCE SUMMARY:")
     print(f"  Total Requests:  {report['total_requests']}")
     print(f"  Duration:        {report['total_duration_sec']} sec")
     print(f"  Throughput:      {report['requests_per_sec']} req/sec")
@@ -133,4 +133,4 @@ if __name__ == "__main__":
 
     with open(args.out, "w") as f:
         json.dump(report, f, indent=2)
-    print(f"\n✅ Performance report saved to: {args.out}")
+    print(f"\n[DONE] Performance report saved to: {args.out}")

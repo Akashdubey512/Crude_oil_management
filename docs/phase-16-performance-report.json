@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-08-23T09:01:39Z",
+  "target_url": "http://127.0.0.1:8000",
+  "concurrency": 10,
+  "total_requests": 100,
+  "total_duration_sec": 1.18,
+  "requests_per_sec": 85.09,
+  "success_count": 100,
+  "failure_count": 0,
+  "error_rate_pct": 0.0,
+  "latencies_ms": {
+    "p50": 95.97,
+    "p95": 200.44,
+    "p99": 356.34,
+    "mean": 113.16,
+    "min": 11.86,
+    "max": 356.34
+  },
+  "status_distribution": {
+    "401": 73,
+    "200": 27
+  }
+}
