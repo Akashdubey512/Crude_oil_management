@@ -23,7 +23,7 @@ from src.api.auth import authenticate_key
 from src.api.routes import (
     health, corridors, risk, events, prices, data_status,
     explainability, scenarios, monitoring, security,
-    alerts, forecast, portfolio, reports, briefings
+    alerts, forecast, portfolio, reports, briefings, websocket
 )
 
 # Initialize structured logging first so all subsequent logs are JSON lines
@@ -229,3 +229,7 @@ app.include_router(forecast.router,  prefix="/api", dependencies=[Security(authe
 app.include_router(portfolio.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
 app.include_router(reports.router,   prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
 app.include_router(briefings.router, prefix="/api", dependencies=[Security(authenticate_key, scopes=["READ"])])
+
+# Phase 20: WebSocket Real-Time Alert Push stream (/ws/alerts and /api/ws/alerts)
+app.include_router(websocket.router)
+app.include_router(websocket.router, prefix="/api")

@@ -201,6 +201,13 @@ def evaluate_alerts(snapshots: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     finally:
         release_db_connection(conn)
 
+    if newly_triggered:
+        try:
+            from src.api.services.websocket_service import notify_new_alerts_sync
+            notify_new_alerts_sync(newly_triggered)
+        except Exception as e:
+            logger.warning(f"Failed to trigger alert WebSocket notification / webhook: {e}")
+
     return newly_triggered
 
 
