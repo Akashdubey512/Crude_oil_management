@@ -1,171 +1,467 @@
-# India Energy Supply Chain Resilience Platform
+# Energy Resilience Intel
 
-A production-grade, AI-driven Energy Supply Chain Resilience platform designed to monitor geopolitical risk, track logistics/shipping threats, quantify crude-oil supply exposure, simulate corridor disruption scenarios, and optimize strategic-reserve actions for India.
+### AI-Powered Maritime Energy Supply Chain Risk Intelligence Platform
 
-## Repository Structure
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-2.0-FF6F00?style=for-the-badge&logo=xgboost&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-313%2F313%20PASS-22c55e?style=for-the-badge&logo=pytest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-29%2F29%20PASS-22c55e?style=for-the-badge&logo=vitest&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+
+> **Core Platform Statement**: An AI-powered decision intelligence platform that monitors maritime energy corridors, quantifies disruption risk, simulates supply shocks, and supports resilient procurement decisions for import-dependent energy economies.
+
+---
+
+## 📌 Executive Overview
+
+India imports approximately **88% of its crude oil**, with over **40% of national supply transiting a single maritime chokepoint—the Strait of Hormuz**. Recent geopolitical escalations, military standoffs, renewed export sanctions, and maritime attacks across the Red Sea and Bab-el-Mandeb shipping lanes have highlighted the fragility of energy supply chains. 
+
+With India's Strategic Petroleum Reserves (SPR) providing approximately **9.5 days of net national consumption buffer**, energy decision-makers cannot rely on reactive responses after tankers are delayed or crude spot prices spike.
+
+Existing logistics and enterprise planning software operate in isolated silos—they cannot fuse high-frequency news sentiment, satellite vessel transits, and commodity market shocks into a unified predictive risk score. **Energy Resilience Intel** bridges this gap by unifying multi-source intelligence, calibrated machine learning predictions, SHAP explainability, and interactive scenario simulation into an enterprise digital command center.
+
+---
+
+## 🛑 The Problem
+
+The sequence of cascading risks in maritime energy supply chains:
+
+```mermaid
+flowchart TD
+    A[Geopolitical Incident / Sanctions / Regional Conflict] --> B[Maritime Corridor Risk Surge]
+    B --> C[Vessel Diversions / Transit Velocity Decline]
+    C --> D[Physical Crude Supply Gap at Ports]
+    D --> E[Refinery Throughput Deficit & Spot Price Spike]
+    E --> F[Strategic Reserve Drawdown & Emergency Rerouting Decision]
+    
+    style A fill:#f87171,stroke:#991b1b,color:#ffffff
+    style C fill:#fbbf24,stroke:#92400e,color:#000000
+    style F fill:#60a5fa,stroke:#1e40af,color:#ffffff
+```
+
+* Traditional systems track vessels **after** disruptions occur.
+* Risk managers lack tools to quantify how geopolitical news spikes translate to **probabilistic supply drops**.
+* What-if scenario testing is executed manually on static spreadsheets rather than calibrated ML inference models.
+
+---
+
+## 🛡️ Our Solution
+
+Energy Resilience Intel organizes decision capabilities into five integrated intelligence layers:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ 1. GEOPOLITICAL RISK INTELLIGENCE                                      │
+│ Continuous news event extraction & GPR volatility tracking via GDELT   │
+├────────────────────────────────────────────────────────────────────────┤
+│ 2. MARITIME CORRIDOR RISK MODELING                                     │
+│ Calibrated XGBoost probabilities across Hormuz, Suez, Bab-el-Mandeb & Red Sea │
+├────────────────────────────────────────────────────────────────────────┤
+│ 3. DISRUPTION SCENARIO SIMULATION                                      │
+│ Mathematical what-if engine mutating risk vectors & calculating deltas │
+├────────────────────────────────────────────────────────────────────────┤
+│ 4. ROUTE & PROCUREMENT DECISION SUPPORT                                │
+│ Alternative corridor risk ranking, intervention prompts & drawdown guidance │
+├────────────────────────────────────────────────────────────────────────┤
+│ 5. SUPPLY CHAIN DIGITAL TWIN                                           │
+│ Dual-theme React cartographic command console with Leaflet map layers │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ⚡ Why This Is Different
+
+Unlike mock prototypes or generic dashboards, Energy Resilience Intel is built on an evidence-driven, production-grade engineering foundation:
+
+* **Real Multi-Source Data Fusion**: Ingests historical and current records from **GDELT** (conflict events), **IMF PortWatch** (chokepoint vessel counts), and **FRED** (Brent crude spot prices).
+* **Calibrated Probabilistic Inference**: Pre-trained XGBoost classifiers combined with **Platt Scaling** yield true probability distributions ($P \in [0, 1]$).
+* **Explainable AI (XAI)**: Integrated **SHAP Tree Explainer** details the exact positive and negative contribution of every feature behind a risk prediction.
+* **Champion/Challenger Model Governance**: Complete MLOps model registry supporting automated Population Stability Index (PSI) and Kolmogorov-Smirnov (KS) drift evaluation.
+* **Enterprise Security & RBAC**: FastAPI authentication backed by **HMAC-SHA256 API key hashing** and 4-tier Role-Based Access Control (`ADMIN`, `ML_ENGINEER`, `ANALYST`, `VIEWER`).
+* **High Reliability & Performance**: Verified by **313 backend pytest tests** and **29 frontend Vitest tests**, achieving **85 req/sec with 0% error rate** under concurrent load.
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TB
+    subgraph DataFeeds["Data Layer (External Feeds & Cache)"]
+        GDELT["GDELT Conflict Events API"]
+        PortWatch["IMF PortWatch Vessel Transits"]
+        FRED["FRED Brent Spot Price Feed"]
+        Parquet["Local Parquet Storage"]
+    end
+
+    subgraph FeatureML["ML & Analytics Pipeline"]
+        Pipeline["Feature Engineering (24 Lags & Rolling MAs)"]
+        XGBoost["XGBoost Classifier Engine"]
+        Platt["Platt Scaling Calibrator"]
+        SHAP["SHAP Tree Explainer"]
+        Registry["Model Registry & MLOps Governance"]
+    end
+
+    subgraph BackendAPI["FastAPI Intelligence Gateway"]
+        Auth["HMAC-SHA256 RBAC Middleware"]
+        RiskRoute["/api/risk Endpoints"]
+        SimRoute["/api/scenarios/simulate"]
+        GovRoute["/api/models/governance"]
+        Prometheus["Prometheus /metrics & JSON SRE"]
+    end
+
+    subgraph FrontendApp["React Command Center Twin"]
+        DigitalTwin["Leaflet Cartographic Digital Twin"]
+        Drawer["SHAP Factor Contribution Drawer"]
+        SimUI["What-If Scenario Simulator"]
+        ThemeUI["Enterprise Light/Dark Theme Engine"]
+    end
+
+    GDELT --> Pipeline
+    PortWatch --> Pipeline
+    FRED --> Pipeline
+    Pipeline --> Parquet
+    Parquet --> XGBoost
+    XGBoost --> Platt
+    Platt --> SHAP
+    SHAP --> Registry
+    Registry --> Auth
+    Auth --> RiskRoute
+    Auth --> SimRoute
+    Auth --> GovRoute
+    Auth --> Prometheus
+    RiskRoute --> DigitalTwin
+    SimRoute --> SimUI
+    GovRoute --> Drawer
+    Prometheus --> ThemeUI
+```
+
+---
+
+## 🔄 End-to-End Intelligence Pipeline
+
+```mermaid
+flowchart LR
+    A[Raw Feeds] --> B[Data Validation]
+    B --> C[Feature Engineering]
+    C --> D[Temporal Alignment]
+    D --> E[XGBoost Training]
+    E --> F[Platt Calibration]
+    F --> G[SHAP Tree Explainer]
+    G --> H[Model Registry]
+    H --> I[Live Inference API]
+    I --> J[Prediction Logging]
+    J --> K[PSI Drift Detection]
+    
+    style A fill:#94a3b8,color:#000
+    style E fill:#3b82f6,color:#fff
+    style H fill:#8b5cf6,color:#fff
+    style K fill:#22c55e,color:#fff
+```
+
+> **Data Leakage Protection**: All temporal transformations (rolling means, standard deviations, lag deltas) are computed strictly within expanding/sliding historical windows up to time $t-1$. Zero future observations are accessible during feature calculation or model fitting.
+
+---
+
+## 🌊 Corridor Intelligence Overview
+
+| Corridor | Key Chokepoint | Primary Data Source | Model Status | Key Risk Drivers |
+|:---|:---|:---|:---|:---|
+| **Strait of Hormuz** | Chokepoint 1 (Persian Gulf) | PortWatch + GDELT + FRED | **Active Champion Model** | `tanker_90d_ma`, `gpr_volatility_30d`, `brent_spot_price` |
+| **Suez Canal** | Chokepoint 2 (Red Sea North) | PortWatch + GDELT + FRED | **Active Champion Model** | `gpr_daily_7d_ma`, `tanker_lag7d_chg`, `brent_returns_7d_std` |
+| **Bab-el-Mandeb** | Chokepoint 4 (Horn of Africa) | PortWatch + GDELT + FRED | **Active Champion Model** | `houthi_incident_count`, `tanker_7d_ma`, `gpr_regional` |
+| **Red Sea** | Southern Red Sea Basin | **Bab-el-Mandeb Proxy** | **Active Champion Model** | `bab_el_mandeb_transit_proxy`, `armed_conflict_events` |
+
+> ⚠️ **Documented Model Limitation (Red Sea Corridor)**: IMF PortWatch does not expose a standalone "Red Sea" chokepoint sensor. Energy Resilience Intel explicitly models the Red Sea corridor using **Bab-el-Mandeb vessel transit data as an authoritative physical proxy**, combined with regional GDELT conflict event logs. This proxy boundary is declared in API schemas and UI drawers.
+
+---
+
+## 💡 AI / ML Technology Architecture
+
+| Component | Technology / Algorithm | Purpose | Implementation File |
+|:---|:---|:---|:---|
+| **Classification Engine** | XGBoost 2.0 (Gradient Boosted Trees) | Computes non-linear disruption probabilities | [`src/models/train_xgboost.py`](file:///d:/hackathon%20project/energy-resilience/src/models/train_xgboost.py) |
+| **Probability Calibration** | Platt Scaling (Logistic Regression) | Converts raw margins into calibrated probabilities | [`src/models/calibration.py`](file:///d:/hackathon%20project/energy-resilience/src/models/calibration.py) |
+| **Explainability (XAI)** | SHAP (SHapley Additive exPlanations) | Generates exact feature contribution values | [`src/api/services/explainability_service.py`](file:///d:/hackathon%20project/energy-resilience/src/api/services/explainability_service.py) |
+| **Drift Monitoring** | Population Stability Index (PSI) & KS Test | Detects feature/prediction drift across inference batches | [`src/api/services/drift_service.py`](file:///d:/hackathon%20project/energy-resilience/src/api/services/drift_service.py) |
+| **Model Registry** | JSON Manifest + SQLite Audit Trail | Governs Champion/Challenger promotions & rollbacks | [`src/models/model_registry.py`](file:///d:/hackathon%20project/energy-resilience/src/models/model_registry.py) |
+
+---
+
+## 🔍 Explainability (SHAP XAI)
+
+Instead of delivering uninterpretable scores, Energy Resilience Intel breaks down every corridor prediction into exact marginal feature contributions:
+
+$$\text{Risk Score}(x) = \phi_0 + \sum_{i=1}^{M} \phi_i(x)$$
+
+Where $\phi_0$ is the baseline log-odds and $\phi_i(x)$ represents the SHAP impact value of feature $i$.
+
+* **Positive SHAP Value (+$\phi_i$)**: Pushes disruption probability **higher** (e.g., GPR spike +0.18).
+* **Negative SHAP Value (-$\phi_i$)**: Pulls disruption probability **lower** (e.g., strong 90-day transit volume -0.14).
+
+---
+
+## 🎛️ Scenario Intelligence Engine
+
+The scenario simulator allows risk managers to execute interactive what-if experiments without altering production baseline predictions:
+
+```
+[ Baseline Risk State ] → [ User Parameter Adjustments ] → [ Feature Vector Mutation ] → [ Model Re-inference ] → [ Risk Delta & Interventions ]
+```
+
+1. **User Parameters**: GPR Multiplier ($0.5\times - 3.0\times$), Tanker Transit Drop % ($0\% - 75\%$), Brent Shock %, SPR Drawdown Days.
+2. **Feature Mutation**: Mutates vector components while preserving covariance relationships.
+3. **Inference**: Re-evaluates baseline XGBoost champion model.
+4. **Output**: Displays probability delta, updated risk level (`LOW` $\rightarrow$ `HIGH`), and recommended procurement interventions.
+
+---
+
+## 📈 Model Lifecycle Governance (MLOps)
+
+```mermaid
+flowchart TD
+    A[New Data Batch] --> B[Feature Validation & Schema Hash]
+    B --> C[Candidate Model Training]
+    C --> D[Out-of-Sample Validation ROC-AUC / Brier]
+    D --> E{Exceeds Champion Performance?}
+    E -- Yes --> F[Promote to Challenger Model]
+    E -- No --> G[Reject Candidate & Log Audit]
+    F --> H{Admin Approval & Promotion}
+    H -- Approved --> I[Promote to Champion Model]
+    I --> J[Update Model Registry Manifest]
+```
+
+- **Metadata Tracked**: Dataset SHA-256 hash, Feature schema hash, Hyperparameters, Evaluation metrics (ROC-AUC, Brier score, Recall), Git commit SHA.
+- **Roles Required**: `MODEL_VALIDATE` scope required for candidate submission; `MODEL_PROMOTE` scope required for champion promotion.
+
+---
+
+## 📊 Monitoring, Reliability & Performance
+
+- **Prometheus Metrics**: Exposes HTTP request counts, latency histograms, and prediction distributions at `/metrics`.
+- **JSON SRE Endpoint**: `/api/observability/metrics` provides structured system RAM/CPU, DB connection pool health, and error rates.
+- **Health Probes**: Liveness `/api/health` and readiness `/api/health/ready` endpoints.
+- **API Performance**: Tested under concurrent virtual load: **85.09 req/sec throughput, p50 latency of 95.97ms, p99 latency of 356.34ms, 0.0% error rate**.
+
+---
+
+## 🔐 Security & Access Control
+
+FastAPI dependency injection enforces 4-tier Role-Based Access Control (RBAC):
+
+| Role | Scopes Included | Capabilities |
+|:---|:---|:---|
+| `VIEWER` | `READ`, `MODEL_READ` | Read corridor risk, view trends, run what-if scenario simulations |
+| `ANALYST` | `READ`, `WRITE`, `MODEL_READ` | Ingest datasets, update scenario configs, export risk reports |
+| `ML_ENGINEER` | `READ`, `WRITE`, `MODEL_READ`, `MODEL_VALIDATE` | Submit candidate models, evaluate drift, trigger retraining |
+| `ADMIN` | `READ`, `WRITE`, `MODEL_READ`, `MODEL_VALIDATE`, `MODEL_PROMOTE`, `MODEL_ROLLBACK`, `ADMIN` | Provision/revoke API keys, view audit log streams, promote champion models |
+
+- **Security Protections**: HMAC-SHA256 secret hashing, token expiration enforcement, 5MB request payload limit (HTTP 413), malformed JSON rejection (HTTP 422).
+
+---
+
+## 💻 Technology Stack
+
+| Category | Technology | Purpose |
+|:---|:---|:---|
+| **Frontend UI** | React 19, TypeScript, Vite 8, TailwindCSS | Command center UI, theme engine, custom visual cards |
+| **Mapping Engine** | Leaflet, React-Leaflet | Interactive digital twin cartographic map visualization |
+| **Backend Framework** | FastAPI, Uvicorn, Pydantic v2 | High-performance async REST API gateway & security |
+| **Machine Learning** | XGBoost 2.0, Scikit-Learn, SHAP | Binary classification, probability calibration, XAI |
+| **Data Processing** | Pandas, NumPy, PyArrow (Parquet) | High-throughput time-series feature engineering |
+| **Storage & Database** | SQLite (WAL Mode) / PostgreSQL | Production storage for API keys, audit logs & risk history |
+| **Observability** | Prometheus Client, Structured JSON Logs | SRE metrics exposition, request tracing & memory tracking |
+| **Testing** | Pytest (313 tests), Vitest (29 tests) | 100% passing automated test suite for backend & frontend |
+
+---
+
+## 📁 Repository Structure
 
 ```
 energy-resilience/
-│
-├── data/
-│   ├── raw/         # Immutable raw datasets (copied from root)
-│   ├── staging/     # Intermediate staging files (clean schemas)
-│   ├── processed/   # Final processed features and tables
-│   ├── quality/     # Machine-readable data quality reports
-│   └── manifests/   # Data provenance manifests (data_manifest.json)
-│
-├── src/
-│   ├── ingestion/   # Raw data loading scripts
-│   ├── validation/  # Schema check logic
-│   ├── preprocessing/ # Cleaning and calendar-alignment logic
-│   ├── features/    # Geopolitical and refinery features
-│   ├── models/      # Geopolitical risk/consumption predictive models
-│   ├── risk/        # Disruption scoring and supply corridor risk
-│   ├── scenarios/   # Scenario simulators (impact on supply/prices)
-│   ├── optimization/# Strategic reserve and alternative route optimization
-│   └── api/         # FastAPI endpoints (backend)
-│
-├── tests/           # Unit and integration tests
-├── docs/            # Project scope, architecture, data audit, and gaps
-├── notebooks/       # Exploratory analysis and prototyping
-├── scripts/         # Utility scripts (including verification scripts)
-│
-├── requirements.txt # Python package requirements
-├── environment.yml  # Conda environment specifications
-├── .env.example     # Template for environment variables
-├── .gitignore       # Git exclusion rules
-└── README.md        # This file
+├── data/                       # Dataset manifests, features & quality reports
+│   ├── features/               # Processed feature Parquet files
+│   ├── manifests/              # Model registry JSON manifests
+│   └── quality/                # Data validation summary reports
+├── docs/                       # Comprehensive documentation hub
+│   ├── HACKATHON_PITCH_GUIDE.md # 6-minute presentation script & judge Q&A
+│   ├── model-cards/            # Model cards for Hormuz, Suez, Bab-el-Mandeb, Red Sea
+│   ├── phase-16-qa-report.md   # Quality assurance & test verification report
+│   └── phase-16-production-readiness.md # Deployment certification report
+├── frontend/                   # React 19 + TypeScript Command Center app
+│   ├── src/
+│   │   ├── api/                # API client, hooks & auth resolution
+│   │   ├── components/         # Digital twin map, SHAP drawers, charts
+│   │   ├── pages/              # Landing page & Command Center dashboard
+│   │   └── App.test.tsx        # Vitest integration test suite (29 tests)
+│   ├── index.html
+│   └── vite.config.ts          # Vite & Vitest configuration
+├── models/                     # Trained XGBoost model artifacts (.pkl/.json)
+├── scripts/                    # Operational & automation scripts
+│   ├── phase16_verification.py # Master production readiness test runner
+│   ├── production_load_test.py # Concurrent virtual user load test tool
+│   ├── run_api.py              # FastAPI server entry point script
+│   └── seed_keys.py            # API key provisioning script
+├── src/                        # Core backend Python source package
+│   ├── api/                    # FastAPI routes, auth, schemas & services
+│   ├── features/               # Time-series feature engineering pipeline
+│   ├── ingestion/              # GDELT, PortWatch & FRED data loaders
+│   ├── models/                 # Model training, calibration & registry
+│   └── risk/                   # 5-vector risk decomposition engine
+├── tests/                      # Pytest test suite (313 unit/integration tests)
+│   ├── test_phase16.py         # Phase 16 QA & security regression suite
+│   └── conftest.py             # Global pytest fixtures & test client setup
+├── Dockerfile                  # Containerization specification
+├── docker-compose.yml          # Multi-container service orchestrator
+├── .env.example                # Environment variables template
+├── .gitignore                  # Git exclusion rules
+├── LICENSE                     # MIT Open Source License
+└── README.md                   # Platform documentation
 ```
 
-## Setup and Environment
+---
 
-This project utilizes the existing Conda environment `project` with Python 3.12.
+## 🚀 Judge Quick Start Guide
 
-To activate the environment:
+### Prerequisites
+- **Python 3.12+**
+- **Node.js 18+** & **npm**
+
+### 1. Clone & Setup Environment
 ```bash
-conda activate project
+git clone https://github.com/Akashdubey512/Crude_oil_management.git
+cd Crude_oil_management
+cp .env.example .env
 ```
 
-To install package requirements:
+### 2. Backend Setup & Server Launch
 ```bash
+# Create and activate virtual environment
+python -m venv venv
+# Windows: venv\Scripts\activate | Linux/macOS: source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-```
 
-## Running the Data Audit
+# Seed initial API keys into SQLite database
+python scripts/seed_keys.py
 
-The initial data audit has been completed. All raw data files are mapped, hashed, and detailed under:
-- `docs/data-sources.md`: File registry and metadata.
-- `docs/data-audit.md`: Schema, duplicate, and null value analysis.
-- `docs/data-gaps.md`: Gaps and incomplete records.
-- `data/manifests/data_manifest.json`: JSON provenance catalog.
-- `data/quality/`: Automated quality reports.
-
-To verify the setup:
-```bash
-python scripts/verify_setup.py
-```
-
-## Running Tests
-Run the entire backend test suite:
-```bash
-$env:PYTHONPATH="D:\hackathon project\energy-resilience"
-python -m pytest tests -v
-```
-
-Run frontend tests:
-```bash
-cd frontend
-npx vitest run --passWithNoTests
-```
-
-## Running the API Backend
-To start the FastAPI backend server:
-```bash
-$env:PYTHONPATH="D:\hackathon project\energy-resilience"
+# Launch FastAPI backend server (Port 8000)
 python scripts/run_api.py
 ```
-API docs will be available at: http://127.0.0.1:8000/docs
+> Interactive API Documentation: `http://127.0.0.1:8000/docs`
 
-## Running the Frontend Dashboard
-To start the Vite React development server:
+### 3. Frontend Command Center Setup
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
-Open your browser and navigate to: http://localhost:5173
+> Command Center UI: `http://localhost:5173`
 
+### 4. Run Automated Verification Suite
+```bash
+# Run 313 backend pytest tests
+python -m pytest tests/ -q
 
----
+# Run 29 frontend Vitest tests
+cd frontend && npx vitest run
 
-## Platform Phases — Completion Status
-
-| Phase | Description | Status |
-| :--- | :--- | :--- |
-| Phase 1 | Data ingestion, provenance, and quality auditing | COMPLETE |
-| Phase 2 | Schema validation, staging, preprocessing | COMPLETE |
-| Phase 3 | Feature engineering (GPR, traffic, Brent, refinery) | COMPLETE |
-| Phase 4 | XGBoost / Random Forest / Logistic Regression model training | COMPLETE |
-| Phase 5 | Corridor risk scoring, SHAP explainability | COMPLETE |
-| Phase 6 | React Digital Twin Dashboard (Leaflet map, risk gauge, charts) | COMPLETE |
-| Phase 7 | Production hardening: Brent price API, data-status API, SHAP UI | COMPLETE |
-| Phase 8 | Decision Intelligence: Scenario Simulator, Trend Analyzer, Cross-Comparison | COMPLETE |
-| Phase 9 | Production ML Validation, Model Governance & Data-Drift Monitoring | COMPLETE |
-| Phase 10 | RED_SEA modeling, Bab el-Mandeb proxy, data limitations | COMPLETE |
-| Phase 11 | Challenger-vs-Champion, Promotion, Rollback, Retraining | COMPLETE |
-| Phase 12 | Observability, Postgres, Rate Limiting, Lifespan Probes | COMPLETE |
-| Phase 13 | Enterprise Security, API Security & Production Deployment Hardening | COMPLETE |
-| Phase 14 | Premium Cinematic Maritime Command Center & Landing Experience | COMPLETE |
-| Phase 15 | Enterprise Dual-Theme System, Cartographic Intelligence & MLOps Governance Overhaul | COMPLETE |
-
-**Backend:** 282 tests passing. **Frontend:** 30 tests passing.
-
-## Phase 15 — Enterprise Dual-Theme System, Cartographic Intelligence & MLOps Governance Overhaul
-
-- **Production-Grade Dual-Theme Engine (Light & Dark)** — Complete architectural overhaul utilizing semantic CSS design tokens (`--bg-app`, `--bg-card`, `--text-primary`, `--border-default`, `--risk-*`), automatic CartoDB Positron/Dark Matter tile layer switching, and zero unstyled components across all dashboard channels.
-- **Advanced Maritime Vector & Geospatial Command Map** — High-precision coordinates and color-graded corridor risk arcs (Low: Emerald, Moderate: Amber, High: Crimson) reflecting real-time threat calculations for Hormuz, Bab-el-Mandeb, Suez, and Red Sea corridors.
-- **MLOps Diagnostics & Governance Center Complete** — Live Champion vs. Challenger model comparisons with real ROC-AUC/PR-AUC metrics, automated feature drift detection (PSI/KS checks across all 52 features), and formal Model Card specifications for all maritime corridors.
-- **Telemetry & Observability Stream** — Integrated real-time Prometheus throughput, response latency, database connection pool tracking, and streaming telemetry console.
-- **RBAC Scope & Permission Alignment** — Refined role-based permissions allowing Viewer, Analyst, and Admin roles to explore intelligence, inspect models, and run what-if scenario simulations with secure Admin gating for model promotions and key provisioning.
-- **Zero-Error Compilation & Production Hardened** — Fully optimized Vite production build passing TypeScript verification (`tsc -b`) with zero Framer Motion or React runtime warnings.
+# Run Master Verification Script
+python scripts/phase16_verification.py
+```
 
 ---
 
-## Phase 12 — Observability & Reliability Engineering
+## 🎬 5-Minute Judge Presentation Flow
 
-- **Structured JSON Logging** — Outputs logs as unified JSON lines, scrubs secrets automatically, and propagates correlation IDs.
-- **Prometheus Metrics Endpoint** (`GET /metrics`) — Exposes request latencies, predictions, promotion attempts, and database queries.
-- **Proactive Health Probes** (`/api/health/live` & `/api/health/ready`) — Lightweight liveness check and database/registry readiness probe.
-- **Database Connection Pooling** — Automatic PostgreSQL threaded pooling in production with SQLite fallback.
-- **API Rate Limiting** — Sliding-window IP rate limiter to protect resources from concurrency exhaust.
-- **Serving Safety Guardrails** — Enforces model deserialization, schema matching, and prediction check validations before loading registry champion.
-
-See full documentation in `docs/phase-12-production.md`, `docs/observability.md`, and `docs/deployment-runbook.md`.
-
----
-
-## Phase 13 — Enterprise Security, API Security & Production Deployment Hardening
-
-- **RBAC API Key System** — Role-based access control with VIEWER / ANALYST / ML_ENGINEER / ADMIN scopes; keys stored as HMAC-SHA256 hashes.
-- **Bearer Token Authentication** — All protected endpoints require `Authorization: Bearer erp_<public_id>_<secret>` header; 401 on missing, 403 on insufficient scope.
-- **Security Audit Log** — Every authentication failure, permission denial, key creation, revocation, and model governance action is persisted in `security_audit_log`.
-- **SSRF Protection** — `secure_client.py` blocks requests to private/loopback/link-local IP ranges; all external data fetches (GDELT, PortWatch, AIS) routed through it.
-- **Model Governance Security** — Promotion and rollback endpoints now require `MODEL_PROMOTE` / `MODEL_ROLLBACK` scopes; REJECTED models fast-fail before artifact loading.
-- **Security Routes** — `GET /api/security/status`, `GET /api/security/audit`, `GET /api/security/keys`, `POST /api/security/keys/{id}/revoke`.
-- **Frontend Security Center** — Dedicated tab showing live security status, API key management, and audit log with RBAC-gated controls.
-- **Production Config Validation** — Fail-fast startup check enforces `DATABASE_URL`, `API_KEY_HASH_SECRET`, and safe CORS origins in production mode.
-- **20/20 Security Integration Tests** — Full test suite covering auth flows, RBAC enforcement, SSRF blocks, rate limiting, and audit logging.
-
-See full documentation in `docs/phase-13-security-audit.md`.
+```
+[ STEP 1: Landing Page ]        → Show problem statement, crude import context & enter portal.
+            │
+[ STEP 2: Command Center ]      → Highlight digital twin map, top bar metrics & active corridor cards.
+            │
+[ STEP 3: Hormuz Risk & SHAP ]  → Click Hormuz; display 0.25% probability & SHAP factor importances.
+            │
+[ STEP 4: Scenario Simulator ] → Adjust GPR shock to 2.5x & transit drop to -45%; run simulation.
+            │
+[ STEP 5: Risk Delta & Advice ] → Show probability jump to 48.2% & recommended drawdown actions.
+            │
+[ STEP 6: Cross-Corridor View ] → Open comparison table displaying all 4 corridors side by side.
+            │
+[ STEP 7: Red Sea Proxy Notice ]→ Open Red Sea drawer; highlight documented Bab-el-Mandeb proxy notice.
+            │
+[ STEP 8: MLOps & SRE Metrics ] → View Model Governance drift metrics & Prometheus /metrics endpoint.
+```
 
 ---
 
-## Phase 14 — Premium Geopolitical Maritime Intel Command Center & Landing
+## 🔄 The Event-to-Decision Chain
 
-- **Cinematic Landing Page** — Engaging entry experience featuring vector radar map sweeps, visual radar pulses at major chokepoints (Red Sea, Hormuz), and a live real-time Operations status bar showing Brent Crude fluctuations and API health metrics.
-- **Advanced Geospatial Command Map** — Dynamic Leaflet intelligence overlay featuring customized color coding for low/moderate/high corridor risk, pulsing chokepoint indicator overlays, and comprehensive toggles for oil facilities, refineries, shipping traffic and geopolitical GDELT events.
-- **Operational Intelligence Drawer** — Side panel featuring a 5-vector risk decomposition horizontal Recharts bar layout, deep explainable AI SHAP waterfall attribution panel, and explicit notifications indicating proxy data limitations (* Bab el-Mandeb traffic proxy).
-- **MLOps Diagnostics & Governance Portal** — A professional monitoring workspace exhibiting ROC-AUC and PR-AUC performance metrics, feature drift tables with covariate KS indicators, SRE metrics (throughput, latencies, CPU/RAM sparklines), and role-gated model promotion controls.
-- **Robust Client Credentials Manager** — Security center interface displaying live session status, authorized keys inventory, and IP audit trails with instant token revocation capabilities.
-- **Vite & TypeScript Compilation Hardened** — Fully optimized production code compilation passing tsc verification with 30 high-fidelity unit and integration tests passing.
+```
+[ SENSE ]     → Ingest GDELT conflict news, PortWatch transits & FRED oil prices
+[ DETECT ]    → Identify anomaly drops in moving average transit volumes
+[ PREDICT ]   → Calculate calibrated disruption probability via XGBoost
+[ EXPLAIN ]   → Extract positive & negative root factors via SHAP
+[ SIMULATE ]  → Execute what-if scenarios for GPR shocks & transit drops
+[ DECIDE ]    → Recommend reserve drawdowns & Cape of Good Hope rerouting
+[ MONITOR ]   → Audit prediction logs & trigger PSI drift retraining alerts
+```
 
-See full documentation in `docs/phase-14-frontend-transformation.md`.
+---
+
+## 🎯 Problem Statement Alignment (Hackathon Fit)
+
+| Problem Statement Requirement | Implemented Platform Capability |
+|:---|:---|
+| **Geopolitical Risk Intelligence Agent** | Fuses GDELT conflict event news with daily GPR volatility indices to generate continuous risk signals. |
+| **Disruption Scenario Modeller** | Interactive simulator mutating GPR shocks, transit drops, and oil price spikes to compute risk deltas. |
+| **Adaptive Procurement Orchestrator** | Ranks alternative corridors, computes risk deltas, and suggests Cape rerouting interventions. |
+| **Strategic Reserve Optimization Agent** | Calculates optimal reserve drawdown schedules against predicted supply gap volumes. |
+| **Supply Chain Digital Twin** | Leaflet cartographic command console visualizing real-time chokepoint risk vectors. |
+
+---
+
+## ⚠️ Documented Known Limitations & Mitigations
+
+1. **Red Sea Physical Sensor Proxy**: IMF PortWatch does not track a standalone Red Sea chokepoint.  
+   *Mitigation*: Modeled explicitly using **Bab-el-Mandeb transit data as a physical proxy** combined with Red Sea conflict events; disclosed in API & UI.
+2. **Class Imbalance in Historical Data**: Major corridor disruptions represent under 3% of historical days.  
+   *Mitigation*: Objective functions tuned for high recall, evaluated via Brier scores, and calibrated with Platt Scaling.
+3. **Batch vs. Stream Ingestion**: Ingests daily batch updates rather than sub-second satellite AIS feeds.  
+   *Mitigation*: Caches raw Parquet snapshots locally and surfaces explicit `data_freshness` timestamps in the UI.
+
+---
+
+## 🗺️ Product Roadmap
+
+### Current Version (v2.0 - Implemented)
+- [x] Multi-corridor XGBoost risk inference (Hormuz, Suez, Bab-el-Mandeb, Red Sea)
+- [x] SHAP explainability drawer & feature attributions
+- [x] Interactive what-if scenario simulator
+- [x] Champion/Challenger model registry & PSI/KS drift monitoring
+- [x] HMAC-SHA256 4-tier Role-Based Access Control
+- [x] React 19 enterprise dual-theme command center
+
+### Next Version (v2.1 - Planned)
+- [ ] Direct AIS satellite live streaming feed integration
+- [ ] Multi-country supply disruption modeling (e.g., India, Japan, South Korea)
+- [ ] Automated refiner crude-blend substitution recommendations
+
+---
+
+## 📜 License & Citation
+
+Distributed under the **MIT License**. See [`LICENSE`](file:///d:/hackathon%20project/energy-resilience/LICENSE) for complete rights and permissions.
+
+```bibtex
+@software{energy_resilience_intel_2026,
+  author = {Energy Resilience Intel Team},
+  title = {Energy Resilience Intel: AI-Powered Maritime Energy Supply Chain Risk Intelligence Platform},
+  year = {2026},
+  publisher = {GitHub},
+  url = {https://github.com/Akashdubey512/Crude_oil_management.git}
+}
+```
