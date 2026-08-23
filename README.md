@@ -467,6 +467,7 @@ Energy Resilience Intel has evolved through 19 engineering phases from baseline 
 | **Phase 19** | **Constrained Auditable GenAI Layer** | Claude 3.5 Sonnet / audit-safe fallback executive briefing engine; natural-language "Ask the Analyst" query bar with expandable auditable source data drawers. | [`src/api/services/briefing_service.py`](src/api/services/briefing_service.py), [`AskAnalystChat.tsx`](frontend/src/components/assistant/AskAnalystChat.tsx) |
 | **Phase 20** | **Real-Time WebSocket & Webhook Push** | `/ws/alerts` WebSocket push stream for immediate threshold alert broadcasting; live indicator & toast notifications in `AlertsPanel.tsx`; optional outbound HTTP webhook (`WEBHOOK_ALERT_ENABLED`). | [`src/api/services/websocket_service.py`](src/api/services/websocket_service.py), [`AlertsPanel.tsx`](frontend/src/components/AlertsPanel.tsx) |
 | **Phase 21** | **Empirical Backtest & Board Pack PDF** | Out-of-sample day-by-day historical backtest replay scrubber proving predictive validity over real documented Red Sea Houthi conflict period; 1-click ReportLab Executive Board Pack PDF download. | [`src/models/backtest.py`](src/models/backtest.py), [`src/api/services/report_service.py`](src/api/services/report_service.py), [`BacktestReplayCard.tsx`](frontend/src/components/monitoring/BacktestReplayCard.tsx) |
+| **Phase 22** | **Adaptive Procurement Orchestrator** | Ranks alternative crude oil supplier sources (UAE, Saudi Arabia, Iraq, Kuwait, Nigeria, Russia) combining weighted corridor risk exposure with relative sea-voyage/freight penalties (PPAC baseline); satisfies problem brief requirement for alternative crude sources. | [`src/risk/crude_source_ranking.py`](src/risk/crude_source_ranking.py), [`AlternativeCrudeSourcesCard.tsx`](frontend/src/components/corridor/AlternativeCrudeSourcesCard.tsx) |
 
 ---
 
@@ -479,6 +480,7 @@ Energy Resilience Intel has evolved through 19 engineering phases from baseline 
 - [x] Strategic Reserve Optimisation Agent (front-loaded & smoothed drawdown schedules)
 - [x] Per-supplier crude disruption exposure overlay
 - [x] Cascading downstream economic impact model (refining $\rightarrow$ price $\rightarrow$ GDP)
+- [x] Adaptive Procurement Orchestrator: alternative crude source ranking with relative freight penalties
 - [x] Constrained GenAI executive briefings & "Ask the Analyst" query bar
 - [x] WebSocket `/ws/alerts` real-time alert push stream & optional outbound webhook
 - [x] Empirical historical backtest replay timeline scrubber with proof metrics

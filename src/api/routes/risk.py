@@ -22,8 +22,10 @@ from src.api.schemas import (
     CorridorComparisonResponse,
     CorridorComparisonItem,
     SupplierExposureResponse,
+    CrudeSourceRankingResponse,
 )
 from src.risk.supplier_risk import compute_supplier_risk_exposures
+from src.risk.crude_source_ranking import rank_alternative_crude_sources
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -114,6 +116,20 @@ def get_supplier_risk_exposures():
     except Exception as e:
         logger.error(f"Error computing supplier risk exposures: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to compute supplier risk exposures: {str(e)}")
+
+
+@router.get("/risk/suppliers/ranking", response_model=CrudeSourceRankingResponse, tags=["Risk Intelligence"])
+def get_crude_source_rankings():
+    """
+    Returns ranked alternative crude oil supplier sources for India combining weighted
+    corridor risk exposure and relative shipping freight/logistics penalties.
+    Implements Adaptive Procurement Orchestrator requirement from the official brief.
+    """
+    try:
+        return rank_alternative_crude_sources()
+    except Exception as e:
+        logger.error(f"Error computing crude source rankings: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to rank crude sources: {str(e)}")
 
 
 @router.get("/risk/{corridor_id}", tags=["Risk"])

@@ -199,6 +199,26 @@ export interface SupplierExposureResponse {
   methodology: string;
 }
 
+export interface CrudeSourceRankingItem {
+  rank: number;
+  supplier_country: string;
+  country_code: string;
+  import_share_pct: number;
+  primary_corridor: string;
+  corridor_risk_exposure: number;
+  cost_logistics_penalty: number;
+  composite_rank_score: number;
+  risk_level: string;
+  recommendation_status: string;
+}
+
+export interface CrudeSourceRankingResponse {
+  ranked_at: string;
+  ranked_sources: CrudeSourceRankingItem[];
+  methodology: string;
+  top_recommended_supplier?: string | null;
+}
+
 export interface ExecutiveBriefingResponse {
   corridor_id: string;
   corridor_name: string;

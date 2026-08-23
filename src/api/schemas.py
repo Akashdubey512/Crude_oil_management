@@ -213,6 +213,26 @@ class SupplierExposureResponse(BaseModel):
     methodology: str = Field(..., description="Explicit declaration of modeling methodology and data proxy limitation")
 
 
+class CrudeSourceRankingItem(BaseModel):
+    rank: int = Field(..., description="1-based procurement priority rank (1 = top recommended)")
+    supplier_country: str = Field(..., description="Crude supplier country name (e.g. Iraq, Saudi Arabia, UAE, Russia)")
+    country_code: str = Field(..., description="ISO-2 country code (e.g. IQ, SA, AE, RU, KW, NG)")
+    import_share_pct: float = Field(..., description="Share of India's total crude oil imports (%)")
+    primary_corridor: str = Field(..., description="Primary transit corridor for crude shipments")
+    corridor_risk_exposure: float = Field(..., description="Corridor disruption exposure score [0-100]")
+    cost_logistics_penalty: float = Field(..., description="Relative shipping distance/logistics freight cost penalty [0-50]")
+    composite_rank_score: float = Field(..., description="Composite procurement risk+cost score (lower is better)")
+    risk_level: str = Field(..., description="Corridor risk band: MINIMAL, LOW, MODERATE, HIGH, CRITICAL")
+    recommendation_status: str = Field(..., description="Operational status: PRIMARY_OPTIMAL, STABLE_ALTERNATIVE, ELEVATED_RISK_PENALTY, SECONDARY_OPTION")
+
+
+class CrudeSourceRankingResponse(BaseModel):
+    ranked_at: str = Field(..., description="ISO-8601 computation timestamp")
+    ranked_sources: List[CrudeSourceRankingItem] = Field(..., description="Ranked list of alternative crude oil sources")
+    methodology: str = Field(..., description="Explicit declaration of ranking methodology and logistics proxy assumptions")
+    top_recommended_supplier: Optional[str] = Field(None, description="Name of the top-ranked supplier country")
+
+
 class ExecutiveBriefingResponse(BaseModel):
     corridor_id: str = Field(..., description="Corridor ID (e.g. HORMUZ, SUEZ, BAB_EL_MANDEB)")
     corridor_name: str = Field(..., description="Full corridor name")

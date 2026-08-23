@@ -24,6 +24,7 @@ import GovernanceCenter from '../components/governance/GovernanceCenter';
 import ObservabilityCenter from '../components/observability/ObservabilityCenter';
 import SecurityCenter from '../components/security/SecurityCenter';
 import SupplierRiskExposureCard from '../components/corridor/SupplierRiskExposureCard';
+import AlternativeCrudeSourcesCard from '../components/corridor/AlternativeCrudeSourcesCard';
 import AskAnalystChat from '../components/assistant/AskAnalystChat';
 import BacktestReplayCard from '../components/monitoring/BacktestReplayCard';
 
@@ -373,11 +374,14 @@ export default function CommandCenter({
                       </div>
                     </div>
 
-                    {/* Supplier-Country Exposure Risk Card Overlay & Ask Analyst GenAI Chat */}
+                    {/* Supplier-Country Exposure Risk Card Overlay & Alternative Crude Sources Ranking */}
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                       <SupplierRiskExposureCard />
-                      <AskAnalystChat />
+                      <AlternativeCrudeSourcesCard />
                     </div>
+
+                    {/* Ask Analyst GenAI Assistant */}
+                    <AskAnalystChat />
                   </div>
 
                   {/* Below-map charts shelf */}

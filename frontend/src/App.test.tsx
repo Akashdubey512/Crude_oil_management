@@ -163,6 +163,14 @@ describe('Phase 14 Premium Maritime Command Center Frontend Tests', { timeout: 1
       ],
       methodology: 'Modeled estimate derived from corridor risk vector outputs.'
     });
+    vi.spyOn(api, 'getCrudeSourceRankings').mockResolvedValue({
+      ranked_at: '2026-08-22T00:00:00Z',
+      ranked_sources: [
+        { rank: 1, supplier_country: 'United Arab Emirates', country_code: 'AE', import_share_pct: 9.0, primary_corridor: 'HORMUZ', corridor_risk_exposure: 10.0, cost_logistics_penalty: 8.0, composite_rank_score: 18.0, risk_level: 'LOW', recommendation_status: 'PRIMARY_OPTIMAL' }
+      ],
+      methodology: 'Alternative crude source ranking combines corridor risk with logistics penalties.',
+      top_recommended_supplier: 'United Arab Emirates'
+    });
     vi.spyOn(api, 'getExecutiveBriefing').mockResolvedValue({
       corridor_id: 'HORMUZ',
       corridor_name: 'Strait of Hormuz',

@@ -118,6 +118,8 @@ export const api = {
 
   getSupplierRiskExposures: () => request<import('../types').SupplierExposureResponse>('/api/risk/suppliers'),
 
+  getCrudeSourceRankings: () => request<import('../types').CrudeSourceRankingResponse>('/api/risk/suppliers/ranking'),
+
   getExecutiveBriefing: (corridorId: string, forceRefresh = false) =>
     request<import('../types').ExecutiveBriefingResponse>(
       `/api/corridors/${corridorId.toUpperCase()}/briefing${forceRefresh ? '?force_refresh=true' : ''}`,
