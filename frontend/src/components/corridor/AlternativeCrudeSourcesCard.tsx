@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Layers, Info, Award, AlertCircle, ArrowUpRight } from 'lucide-react';
+import { Layers, Info, Award, AlertCircle } from 'lucide-react';
 import { api } from '../../api/client';
 import type { CrudeSourceRankingResponse, CrudeSourceRankingItem } from '../../types';
 

@@ -31,7 +31,7 @@ export default function AlertsPanel({ risks }: AlertsPanelProps) {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const host = import.meta.env.VITE_API_BASE_URL
           ? import.meta.env.VITE_API_BASE_URL.replace(/^http/, 'ws')
-          : `${protocol}//127.0.0.1:8000`;
+          : `${protocol}//${window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '127.0.0.1:8000' : window.location.host}`;
         const wsUrl = `${host}/ws/alerts`;
 
         ws = new WebSocket(wsUrl);

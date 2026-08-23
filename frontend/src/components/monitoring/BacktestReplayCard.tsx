@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ResponsiveContainer, ComposedChart, Line, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { History, CheckCircle2, AlertTriangle, ShieldCheck, Download, Sliders } from 'lucide-react';
+import { History, ShieldCheck, Download, Sliders } from 'lucide-react';
 import { api } from '../../api/client';
 
 interface BacktestReplayCardProps {

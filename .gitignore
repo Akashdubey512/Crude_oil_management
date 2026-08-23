@@ -92,3 +92,5 @@ data/browser/
 
 # Antigravity IDE brain files (local agent workspace only)
 .agents/
+
+.vercel

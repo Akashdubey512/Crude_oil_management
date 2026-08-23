@@ -9,8 +9,11 @@
 ![XGBoost](https://img.shields.io/badge/XGBoost-2.0-FF6F00?style=for-the-badge&logo=xgboost&logoColor=white)
 ![Pytest](https://img.shields.io/badge/Pytest-313%2F313%20PASS-22c55e?style=for-the-badge&logo=pytest&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-29%2F29%20PASS-22c55e?style=for-the-badge&logo=vitest&logoColor=white)
+![Deployment](https://img.shields.io/badge/Production-LIVE-00C7B7?style=for-the-badge&logo=vercel&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
+> **Live Production Deployment**: [https://temporary-speedy-prairie-xvguv5d.vercel.app](https://temporary-speedy-prairie-xvguv5d.vercel.app)
+>
 > **Core Platform Statement**: An AI-powered decision intelligence platform that monitors maritime energy corridors, quantifies disruption risk, simulates supply shocks, and supports resilient procurement decisions for import-dependent energy economies.
 
 ---

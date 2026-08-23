@@ -1,6 +1,5 @@
 import {
   ResponsiveContainer,
-  BarChart,
   Bar,
   Line,
   CartesianGrid,

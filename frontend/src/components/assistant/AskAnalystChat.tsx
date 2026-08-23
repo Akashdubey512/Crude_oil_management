@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, Bot, User, Sparkles, ChevronDown, ChevronUp, AlertCircle, Database } from 'lucide-react';
+import { Send, Bot, User, Sparkles, ChevronDown, ChevronUp, Database } from 'lucide-react';
 import { api } from '../../api/client';
 import type { AnalystQueryResponse } from '../../types';
 

@@ -63,13 +63,13 @@ def load_config() -> APIConfig:
     origins_raw = os.getenv("CORS_ORIGINS", "*")
     origins = [o.strip() for o in origins_raw.split(",") if o.strip()]
     
-    # Build settings dict
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     settings = {
         "environment": env,
         "log_level": os.getenv("LOG_LEVEL", "INFO"),
         "database_url": os.getenv("DATABASE_URL", ""),
-        "model_dir": os.getenv("MODEL_DIR", r"D:\hackathon project\energy-resilience\models"),
-        "data_dir": os.getenv("DATA_DIR", r"D:\hackathon project\energy-resilience\data"),
+        "model_dir": os.getenv("MODEL_DIR", os.path.join(repo_root, "models")),
+        "data_dir": os.getenv("DATA_DIR", os.path.join(repo_root, "data")),
         "cors_origins": origins,
         "api_rate_limit": int(os.getenv("API_RATE_LIMIT", "60")),
         "request_timeout": float(os.getenv("REQUEST_TIMEOUT", "10.0")),

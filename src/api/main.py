@@ -117,10 +117,11 @@ async def redoc_html():
 # ─── Security Middlwares & CORS Whitelist ─────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=settings.cors_origins if settings.cors_origins != ["*"] else ["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.web\.app|https://.*\.firebaseapp\.com|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*", "X-Request-ID", "X-Admin-Role"],
+    allow_headers=["*", "X-Request-ID", "X-Admin-Role", "Authorization"],
 )
 
 # ─── HTTP Headers & Tracing Middleware ─────────────────────────────────────────

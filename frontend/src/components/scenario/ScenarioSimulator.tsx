@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sliders, RefreshCw, AlertTriangle, HelpCircle, ArrowRight, Shield } from 'lucide-react';
+import { Sliders, RefreshCw, AlertTriangle, HelpCircle, ArrowRight } from 'lucide-react';
 import { api } from '../../api/client';
 import type { Corridor, ScenarioSimulationResponse } from '../../types';
 import ReserveDrawdownChart from '../charts/ReserveDrawdownChart';

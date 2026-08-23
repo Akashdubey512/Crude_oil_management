@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Shield, Info, Globe, AlertCircle } from 'lucide-react';
+import { Info, Globe, AlertCircle } from 'lucide-react';
 import { api } from '../../api/client';
 import type { SupplierExposureResponse, SupplierExposureItem } from '../../types';
 
