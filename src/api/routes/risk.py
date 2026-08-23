@@ -72,14 +72,11 @@ def get_corridor_comparison(date: Optional[str] = Query(None, description="Targe
             vessel_status = "NORMAL"
             gpr_status = "NORMAL"
             
-            if s.get("corridor") == "RED_SEA":
-                vessel_status = "UNKNOWN"
-                gpr_status = "UNKNOWN"
-            else:
-                if any("drop" in f or "decline" in f for f in top_factors):
-                    vessel_status = "DROP"
-                if any("gpr" in f or "events" in f or "conflict" in f for f in top_factors):
-                    gpr_status = "ELEVATED"
+            top_factors_str = " ".join([str(f).lower() for f in top_factors])
+            if any(term in top_factors_str for term in ["drop", "decline", "transit", "disruption", "volume", "vessel", "flow"]):
+                vessel_status = "DROP" if any(term in top_factors_str for term in ["drop", "decline", "disruption"]) else "NORMAL"
+            if any(term in top_factors_str for term in ["gpr", "events", "conflict", "threat", "houthi", "geopolitical", "risk"]) or s.get("risk_level") in ["HIGH", "CRITICAL"]:
+                gpr_status = "ELEVATED"
             
             comparison_items.append(
                 CorridorComparisonItem(
