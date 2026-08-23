@@ -181,6 +181,15 @@ flowchart LR
 
 ## 💡 AI / ML Technology Architecture
 
+### 🏆 Active Champion Models (XGBoost) — ALL > 96% Accuracy
+
+| Corridor | Algorithm | Model Status | Validation Accuracy | Test Accuracy | Status |
+|:---|:---|:---:|:---:|:---:|:---:|
+| **Suez Canal** (`SUEZ`) | **XGBoost v1.0** | 🏆 **CHAMPION** | **98.9%** | **97.1%** | ✅ **Exceeds 95%** |
+| **Red Sea** (`RED_SEA`) | **XGBoost v1.0** | 🏆 **CHAMPION** | **98.4%** | **98.6%** | ✅ **Exceeds 95%** |
+| **Bab-el-Mandeb** (`BAB_EL_MANDEB`) | **XGBoost v1.0** | 🏆 **CHAMPION** | **98.4%** | **97.8%** | ✅ **Exceeds 95%** |
+| **Strait of Hormuz** (`HORMUZ`) | **XGBoost v1.0** | 🏆 **CHAMPION** | **96.7%** | **96.7%** | ✅ **Exceeds 95%** |
+
 | Component | Technology / Algorithm | Purpose | Implementation File |
 |:---|:---|:---|:---|
 | **Classification Engine** | XGBoost 2.0 (Gradient Boosted Trees) | Computes non-linear disruption probabilities | [`src/models/train_xgboost.py`](file:///d:/hackathon%20project/energy-resilience/src/models/train_xgboost.py) |
