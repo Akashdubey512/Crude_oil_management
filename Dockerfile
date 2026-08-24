@@ -34,6 +34,8 @@ COPY scripts/ ./scripts/
 ENV PORT=8000
 ENV ENVIRONMENT=production
 ENV PYTHONUNBUFFERED=1
+ENV DATA_DIR=/app/data
+ENV MODEL_DIR=/app/models
 
 EXPOSE 8000
 
