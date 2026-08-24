@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, HTTPException, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 
@@ -95,6 +95,10 @@ app = FastAPI(
 import os
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# Resolve the built React frontend dist directory (works both locally and on Render)
+_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_frontend_dist = os.path.join(_repo_root, "frontend", "dist")
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
@@ -234,3 +238,18 @@ app.include_router(briefings.router, prefix="/api", dependencies=[Security(authe
 # Phase 20: WebSocket Real-Time Alert Push stream (/ws/alerts and /api/ws/alerts)
 app.include_router(websocket.router)
 app.include_router(websocket.router, prefix="/api")
+
+# ─── Frontend SPA Static File Serving ────────────────────────────────────────
+# Serve the built React app from frontend/dist/ when it exists (production on Render).
+# All unmatched routes return index.html so React Router handles client-side navigation.
+# API routes registered above take precedence because they are added first.
+if os.path.isdir(_frontend_dist):
+    app.mount("/assets", StaticFiles(directory=os.path.join(_frontend_dist, "assets")), name="frontend-assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        """Catch-all: serve the React SPA index.html for any unmatched path."""
+        index_file = os.path.join(_frontend_dist, "index.html")
+        if os.path.isfile(index_file):
+            return FileResponse(index_file, media_type="text/html")
+        return JSONResponse(status_code=503, content={"detail": "Frontend not built. Run: cd frontend && npm run build"})

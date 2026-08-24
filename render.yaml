@@ -1,12 +1,18 @@
 services:
   - type: web
-    name: energy-resilience-api
+    name: crude-oil-management
     env: python
     region: singapore
-    buildCommand: pip install -r requirements.txt
+    buildCommand: >
+      curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&
+      apt-get install -y nodejs &&
+      cd frontend && npm ci && npm run build && cd .. &&
+      pip install -r requirements.txt
     startCommand: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ENVIRONMENT
         value: production
       - key: PORT
         value: 10000
+      - key: PYTHONUNBUFFERED
+        value: "1"

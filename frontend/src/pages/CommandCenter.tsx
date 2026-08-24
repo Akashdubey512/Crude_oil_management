@@ -373,18 +373,20 @@ export default function CommandCenter({
                         <span>Click a sector above or select nodes on the map layer to inspect SHAP diagnostics.</span>
                       </div>
                     </div>
+                  </div>{/* END grid-cols-12 */}
 
-                    {/* Supplier-Country Exposure Risk Card Overlay & Alternative Crude Sources Ranking */}
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-                      <SupplierRiskExposureCard />
-                      <AlternativeCrudeSourcesCard />
-                    </div>
-
-                    {/* Ask Analyst GenAI Assistant */}
-                    <AskAnalystChat />
+                  {/* Supplier + Alternative Crude side-by-side */}
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                    <SupplierRiskExposureCard />
+                    <AlternativeCrudeSourcesCard />
                   </div>
 
+                  {/* Ask Analyst GenAI Assistant — full width */}
+                  <AskAnalystChat />
+
+
                   {/* Below-map charts shelf */}
+
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     {[
                       { title: 'Risk History Index', label: '30d inference', content: <RiskHistoryChart data={monitorHistory} /> },
