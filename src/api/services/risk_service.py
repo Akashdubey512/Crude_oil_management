@@ -20,15 +20,17 @@ import datetime
 import logging
 import pandas as pd
 from typing import Dict, Any, List, Optional
+from src.api.config import settings
 
 logger = logging.getLogger(__name__)
 
-DATA_DIR = os.getenv("DATA_DIR", r"D:\hackathon project\energy-resilience\data")
+DATA_DIR = settings.data_dir
 STAGING_DIR = os.path.join(DATA_DIR, "staging")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 MANIFEST_DIR = os.path.join(DATA_DIR, "manifests")
-REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\model_evaluation"
-MODELS_DIR = os.getenv("MODEL_DIR", r"D:\hackathon project\energy-resilience\models")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "model_evaluation")
+MODELS_DIR = settings.model_dir
 
 SUPPORTED_CORRIDORS = {
     "HORMUZ": "Strait of Hormuz",

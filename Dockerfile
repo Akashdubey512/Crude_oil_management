@@ -27,6 +27,8 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 COPY src/ ./src/
 COPY data/ ./data/
 COPY models/ ./models/
+COPY reports/ ./reports/
+COPY docs/model-cards/ ./docs/model-cards/
 COPY scripts/ ./scripts/
 
 ENV PORT=8000

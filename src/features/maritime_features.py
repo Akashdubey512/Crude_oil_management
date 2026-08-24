@@ -39,7 +39,8 @@ import os
 import pandas as pd
 import numpy as np
 
-PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROCESSED_DIR = os.path.join(os.getenv("DATA_DIR", os.path.join(PROJECT_ROOT, "data")), "processed")
 
 
 def build_maritime_features(

@@ -2,7 +2,8 @@ import os
 import json
 from typing import Dict, Any, List, Optional
 
-REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\model_evaluation"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "model_evaluation")
 
 
 def get_model_explainability(corridor_id: str) -> Dict[str, Any]:

@@ -104,7 +104,10 @@ def compute_supplier_risk_exposures(corridor_scores: Dict[str, float] = None) ->
             cid = snap.get("corridor") or snap.get("corridor_id", "")
             raw = snap.get("risk_score")
             if raw is None:
-                prob = snap.get("probability", 0.0)
+                # An unavailable corridor has no numeric probability. Keep the
+                # supplier overlay available and treat that contribution as zero;
+                # the API's risk snapshot still explicitly reports UNAVAILABLE.
+                prob = snap.get("probability") or 0.0
                 raw = prob * 100.0 if prob <= 1.0 else prob
             corridor_scores[cid] = float(raw)
 

@@ -34,8 +34,10 @@ import os
 import pandas as pd
 import numpy as np
 
-STAGING_DIR = r"D:\hackathon project\energy-resilience\data\staging"
-PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DATA_DIR = os.getenv("DATA_DIR", os.path.join(PROJECT_ROOT, "data"))
+STAGING_DIR = os.path.join(DATA_DIR, "staging")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
 DISRUPTION_EVENT_TYPES = {
     "tanker attack", "maritime security incident", "pipeline disruption",

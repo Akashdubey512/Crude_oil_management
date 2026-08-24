@@ -468,7 +468,8 @@ def rollback_model(
 def get_corridor_model_card(corridor: str, auth: dict = Security(authenticate_key, scopes=["MODEL_READ"])):
     """Returns the markdown metadata file contents (Model Card) for the corridor."""
     corridor_upper = corridor.upper()
-    card_path = os.path.join(r"D:\hackathon project\energy-resilience\docs\model-cards", f"{corridor_upper}.md")
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    card_path = os.path.join(project_root, "docs", "model-cards", f"{corridor_upper}.md")
     if not os.path.exists(card_path):
         raise HTTPException(status_code=404, detail=f"Model card not found for corridor {corridor_upper}.")
     try:

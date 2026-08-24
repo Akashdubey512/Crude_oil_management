@@ -13,7 +13,8 @@ import pandas as pd
 from src.risk.corridor_risk import get_corridor_risk, get_all_corridor_risks, get_historical_risk
 from src.risk.risk_decomposition import decompose_risk
 
-REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\model_evaluation"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "model_evaluation")
 
 def get_corridor_risk_with_explanation(corridor_id: str, date_val: datetime.date) -> dict:
     """
@@ -61,7 +62,7 @@ def get_corridor_risk_with_explanation(corridor_id: str, date_val: datetime.date
     record["top_risk_factors"] = top_factors
 
     # Build risk decomposition using active feature weights
-    features_path = r"D:\hackathon project\energy-resilience\data\processed\model_features.csv"
+    features_path = os.path.join(PROJECT_ROOT, "data", "processed", "model_features.csv")
     if os.path.exists(features_path):
         try:
             df = pd.read_csv(features_path)

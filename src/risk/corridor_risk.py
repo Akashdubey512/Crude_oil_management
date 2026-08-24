@@ -30,8 +30,9 @@ from src.features.geopolitical_features import build_geopolitical_features
 from src.features.maritime_features import build_maritime_features
 from src.features.energy_features import build_energy_features
 
-MODELS_DIR = r"D:\hackathon project\energy-resilience\models"
-PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+MODELS_DIR = os.getenv("MODEL_DIR", os.path.join(PROJECT_ROOT, "models"))
+PROCESSED_DIR = os.path.join(os.getenv("DATA_DIR", os.path.join(PROJECT_ROOT, "data")), "processed")
 
 MODEL_VERSION = "1.0"
 

@@ -40,7 +40,8 @@ import os
 import pandas as pd
 import numpy as np
 
-STAGING_DIR = r"D:\hackathon project\energy-resilience\data\staging"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+STAGING_DIR = os.path.join(os.getenv("DATA_DIR", os.path.join(PROJECT_ROOT, "data")), "staging")
 
 
 def build_energy_features(date_index: pd.DatetimeIndex) -> pd.DataFrame:

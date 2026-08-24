@@ -10,8 +10,10 @@ import datetime
 import hashlib
 from typing import Dict, Any, List, Optional
 
-MANIFEST_DIR = r"D:\hackathon project\energy-resilience\data\manifests"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+MANIFEST_DIR = os.path.join(os.getenv("DATA_DIR", os.path.join(PROJECT_ROOT, "data")), "manifests")
 REGISTRY_PATH = os.path.join(MANIFEST_DIR, "model_registry.json")
+MODELS_DIR = os.getenv("MODEL_DIR", os.path.join(PROJECT_ROOT, "models"))
 
 os.makedirs(MANIFEST_DIR, exist_ok=True)
 
@@ -50,7 +52,18 @@ def _load_registry() -> dict:
     if os.path.exists(REGISTRY_PATH):
         try:
             with open(REGISTRY_PATH, "r") as f:
-                return json.load(f)
+                registry = json.load(f)
+            # Registries created on Windows contain absolute ``D:\\...`` paths.
+            # Resolve them to the deployed model directory without mutating the
+            # source manifest, so the same artifact bundle works on Linux/Render.
+            for entry in registry.values():
+                artifact_path = entry.get("artifact_path")
+                if artifact_path and not os.path.exists(artifact_path):
+                    filename = artifact_path.replace("\\", "/").rsplit("/", 1)[-1]
+                    deployed_path = os.path.join(MODELS_DIR, filename)
+                    if os.path.exists(deployed_path):
+                        entry["artifact_path"] = deployed_path
+            return registry
         except Exception:
             return {}
     return {}
