@@ -22,8 +22,11 @@ from src.risk.corridor_risk import _load_best_model, _classify_risk
 from src.risk.reserve_drawdown import calculate_reserve_drawdown_schedule, CORRIDOR_BASELINE_IMPORT_MBPD, DEFAULT_BASELINE_IMPORT_MBPD
 from src.risk.economic_impact import calculate_cascading_economic_impact
 
-PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
-REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\model_evaluation"
+from src.api.config import settings
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+PROCESSED_DIR = os.path.join(settings.data_dir, "processed")
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "model_evaluation")
 
 def run_scenario_simulation(
     corridor_id: str,

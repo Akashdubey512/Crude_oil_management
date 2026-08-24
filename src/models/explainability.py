@@ -23,8 +23,9 @@ except ImportError:
 
 from src.features.feature_pipeline import FEATURE_COLS
 
-MODELS_DIR = r"D:\hackathon project\energy-resilience\models"
-REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\model_evaluation"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "model_evaluation")
 
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
@@ -116,7 +117,7 @@ def explain_model(
 def explain_all_models(features_path: str = None) -> None:
     """Runs SHAP explainability for all trained corridor models."""
     if features_path is None:
-        features_path = r"D:\hackathon project\energy-resilience\data\processed\model_features.csv"
+        features_path = os.path.join(PROJECT_ROOT, "data", "processed", "model_features.csv")
 
     df = pd.read_csv(features_path)
 

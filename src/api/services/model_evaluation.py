@@ -19,8 +19,10 @@ from sklearn.metrics import (
 
 logger = logging.getLogger(__name__)
 
-DATA_DIR = r"D:\hackathon project\energy-resilience\data"
-MODELS_DIR = r"D:\hackathon project\energy-resilience\models"
+from src.api.config import settings
+
+DATA_DIR = settings.data_dir
+MODELS_DIR = settings.model_dir
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
 from src.features.feature_pipeline import FEATURE_COLS

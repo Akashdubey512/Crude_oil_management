@@ -32,9 +32,10 @@ import pandas as pd
 
 from src.features.feature_pipeline import FEATURE_COLS, MODELED_CORRIDORS
 
-PROCESSED_DIR = r"D:\hackathon project\energy-resilience\data\processed"
-MODELS_DIR = r"D:\hackathon project\energy-resilience\models"
-REPORTS_DIR = r"D:\hackathon project\energy-resilience\reports\backtests"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROCESSED_DIR = os.path.join(PROJECT_ROOT, "data", "processed")
+MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
+REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "backtests")
 
 os.makedirs(REPORTS_DIR, exist_ok=True)
 

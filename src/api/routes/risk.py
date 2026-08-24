@@ -238,10 +238,10 @@ def get_model_information(
     Returns model card: model type, version, training period, features, limitations, metrics.
     """
     corridor_upper = corridor_id.upper()
-    if corridor_upper not in {"HORMUZ", "BAB_EL_MANDEB", "SUEZ"}:
+    if corridor_upper not in {"HORMUZ", "BAB_EL_MANDEB", "SUEZ", "RED_SEA"}:
         raise HTTPException(
             status_code=404,
-            detail=f"No model trained for corridor '{corridor_id}'. Trained models: HORMUZ, BAB_EL_MANDEB, SUEZ",
+            detail=f"No model trained for corridor '{corridor_id}'. Trained models: HORMUZ, BAB_EL_MANDEB, SUEZ, RED_SEA",
         )
     try:
         return get_model_info(corridor_upper)

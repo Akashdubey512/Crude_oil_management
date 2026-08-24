@@ -67,7 +67,7 @@ import pandas as pd
 import numpy as np
 import datetime
 
-BASE_DIR = r"D:\hackathon project\energy-resilience"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
 STAGING_DIR = os.path.join(BASE_DIR, "data", "staging")
 MANIFEST_DIR = os.path.join(BASE_DIR, "data", "manifests")

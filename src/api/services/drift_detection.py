@@ -14,7 +14,9 @@ from scipy.stats import ks_2samp
 
 logger = logging.getLogger(__name__)
 
-DATA_DIR = r"D:\hackathon project\energy-resilience\data"
+from src.api.config import settings
+
+DATA_DIR = settings.data_dir
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
 from src.features.feature_pipeline import FEATURE_COLS

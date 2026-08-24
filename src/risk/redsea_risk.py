@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict, Any, Optional, List
 
-BASE_DIR      = r"D:\hackathon project\energy-resilience"
+BASE_DIR      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
 STAGING_DIR   = os.path.join(BASE_DIR, "data", "staging")
 MODELS_DIR    = os.path.join(BASE_DIR, "models")
