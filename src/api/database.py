@@ -215,17 +215,24 @@ def init_database() -> None:
                 _populate_from_registry(cursor, is_pg=True)
                 conn.commit()
             
-            # Phase 13: Seed default admin API key if table is empty
-            cursor.execute("SELECT COUNT(*) FROM api_keys;")
-            if cursor.fetchone()[0] == 0:
-                logger.info("Seeding default admin API key in PostgreSQL api_keys table...")
-                from src.api.auth import hash_secret_key, ROLE_SCOPES
-                hashed_key = hash_secret_key("defaultadminsecretkey987654321")
-                cursor.execute("""
-                INSERT INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
-                VALUES (%s, %s, %s, %s, %s, %s);
-                """, ("pubadmin", hashed_key, "default_admin", "ADMIN", json.dumps(ROLE_SCOPES["ADMIN"]), False))
-                conn.commit()
+            # Keep the built-in demo admin key in sync with API_KEY_HASH_SECRET.
+            # This matters after a deployment where an older database row was hashed
+            # with a previous secret. Preserve the revoked state if an administrator
+            # has explicitly disabled the key.
+            from src.api.auth import hash_secret_key, ROLE_SCOPES
+            cursor.execute("""
+            INSERT INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ON CONFLICT (public_id) DO UPDATE SET
+                hashed_key = EXCLUDED.hashed_key,
+                actor_id = EXCLUDED.actor_id,
+                actor_role = EXCLUDED.actor_role,
+                scopes = EXCLUDED.scopes;
+            """, (
+                "pubadmin", hash_secret_key("defaultadminsecretkey987654321"),
+                "default_admin", "ADMIN", json.dumps(ROLE_SCOPES["ADMIN"]), False,
+            ))
+            conn.commit()
             
             cursor.close()
         else:
@@ -373,6 +380,14 @@ def init_database() -> None:
                 INSERT OR IGNORE INTO api_keys (public_id, hashed_key, actor_id, actor_role, scopes, revoked)
                 VALUES (?, ?, ?, ?, ?, ?);
                 """, (pub_id, hk, actor_id, role, scopes, 0))
+                # Existing rows may have been created with an earlier hash secret.
+                # Update only the deterministic demo-key metadata; do not re-enable
+                # a key that was deliberately revoked.
+                cursor.execute("""
+                UPDATE api_keys
+                SET hashed_key = ?, actor_id = ?, actor_role = ?, scopes = ?
+                WHERE public_id = ?;
+                """, (hk, actor_id, role, scopes, pub_id))
             conn.commit()
             logger.info("Preset role API keys (ADMIN/ANALYST/VIEWER) seeded in SQLite.")
                 
