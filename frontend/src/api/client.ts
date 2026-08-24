@@ -47,6 +47,9 @@ async function request<T>(path: string, options?: RequestInit, overrideKey?: str
     const headers = new Headers(options?.headers || {});
     const key = overrideKey ?? _activeKey;
     headers.set('Authorization', `Bearer ${key}`);
+    if (options?.body && !headers.has('Content-Type') && !(options.body instanceof FormData)) {
+      headers.set('Content-Type', 'application/json');
+    }
 
     const response = await fetch(url, { ...options, headers });
     if (!response.ok) {
