@@ -16,11 +16,12 @@ import type {
   PredictionRecord,
 } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? (
+const configuredApiBase = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = (configuredApiBase ?? (
   typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
     ? ''
     : 'http://127.0.0.1:8000'
-);
+)).replace(/\/+$/, '');
 
 // ── Active key store — single source of truth ────────────────────────────────
 // localStorage is the persistence layer; this module-level variable gives us
